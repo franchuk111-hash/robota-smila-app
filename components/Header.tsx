@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
+import Emblem from "./Emblem";
 
 export default function Header({ employer = false }: { employer?: boolean }) {
   const { data: session } = useSession();
@@ -13,10 +14,8 @@ export default function Header({ employer = false }: { employer?: boolean }) {
     <header className="site">
       <div className="container nav">
         <Link href="/" className="logo">
-          <span className="mark">
-            <i></i><i></i><i></i><i></i>
-          </span>{" "}
-          robota-<b>smila</b>
+          <Emblem size={38} />
+          <span className="word">robota-<b>smila</b></span>
         </Link>
 
         <div className="toggle">
@@ -41,6 +40,7 @@ export default function Header({ employer = false }: { employer?: boolean }) {
         <nav className="nav-links">
           <Link href="/vakansii">Вакансії</Link>
           <Link href="/kompanii">Компанії</Link>
+          <Link href="/rezume">Резюме</Link>
           <Link href="/blog">Блог</Link>
         </nav>
 

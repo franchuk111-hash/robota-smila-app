@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TelegramLogin from "@/components/TelegramLogin";
+import Emblem from "@/components/Emblem";
 
 export default function LoginPage() {
   return (
@@ -11,12 +12,13 @@ export default function LoginPage() {
       <Header />
       <div className="container">
         <div className="auth-card">
-          <Link href="/" className="logo" style={{ justifyContent: "center", marginBottom: 18 }}>
-            <span className="mark">
-              <i></i><i></i><i></i><i></i>
-            </span>{" "}
-            robota-<b>smila</b>
-          </Link>
+          <div className="brand" style={{ justifyContent: "center", marginBottom: 22 }}>
+            <Emblem size={56} />
+            <div className="txt">
+              <span className="wm">robota-<b>smila</b></span>
+              <span className="brand-tag">Знайди роботу в Смілі. Розвивай місто разом із нами.</span>
+            </div>
+          </div>
           <h1>Вхід та реєстрація</h1>
           <p>Увійдіть, щоб зберігати вакансії та швидко відгукуватися</p>
 

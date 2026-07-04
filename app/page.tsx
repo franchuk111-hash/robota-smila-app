@@ -2,6 +2,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
+import Parallax from "@/components/Parallax";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
 
 export default function Home() {
@@ -12,10 +13,11 @@ export default function Home() {
   return (
     <>
       <Header />
+      <Parallax />
       <section className="hero">
-        <span className="illus i1">👩‍🍳</span>
-        <span className="illus i2">🚚</span>
-        <span className="illus i3">🧑‍💼</span>
+        <span className="illus i1" data-parallax="0.18" data-rot="-8">👩‍🍳</span>
+        <span className="illus i2" data-parallax="-0.12" data-rot="7">🚚</span>
+        <span className="illus i3" data-parallax="0.24" data-rot="-5">🧑‍💼</span>
         <div className="container">
           <h1>
             Знайдіть роботу
@@ -79,6 +81,30 @@ export default function Home() {
                 </Link>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="block" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <h2 className="title center">Корисні сервіси</h2>
+          <p className="sub center">Інструменти, що допоможуть швидше знайти роботу</p>
+          <div className="services">
+            <Link href="/zarplatomir" className="service">
+              <div className="s-ico">💰</div>
+              <h3>Зарплатомір</h3>
+              <p>Дізнайтесь середню зарплату у Смілі за вашою професією.</p>
+            </Link>
+            <Link href="/rezume" className="service">
+              <div className="s-ico">📄</div>
+              <h3>Приклад резюме</h3>
+              <p>Готовий зразок резюме з поясненнями, лайфхаки та фішки.</p>
+            </Link>
+            <Link href="/blog" className="service">
+              <div className="s-ico">💡</div>
+              <h3>Поради для роботи</h3>
+              <p>Статті про пошук роботи, зарплати та кар&apos;єру у Смілі.</p>
+            </Link>
           </div>
         </div>
       </section>
