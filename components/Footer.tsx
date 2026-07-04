@@ -33,7 +33,8 @@ export default function Footer() {
             <Link href="/vakansii">Всі вакансії</Link>
             <Link href="/rezume">Приклад резюме</Link>
             <Link href="/zarplatomir">Зарплатомір</Link>
-            <Link href="/uvijty">Увійти</Link>
+            <Link href="/kalendar">Виробничий календар</Link>
+            <Link href="/start-kariery">Старт кар&apos;єри</Link>
           </div>
           <div>
             <h4>Роботодавцям</h4>

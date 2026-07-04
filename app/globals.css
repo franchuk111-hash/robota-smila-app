@@ -96,7 +96,19 @@ h2.center{text-align:center;font-size:42px;margin-bottom:40px}
 .vac:hover{border-color:var(--accent);box-shadow:var(--shadow-hover)}
 .vac.hot{border-color:#ffd9b3;box-shadow:0 6px 24px rgba(240,120,30,.1)}
 .vac.hot:hover{border-color:#ff9d42}
-.hot-badge{display:inline-block;background:linear-gradient(180deg,#ff8a3d,#f4611e);color:#fff;font-weight:700;font-size:12px;padding:4px 11px;border-radius:20px;margin-bottom:10px;box-shadow:0 3px 10px rgba(240,90,20,.3)}
+.hot-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(180deg,#ff8a3d,#f4611e);color:#fff;font-weight:700;font-size:12px;padding:4px 11px;border-radius:20px;margin-bottom:10px;box-shadow:0 3px 10px rgba(240,90,20,.3);animation:hotGlow 2.2s ease-in-out infinite}
+.hot-badge .flame{display:inline-block;transform-origin:50% 90%;animation:flicker 1.1s ease-in-out infinite}
+@keyframes flicker{
+  0%,100%{transform:scale(1) rotate(-2deg);opacity:1}
+  25%{transform:scale(1.12) rotate(2deg);opacity:.9}
+  50%{transform:scale(.96) rotate(-1deg);opacity:1}
+  75%{transform:scale(1.08) rotate(3deg);opacity:.92}
+}
+@keyframes hotGlow{
+  0%,100%{box-shadow:0 3px 10px rgba(240,90,20,.3)}
+  50%{box-shadow:0 3px 16px rgba(240,90,20,.6)}
+}
+@media(prefers-reduced-motion:reduce){.hot-badge,.hot-badge .flame{animation:none}}
 .vac .fav{position:absolute;top:20px;right:20px;font-size:20px;color:#c7d2e0;background:none;border:none;cursor:pointer}
 .vac .fav:hover,.vac .fav.on{color:#ff6b8a}
 .vac h3{margin:0 44px 12px 0;font-size:19px;font-weight:700;line-height:1.25}
@@ -183,6 +195,27 @@ footer.site a:hover{color:#fff;opacity:1}
 .zp .result{background:var(--soft);border-radius:14px;padding:24px;text-align:center}
 .zp .result .big{font-size:40px;font-weight:800;color:var(--ink2)}
 .zp .result .lbl{color:var(--muted)}
+
+/* Виробничий календар */
+.cal-stats{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 26px}
+.cal-stat{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px 24px;text-align:center}
+.cal-stat b{display:block;font-size:30px;color:var(--ink2);font-weight:800}
+.cal-stat span{color:var(--muted);font-size:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.cal-month{background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:16px}
+.cal-month h3{margin:0 0 10px;font-size:16px;color:var(--ink2);text-align:center}
+.cal-week,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-wd{text-align:center;font-size:11px;color:var(--muted2);font-weight:700;padding-bottom:4px}
+.cal-day{text-align:center;font-size:13px;color:var(--ink);padding:5px 0;border-radius:7px}
+.cal-day.weekend{color:#e11d48;background:#fef2f4}
+.cal-day.holiday{color:#fff;background:linear-gradient(180deg,#4b90f7,#2f6fda);font-weight:700;cursor:help}
+.cal-day.empty{background:none}
+@media(max-width:900px){.cal-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.cal-grid{grid-template-columns:1fr}}
+
+/* Старт кар'єри */
+.start-hero{background:linear-gradient(135deg,#eef4ff,#e0ecff);border-radius:var(--radius);padding:40px;margin-bottom:30px}
+.start-hero h1{margin:0 0 10px}
 
 /* Соцмережі */
 .socials{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}

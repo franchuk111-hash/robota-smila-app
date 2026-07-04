@@ -112,6 +112,16 @@ export default function Home() {
               <h3>Зарплатомір</h3>
               <p>Дізнайтесь середню зарплату у Смілі за вашою професією.</p>
             </Link>
+            <Link href="/kalendar" className="service">
+              <div className="s-ico">📅</div>
+              <h3>Виробничий календар</h3>
+              <p>Робочі, вихідні та святкові дні 2026 для розрахунку відпусток.</p>
+            </Link>
+            <Link href="/start-kariery" className="service">
+              <div className="s-ico">🚀</div>
+              <h3>Старт кар&apos;єри</h3>
+              <p>Перша робота, стажування та вакансії для студентів і без досвіду.</p>
+            </Link>
             <Link href="/rezume" className="service">
               <div className="s-ico">📄</div>
               <h3>Приклад резюме</h3>
@@ -121,6 +131,11 @@ export default function Home() {
               <div className="s-ico">💡</div>
               <h3>Поради для роботи</h3>
               <p>Статті про пошук роботи, зарплати та кар&apos;єру у Смілі.</p>
+            </Link>
+            <Link href="/kompanii" className="service">
+              <div className="s-ico">🏢</div>
+              <h3>Каталог компаній</h3>
+              <p>Роботодавці Сміли та їхні актуальні вакансії в одному місці.</p>
             </Link>
           </div>
         </div>

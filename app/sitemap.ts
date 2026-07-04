@@ -12,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/rabotodavtsyam`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/rezume`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/zarplatomir`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/kalendar`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/start-kariery`, changeFrequency: "monthly", priority: 0.6 },
   ];
   const cats = CATEGORIES.map((c) => ({
     url: `${BASE}/vakansii?cat=${c.slug}`,

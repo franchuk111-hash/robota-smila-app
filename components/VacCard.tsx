@@ -6,7 +6,11 @@ export default function VacCard({ v }: { v: Vacancy }) {
   return (
     <article className={"vac" + (v.hot ? " hot" : "")}>
       <FavButton id={v.id} />
-      {v.hot && <span className="hot-badge">🔥 Гаряча</span>}
+      {v.hot && (
+        <span className="hot-badge">
+          <span className="flame">🔥</span> Гаряча
+        </span>
+      )}
       <h3>
         <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
       </h3>
