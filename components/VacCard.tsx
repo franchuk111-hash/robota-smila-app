@@ -4,8 +4,9 @@ import FavButton from "./FavButton";
 
 export default function VacCard({ v }: { v: Vacancy }) {
   return (
-    <article className="vac">
+    <article className={"vac" + (v.hot ? " hot" : "")}>
       <FavButton id={v.id} />
+      {v.hot && <span className="hot-badge">🔥 Гаряча</span>}
       <h3>
         <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
       </h3>

@@ -9,6 +9,7 @@ export default function Home() {
   const latest = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 6);
+  const hot = VACANCIES.filter((v) => v.hot);
 
   return (
     <>
@@ -60,6 +61,22 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {hot.length > 0 && (
+        <section className="block" style={{ paddingBottom: 0 }}>
+          <div className="container">
+            <h2 className="title center">🔥 Гарячі вакансії</h2>
+            <p className="sub center">
+              Найактуальніші пропозиції — роботодавці шукають прямо зараз
+            </p>
+            <div className="grid3">
+              {hot.map((v) => (
+                <VacCard key={v.id} v={v} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="block">
         <div className="container">
