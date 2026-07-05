@@ -1,4 +1,4 @@
-// Логотип-бейдж: рукостискання (Twemoji, CC-BY) на фірмовому синьому квадраті.
+// Логотип-бейдж: лупа (Twemoji, CC-BY) на фірмовому синьому квадраті.
 export default function Emblem({ size = 38 }: { size?: number }) {
   return (
     <span
@@ -15,7 +15,7 @@ export default function Emblem({ size = 38 }: { size?: number }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/hands.svg"
+        src="/mark.svg"
         alt=""
         width={Math.round(size * 0.66)}
         height={Math.round(size * 0.66)}

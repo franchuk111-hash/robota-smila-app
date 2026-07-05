@@ -58,4 +58,4 @@ npx wrangler secret put ADMIN_TELEGRAM_CHAT_ID
 Демо-вакансії/компанії/статті — у `lib/data.ts`. Для реальної бази (постійне зберігання відгуків, вакансій від роботодавців, профілів) підключається Supabase/Postgres — наступний крок.
 
 ## Ліцензії
-Іконка рукостискання — [Twemoji](https://github.com/twitter/twemoji) © Twitter, ліцензія CC-BY 4.0.
+Іконка логотипа (лупа) — [Twemoji](https://github.com/twitter/twemoji) © Twitter, ліцензія CC-BY 4.0.
