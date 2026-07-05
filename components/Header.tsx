@@ -30,7 +30,7 @@ export default function Header({ employer = false }: { employer?: boolean }) {
       <div className="container nav">
         <Link href="/" className="logo" onClick={() => setMenu(false)}>
           <Emblem size={38} />
-          <span className="word">robota-<b>smila</b></span>
+          <span className="word">Робота&nbsp;<b>Сміла</b></span>
         </Link>
 
         <div className="toggle">
