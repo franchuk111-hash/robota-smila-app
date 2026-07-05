@@ -18,14 +18,14 @@ export default function Footer() {
               Знайди роботу в Смілі. Розвивай місто разом із нами.
             </p>
             <div className="socials">
-              <a className="soc" href="https://www.tiktok.com/@robota_smila" target="_blank" rel="noopener noreferrer">
-                <IconTikTok /> TikTok
+              <a className="soc" href="https://www.tiktok.com/@robota_smila" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                <IconTikTok size={32} />
               </a>
-              <a className="soc" href="https://www.youtube.com/@Robota-smila" target="_blank" rel="noopener noreferrer">
-                <IconYouTube /> YouTube
+              <a className="soc" href="https://www.youtube.com/@Robota-smila" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <IconYouTube size={32} />
               </a>
-              <a className="soc" href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
-                <IconTelegram /> Telegram
+              <a className="soc" href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                <IconTelegram size={32} />
               </a>
             </div>
           </div>
