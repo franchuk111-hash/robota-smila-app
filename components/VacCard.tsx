@@ -1,10 +1,19 @@
+"use client";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
 import FavButton from "./FavButton";
 
 export default function VacCard({ v }: { v: Vacancy }) {
   return (
-    <article className={"vac" + (v.hot ? " hot" : "")}>
+    <motion.article
+      className={"vac" + (v.hot ? " hot" : "")}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4 }}
+    >
       <FavButton id={v.id} />
       {v.hot && (
         <span className="hot-badge">
@@ -37,6 +46,6 @@ export default function VacCard({ v }: { v: Vacancy }) {
           Відгукнутися
         </Link>
       </div>
-    </article>
+    </motion.article>
   );
 }
