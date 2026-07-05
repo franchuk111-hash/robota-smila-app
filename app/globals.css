@@ -44,6 +44,14 @@ header.site{background:#fff;border-bottom:1px solid var(--border);position:stick
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
 .nav-links{display:flex;gap:18px;align-items:center}
 .nav-links a{color:var(--muted);font-weight:600;font-size:15px}
+.hdr-auth{display:flex;align-items:center;gap:12px}
+.burger{display:none;font-size:24px;background:none;border:none;cursor:pointer;color:var(--ink2);margin-left:auto;line-height:1;padding:6px}
+header.site{transition:box-shadow .2s ease}
+header.site.scrolled{box-shadow:0 4px 18px rgba(20,40,70,.09)}
+.mobile-menu{display:flex;flex-direction:column;padding:8px 22px 20px;background:#fff;border-top:1px solid var(--border);box-shadow:0 12px 22px rgba(20,40,70,.08)}
+.mobile-menu a{padding:13px 4px;color:var(--ink2);font-weight:600;font-size:16px;border-bottom:1px solid var(--soft)}
+.mobile-menu .btn{margin-top:14px;justify-content:center}
+@media(min-width:861px){.mobile-menu{display:none}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent-grad);color:#fff;border:none;border-radius:12px;padding:13px 26px;font-weight:700;font-size:16px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(59,130,246,.3);transition:.15s}
 .btn:hover{background:var(--accent-grad-h);opacity:1;transform:translateY(-1px);color:#fff}
 .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--border-strong);box-shadow:none}
@@ -229,7 +237,9 @@ footer.site a:hover{color:#fff;opacity:1}
 @media(max-width:860px){
   .layout{grid-template-columns:1fr}.filters{position:static}
   .detail-grid{grid-template-columns:1fr}.fcols{grid-template-columns:1fr 1fr}
-  .steps{grid-template-columns:1fr}.nav-links,.search{display:none}
+  .steps{grid-template-columns:1fr}
+  .nav-links,.search,.toggle,.hdr-auth,.hdr-login{display:none}
+  .burger{display:block}
   .hero h1{font-size:34px}.hero p{font-size:17px}
-  h2.title,h2.center,.page-h1{font-size:28px}.toggle{display:none}
+  h2.title,h2.center,.page-h1{font-size:28px}
 }

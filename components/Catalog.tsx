@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import VacCard from "./VacCard";
 import { Vacancy, Category } from "@/lib/data";
 
@@ -106,11 +107,22 @@ export default function Catalog({
             {q ? ` за запитом «${q}»` : ""}
           </div>
           {items.length ? (
-            <div className="grid2">
-              {items.map((v) => (
-                <VacCard key={v.id} v={v} />
-              ))}
-            </div>
+            <motion.div className="grid2" layout>
+              <AnimatePresence mode="popLayout">
+                {items.map((v) => (
+                  <motion.div
+                    key={v.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    transition={{ duration: 0.24, ease: "easeOut" }}
+                  >
+                    <VacCard v={v} noReveal />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           ) : (
             <div className="vac">
               За вашим запитом вакансій не знайдено. Спробуйте змінити фільтри.

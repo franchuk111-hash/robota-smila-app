@@ -4,14 +4,19 @@ import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
 import FavButton from "./FavButton";
 
-export default function VacCard({ v }: { v: Vacancy }) {
+export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?: boolean }) {
+  const reveal = noReveal
+    ? {}
+    : {
+        initial: { opacity: 0, y: 20 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-40px" },
+        transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
+      };
   return (
     <motion.article
       className={"vac" + (v.hot ? " hot" : "")}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      {...reveal}
       whileHover={{ y: -4 }}
     >
       <FavButton id={v.id} />
