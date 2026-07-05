@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 
 const KEY = "rs_favorites";
 
@@ -17,9 +18,12 @@ export default function FavButton({ id }: { id: number }) {
   useEffect(() => setOn(getFavorites().includes(id)), [id]);
 
   return (
-    <button
+    <motion.button
       className={"fav" + (on ? " on" : "")}
       aria-label="Зберегти вакансію"
+      whileHover={{ scale: 1.15 }}
+      whileTap={{ scale: 1.35 }}
+      transition={{ type: "spring", stiffness: 250, damping: 13 }}
       onClick={(e) => {
         e.preventDefault();
         const cur = getFavorites();
@@ -29,6 +33,6 @@ export default function FavButton({ id }: { id: number }) {
       }}
     >
       {on ? "♥" : "♡"}
-    </button>
+    </motion.button>
   );
 }

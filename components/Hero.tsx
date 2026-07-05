@@ -60,7 +60,13 @@ export default function Hero() {
         <motion.form className="searchbar" action="/vakansii" method="get" variants={item}>
           <input type="text" name="q" placeholder="Посада, компанія або ключове слово" />
           <input type="text" value="Сміла" readOnly style={{ maxWidth: 200, flex: "0 0 200px" }} />
-          <motion.button className="btn" type="submit" whileTap={{ scale: 0.96 }}>
+          <motion.button
+            className="btn"
+            type="submit"
+            whileHover={{ scale: 1.045 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 250, damping: 13 }}
+          >
             Шукати
           </motion.button>
         </motion.form>

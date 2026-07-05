@@ -20,7 +20,9 @@ export default function Emblem({ size = 38 }: { size?: number }) {
         boxShadow: "0 3px 10px rgba(47,111,218,.35)",
         overflow: "hidden",
       }}
-      whileHover={{ rotate: [0, -9, 9, -5, 0], transition: { duration: 0.55 } }}
+      whileHover={{ rotate: -8, scale: 1.08 }}
+      whileTap={{ scale: 0.94 }}
+      transition={{ type: "spring", stiffness: 250, damping: 13 }}
     >
       <motion.svg
         width={m}

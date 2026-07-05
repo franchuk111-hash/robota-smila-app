@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Emblem from "./Emblem";
+import { SpringLink, SpringButton } from "./SpringButton";
 
 export default function Header({ employer = false }: { employer?: boolean }) {
   const { data: session } = useSession();
@@ -62,12 +63,12 @@ export default function Header({ employer = false }: { employer?: boolean }) {
               ) : null}
               <span>{session.user.name?.split(" ")[0] || "Профіль"}</span>
             </Link>
-            <button className="btn ghost" onClick={() => signOut({ callbackUrl: "/" })}>
+            <SpringButton className="btn ghost" onClick={() => signOut({ callbackUrl: "/" })}>
               Вийти
-            </button>
+            </SpringButton>
           </div>
         ) : (
-          <Link href="/uvijty" className="btn hdr-login">Увійти</Link>
+          <SpringLink href="/uvijty" className="btn hdr-login">Увійти</SpringLink>
         )}
 
         <button
@@ -100,12 +101,12 @@ export default function Header({ employer = false }: { employer?: boolean }) {
             {session?.user ? (
               <>
                 <Link href="/profil">Профіль</Link>
-                <button className="btn ghost" onClick={() => signOut({ callbackUrl: "/" })}>
+                <SpringButton className="btn ghost" onClick={() => signOut({ callbackUrl: "/" })}>
                   Вийти
-                </button>
+                </SpringButton>
               </>
             ) : (
-              <Link href="/uvijty" className="btn">Увійти</Link>
+              <SpringLink href="/uvijty" className="btn">Увійти</SpringLink>
             )}
           </motion.nav>
         )}

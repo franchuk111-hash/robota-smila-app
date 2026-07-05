@@ -3,6 +3,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
 import FavButton from "./FavButton";
+import { SpringLink } from "./SpringButton";
 
 export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?: boolean }) {
   const reveal = noReveal
@@ -47,9 +48,9 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       <div className="apply">
         <span className="date">{dateFmt(v.date)}</span>
-        <Link className="btn" href={`/vakansiya/${v.id}`}>
+        <SpringLink className="btn" href={`/vakansiya/${v.id}`}>
           Відгукнутися
-        </Link>
+        </SpringLink>
       </div>
     </motion.article>
   );
