@@ -15,7 +15,7 @@ export default function LoginPage() {
           <div className="brand" style={{ justifyContent: "center", marginBottom: 22 }}>
             <Emblem size={56} />
             <div className="txt">
-              <span className="wm">robota-<b>smila</b></span>
+              <span className="wm">Робота <b>Сміла</b></span>
               <span className="brand-tag">Знайди роботу в Смілі. Розвивай місто разом із нами.</span>
             </div>
           </div>

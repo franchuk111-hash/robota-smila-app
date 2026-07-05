@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Emblem from "./Emblem";
+import { IconTikTok, IconYouTube, IconTelegram } from "./SocialIcons";
 
 export default function Footer() {
   return (
@@ -10,7 +11,7 @@ export default function Footer() {
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
               <Emblem size={36} />
               <span style={{ color: "#fff", fontWeight: 800, fontSize: 20 }}>
-                robota-<span style={{ color: "#5b9dff" }}>smila</span>
+                Робота <span style={{ color: "#5b9dff" }}>Сміла</span>
               </span>
             </div>
             <p style={{ color: "#8397ab", margin: "0 0 6px" }}>
@@ -18,13 +19,13 @@ export default function Footer() {
             </p>
             <div className="socials">
               <a className="soc" href="https://www.tiktok.com/@robota_smila" target="_blank" rel="noopener noreferrer">
-                🎵 TikTok
+                <IconTikTok /> TikTok
               </a>
               <a className="soc" href="https://www.youtube.com/@Robota-smila" target="_blank" rel="noopener noreferrer">
-                ▶️ YouTube
+                <IconYouTube /> YouTube
               </a>
               <a className="soc" href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
-                ✈️ Telegram
+                <IconTelegram /> Telegram
               </a>
             </div>
           </div>
