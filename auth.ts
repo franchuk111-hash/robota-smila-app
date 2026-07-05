@@ -1,19 +1,39 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import crypto from "crypto";
 
-// Перевірка підпису даних Telegram Login Widget (HMAC-SHA256 з токеном бота)
-function verifyTelegram(data: Record<string, string>, botToken: string): boolean {
+// Перевірка підпису Telegram Login Widget (HMAC-SHA256) через Web Crypto API —
+// сумісно і з Node.js, і з Cloudflare Workers (edge runtime).
+function toHex(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function verifyTelegram(
+  data: Record<string, string>,
+  botToken: string
+): Promise<boolean> {
   const { hash, ...fields } = data;
   if (!hash) return false;
-  const secret = crypto.createHash("sha256").update(botToken).digest();
+
+  const enc = new TextEncoder();
+  const secretKeyBytes = await crypto.subtle.digest("SHA-256", enc.encode(botToken));
+
   const checkString = Object.keys(fields)
     .sort()
     .map((k) => `${k}=${fields[k]}`)
     .join("\n");
-  const hmac = crypto.createHmac("sha256", secret).update(checkString).digest("hex");
-  return hmac === hash;
+
+  const hmacKey = await crypto.subtle.importKey(
+    "raw",
+    secretKeyBytes,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sig = await crypto.subtle.sign("HMAC", hmacKey, enc.encode(checkString));
+  return toHex(sig) === hash;
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -37,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
         // підпис має бути валідним і не старшим за 24 години
-        if (!verifyTelegram(data, botToken)) return null;
+        if (!(await verifyTelegram(data, botToken))) return null;
         if (Date.now() / 1000 - Number(data.auth_date) > 86400) return null;
         return {
           id: "tg_" + data.id,
