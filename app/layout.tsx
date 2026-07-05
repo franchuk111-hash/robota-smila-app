@@ -14,6 +14,16 @@ export const metadata: Metadata = {
   applicationName: "robota-smila",
   appleWebApp: { capable: true, statusBarStyle: "default", title: "robota-smila" },
   formatDetection: { telephone: false },
+  openGraph: {
+    siteName: "Робота Сміла",
+    locale: "uk_UA",
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Робота Сміла — вакансії міста" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.png"],
+  },
 };
 
 export const viewport: Viewport = {

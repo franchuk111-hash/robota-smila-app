@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Зарплатомір Сміла — середні зарплати за професіями 2026",
   description:
     "Дізнайтесь середню зарплату у Смілі за професіями: продавці, водії, робітники, офіс. Актуальні дані на основі вакансій robota-smila.",
+  alternates: { canonical: "/zarplatomir" },
 };
 
 export default function ZarplatomirPage() {

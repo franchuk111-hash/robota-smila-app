@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Старт кар'єри у Смілі — робота для студентів і без досвіду",
   description:
     "Перша робота у Смілі: вакансії без досвіду, для студентів та молоді. Поради, як почати кар'єру, скласти резюме та пройти співбесіду.",
+  alternates: { canonical: "/start-kariery" },
 };
 
 export default function StartCareerPage() {
@@ -31,12 +32,12 @@ export default function StartCareerPage() {
         </div>
 
         <div className="services">
-          <Link href="/vakansii?exp=1" className="service">
+          <Link href="/robota-bez-dosvidu" className="service">
             <div className="s-ico">🌱</div>
             <h3>Робота без досвіду</h3>
             <p>Вакансії, де вас навчать з нуля прямо на робочому місці.</p>
           </Link>
-          <Link href="/vakansii?cat=horeca" className="service">
+          <Link href="/robota-dlya-studentiv" className="service">
             <div className="s-ico">🎓</div>
             <h3>Для студентів</h3>
             <p>Часткова зайнятість і гнучкий графік — сумісно з навчанням.</p>
@@ -81,7 +82,7 @@ export default function StartCareerPage() {
             ))}
           </div>
           <p style={{ textAlign: "center", marginTop: 30 }}>
-            <Link href="/vakansii?exp=1" className="btn lg">
+            <Link href="/robota-bez-dosvidu" className="btn lg">
               Усі вакансії без досвіду →
             </Link>
           </p>

@@ -49,9 +49,9 @@ export default function Hero() {
         animate="show"
       >
         <motion.h1 variants={item}>
-          Знайдіть роботу
+          Робота в Смілі —
           <br />
-          прямо зараз
+          знайдіть прямо зараз
         </motion.h1>
         <motion.p variants={item}>
           Актуальні вакансії у Смілі та Черкаській області. Повна і часткова

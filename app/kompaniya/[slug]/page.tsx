@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 import { COMPANIES, VACANCIES } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -21,6 +22,7 @@ export async function generateMetadata({
   return {
     title: `${c.name} — вакансії у Смілі`,
     description: `${c.name}: ${c.about} Актуальні вакансії у Смілі.`,
+    alternates: { canonical: `/kompaniya/${c.slug}` },
   };
 }
 
@@ -53,6 +55,13 @@ export default async function CompanyPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+      />
+      <BreadcrumbLd
+        items={[
+          { name: "Головна", path: "/" },
+          { name: "Компанії", path: "/kompanii" },
+          { name: c.name },
+        ]}
       />
       <div className="container">
         <nav className="crumbs">

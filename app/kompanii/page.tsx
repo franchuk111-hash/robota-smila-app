@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Компанії Сміли — роботодавці та їхні вакансії",
   description:
     "Каталог роботодавців Сміли: магазини, виробництва, транспортні та будівельні компанії. Дізнайтесь про компанію та переглядайте її актуальні вакансії.",
+  alternates: { canonical: "/kompanii" },
 };
 
 export default function KompaniiPage() {

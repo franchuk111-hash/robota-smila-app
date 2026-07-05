@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 import { ARTICLES } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -17,7 +18,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const a = ARTICLES.find((x) => x.slug === slug);
   if (!a) return { title: "Статтю не знайдено" };
-  return { title: a.title, description: a.excerpt };
+  return {
+    title: a.title,
+    description: a.excerpt,
+    alternates: { canonical: `/blog/${a.slug}` },
+  };
 }
 
 export default async function ArticlePage({
@@ -46,6 +51,13 @@ export default async function ArticlePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+      />
+      <BreadcrumbLd
+        items={[
+          { name: "Головна", path: "/" },
+          { name: "Блог", path: "/blog" },
+          { name: a.title },
+        ]}
       />
       <div className="container">
         <nav className="crumbs">

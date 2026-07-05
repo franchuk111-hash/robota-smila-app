@@ -38,7 +38,7 @@ export default function Zarplatomir() {
             діапазон {f(stat.avgMin)} – {f(stat.avgMax)} ₴ · за {stat.count} вакансіями
           </div>
           <Link
-            href={`/vakansii?cat=${cat}`}
+            href={`/vakansii/${cat}`}
             className="btn"
             style={{ marginTop: 18 }}
           >

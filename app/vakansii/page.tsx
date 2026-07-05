@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Всі вакансії Сміли — знайти роботу онлайн",
   description:
     "Каталог вакансій Сміли: продавці, водії, робітники, охорона та інші. Фільтруйте за графіком і зарплатою. Відгукніться на роботу мрії вже сьогодні!",
+  alternates: { canonical: "/vakansii" },
 };
 
 export default async function VakansiiPage({

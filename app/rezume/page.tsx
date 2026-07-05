@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Приклад резюме 2026 — як скласти резюме (зразок + поради)",
   description:
     "Готовий приклад резюме з поясненнями, лайфхаки та фішки, як скласти резюме без досвіду. Зразок для роботи у Смілі — структура, помилки, поради.",
+  alternates: { canonical: "/rezume" },
 };
 
 export default function RezumePage() {

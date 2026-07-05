@@ -5,7 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import ApplyForm from "@/components/ApplyForm";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 import { VACANCIES, salaryFmt, dateFmt } from "@/lib/data";
+import { validThrough } from "@/lib/seo";
 
 export function generateStaticParams() {
   return VACANCIES.map((v) => ({ id: String(v.id) }));
@@ -22,6 +24,7 @@ export async function generateMetadata({
   return {
     title: `${v.title} — робота у Смілі, ${v.salary[0].toLocaleString("uk-UA")} ₴`,
     description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Відгукніться онлайн вже сьогодні!`,
+    alternates: { canonical: `/vakansiya/${v.id}` },
   };
 }
 
@@ -43,7 +46,9 @@ export default async function VacancyPage({
     description:
       `<p>${v.short}</p><ul>` + v.duties.map((d) => `<li>${d}</li>`).join("") + "</ul>",
     datePosted: v.date,
-    validThrough: "2026-09-01",
+    validThrough: validThrough(v.date),
+    directApply: true,
+    url: `https://robota-smila.com.ua/vakansiya/${v.id}`,
     employmentType: v.type === "SHIFT" ? "OTHER" : v.type,
     hiringOrganization: { "@type": "Organization", name: v.company },
     jobLocation: {
@@ -75,10 +80,18 @@ export default async function VacancyPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
       />
+      <BreadcrumbLd
+        items={[
+          { name: "Головна", path: "/" },
+          { name: "Вакансії", path: "/vakansii" },
+          { name: v.catName, path: `/vakansii/${v.cat}` },
+          { name: v.title },
+        ]}
+      />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › <Link href="/vakansii">Вакансії</Link> ›{" "}
-          <Link href={`/vakansii?cat=${v.cat}`}>{v.catName}</Link> › {v.title}
+          <Link href={`/vakansii/${v.cat}`}>{v.catName}</Link> › {v.title}
         </nav>
         <div className="detail-grid">
           <article className="detail">

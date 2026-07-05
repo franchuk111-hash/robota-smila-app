@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Блог про роботу у Смілі — поради та зарплати",
   description:
     "Корисні статті про пошук роботи у Смілі: середні зарплати, як скласти резюме, робота без досвіду та поради для шукачів роботи Черкаської області.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogPage() {

@@ -14,9 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/zarplatomir`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/kalendar`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/start-kariery`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/robota-bez-dosvidu`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/pidrobitok`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/robota-dlya-studentiv`, changeFrequency: "daily", priority: 0.8 },
   ];
   const cats = CATEGORIES.map((c) => ({
-    url: `${BASE}/vakansii?cat=${c.slug}`,
+    url: `${BASE}/vakansii/${c.slug}`,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));

@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: "Виробничий календар 2026 — робочі та святкові дні (Україна)",
   description:
     "Виробничий календар України на 2026 рік: робочі, вихідні та святкові дні, кількість робочих днів. Зручно для розрахунку відпусток і зарплат у Смілі.",
+  alternates: { canonical: "/kalendar" },
 };
 
 export default function CalendarPage() {

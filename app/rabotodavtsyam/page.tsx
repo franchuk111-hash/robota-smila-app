@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Розмістити вакансію у Смілі — пошук працівників",
   description:
     "Розмістіть вакансію у Смілі та знайдіть співробітників швидко. Ваше оголошення побачать сотні місцевих шукачів роботи. Просте розміщення за 5 хвилин!",
+  alternates: { canonical: "/rabotodavtsyam" },
 };
 
 export default function EmployerPage() {

@@ -31,6 +31,9 @@ export default function Footer() {
           <div>
             <h4>Шукачам</h4>
             <Link href="/vakansii">Всі вакансії</Link>
+            <Link href="/robota-bez-dosvidu">Робота без досвіду</Link>
+            <Link href="/pidrobitok">Підробіток у Смілі</Link>
+            <Link href="/robota-dlya-studentiv">Робота для студентів</Link>
             <Link href="/rezume">Приклад резюме</Link>
             <Link href="/zarplatomir">Зарплатомір</Link>
             <Link href="/kalendar">Виробничий календар</Link>

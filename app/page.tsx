@@ -1,10 +1,32 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import Hero from "@/components/Hero";
 import Reveal from "@/components/Reveal";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Робота Сміла",
+  alternateName: "robota-smila.com.ua",
+  url: "https://robota-smila.com.ua/",
+  inLanguage: "uk-UA",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: "https://robota-smila.com.ua/vakansii?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
 
 export default function Home() {
   const latest = [...VACANCIES]
@@ -14,6 +36,10 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
+      />
       <Header />
       <Hero />
 
@@ -48,7 +74,7 @@ export default function Home() {
               {CATEGORIES.map((c) => {
                 const n = VACANCIES.filter((v) => v.cat === c.slug).length;
                 return (
-                  <Link key={c.slug} className="cat" href={`/vakansii?cat=${c.slug}`}>
+                  <Link key={c.slug} className="cat" href={`/vakansii/${c.slug}`}>
                     <span className="ico">{c.ico}</span>
                     <span>
                       <span className="n">{c.name}</span>
