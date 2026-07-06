@@ -121,6 +121,10 @@ h2.center{text-align:center;font-size:42px;margin-bottom:40px}
 }
 @media(prefers-reduced-motion:reduce){.hot-badge,.hot-badge .flame{animation:none}}
 .vac .fav{position:absolute;top:20px;right:20px;font-size:20px;color:#c7d2e0;background:none;border:none;cursor:pointer}
+.vac .share-btn{position:absolute;top:20px;right:52px;font-size:16px;color:#c7d2e0;background:none;border:none;cursor:pointer;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.vac .share-btn:hover{color:var(--accent)}
+.share-btn.standalone{position:static;width:auto;height:auto;display:inline-flex;gap:6px;font-size:14px;font-weight:600;color:var(--muted);border:1px solid var(--border-strong);border-radius:20px;padding:8px 14px;background:#fff}
+.share-btn.standalone:hover{color:var(--accent);border-color:var(--accent)}
 .vac .fav:hover,.vac .fav.on{color:#ff6b8a}
 .vac h3{margin:0 44px 12px 0;font-size:19px;font-weight:700;line-height:1.25}
 .vac h3 a{color:var(--accent)}

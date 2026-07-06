@@ -3,6 +3,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
 import FavButton from "./FavButton";
+import ShareButton from "./ShareButton";
 import { SpringLink } from "./SpringButton";
 
 export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?: boolean }) {
@@ -21,6 +22,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       whileHover={{ y: -4 }}
     >
       <FavButton id={v.id} />
+      <ShareButton title={v.title} url={`/vakansiya/${v.id}`} />
       {v.hot && (
         <span className="hot-badge">
           <span className="flame">🔥</span> Гаряча

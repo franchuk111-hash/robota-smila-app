@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import ApplyForm from "@/components/ApplyForm";
+import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import { VACANCIES, salaryFmt, dateFmt } from "@/lib/data";
 import { validThrough } from "@/lib/seo";
@@ -100,6 +101,7 @@ export default async function VacancyPage({
               {v.company}
             </div>
             <div className="salary">{salaryFmt(v.salary)}</div>
+            <ShareButton standalone title={v.title} url={`/vakansiya/${v.id}`} />
             <div className="tags">
               <span className="tag">{v.typeName}</span>
               <span className="tag gray">{v.schedule}</span>

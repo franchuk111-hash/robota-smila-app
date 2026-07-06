@@ -17,6 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/robota-bez-dosvidu`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/pidrobitok`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/robota-dlya-studentiv`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/terminovi-vakansii`, changeFrequency: "hourly", priority: 0.8 },
+    { url: `${BASE}/robota-z-shchodennoyu-oplatoyu`, changeFrequency: "daily", priority: 0.8 },
   ];
   const cats = CATEGORIES.map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
