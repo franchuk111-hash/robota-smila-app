@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "motion/react";
-import Counter from "./Counter";
+import StatsMotion from "./StatsMotion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const item = {
@@ -70,20 +70,7 @@ export default function Hero() {
             Шукати
           </motion.button>
         </motion.form>
-        <motion.div className="stats" variants={item}>
-          <div className="s">
-            <b><Counter to={420} suffix="+" /></b>
-            <span>активних вакансій</span>
-          </div>
-          <div className="s">
-            <b><Counter to={85} /></b>
-            <span>компаній Сміли</span>
-          </div>
-          <div className="s">
-            <b><Counter to={17} /></b>
-            <span>нових сьогодні</span>
-          </div>
-        </motion.div>
+        <StatsMotion />
       </motion.div>
     </section>
   );
