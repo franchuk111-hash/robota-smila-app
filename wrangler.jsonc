@@ -24,5 +24,9 @@
 		// see https://opennext.js.org/cloudflare/howtos/image
 		"binding": "IMAGES"
 	},
-	"workers_dev": true
+	"workers_dev": true,
+	"routes": [
+		{ "pattern": "robota-smila.com.ua/*", "zone_name": "robota-smila.com.ua" },
+		{ "pattern": "www.robota-smila.com.ua/*", "zone_name": "robota-smila.com.ua" }
+	]
 }
