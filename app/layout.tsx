@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ServiceWorker from "@/components/ServiceWorker";
+
+const GA_ID = "G-TRNR43ZLM5";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://robota-smila.com.ua"),
@@ -40,6 +43,18 @@ export default function RootLayout({
       <body>
         <Providers>{children}</Providers>
         <ServiceWorker />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
       </body>
     </html>
   );
