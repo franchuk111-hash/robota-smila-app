@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ServiceWorker from "@/components/ServiceWorker";
+import SubscribeMechanics from "@/components/SubscribeMechanics";
 
 const GA_ID = "G-TRNR43ZLM5";
 
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="uk">
       <body>
         <Providers>{children}</Providers>
+        <SubscribeMechanics />
         <ServiceWorker />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}

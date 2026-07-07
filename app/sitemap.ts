@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/robota-dlya-studentiv`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/terminovi-vakansii`, changeFrequency: "hourly", priority: 0.8 },
     { url: `${BASE}/robota-z-shchodennoyu-oplatoyu`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE}/aktsiya`, changeFrequency: "weekly", priority: 0.7 },
   ];
   const cats = CATEGORIES.map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
