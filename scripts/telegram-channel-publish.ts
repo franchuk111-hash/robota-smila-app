@@ -2,7 +2,7 @@
 // Використання: npm run telegram-publish або як Cloudflare Worker cron trigger
 import fs from "fs";
 import path from "path";
-import { VACANCIES } from "../lib/data";
+import { VACANCIES, salaryFmt } from "../lib/data";
 import { generateVacancyCardSVG } from "../lib/vacancy-card";
 
 // Завантаж змінні з .dev.vars якщо вони не встановлені
@@ -46,7 +46,7 @@ function formatVacancy(v: (typeof VACANCIES)[0], index: number): string {
 
   return (
     `${badge}*${v.title}*\n` +
-    `💰 ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴\n` +
+    `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
     `${v.exp ? "💪 Досвід від 1 року" : "📚 Без досвіду"}\n` +
@@ -72,7 +72,7 @@ async function publishToTelegram() {
 
       return (
         `${badge} *${v.title}*\n` +
-        `💰 ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴\n` +
+        `💰 ${salaryFmt(v.salary)}\n` +
         `🏢 ${v.company}\n` +
         `📍 ${v.district} · ${v.schedule}\n` +
         `${exp} ${v.exp ? "Досвід від 1 року" : "Без досвіду"} · ${v.typeName}\n` +

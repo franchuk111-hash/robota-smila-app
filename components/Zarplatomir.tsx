@@ -9,8 +9,11 @@ export default function Zarplatomir() {
   const stat = useMemo(() => {
     const list = VACANCIES.filter((v) => v.cat === cat);
     if (!list.length) return null;
-    const avgMin = Math.round(list.reduce((s, v) => s + v.salary[0], 0) / list.length);
-    const avgMax = Math.round(list.reduce((s, v) => s + v.salary[1], 0) / list.length);
+    // Для середньої рахуємо лише вакансії з вказаною зарплатою (не «Договірна»)
+    const paid = list.filter((v) => !(v.salary[0] === 0 && v.salary[1] === 0));
+    if (!paid.length) return { count: list.length, avgMin: 0, avgMax: 0, mid: 0 };
+    const avgMin = Math.round(paid.reduce((s, v) => s + v.salary[0], 0) / paid.length);
+    const avgMax = Math.round(paid.reduce((s, v) => s + v.salary[1], 0) / paid.length);
     const mid = Math.round((avgMin + avgMax) / 2);
     return { count: list.length, avgMin, avgMax, mid };
   }, [cat]);

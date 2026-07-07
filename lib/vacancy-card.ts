@@ -72,7 +72,7 @@ export function generateVacancyCardSVG(v: Vacancy): string {
     <!-- Salary section -->
     <text x="${padding}" y="310" font-size="32" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">💰 Зарплата</text>
     <text x="${padding}" y="360" font-size="40" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">
-      ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴
+      ${v.salary[0] === 0 && v.salary[1] === 0 ? "Договірна" : `${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴`}
     </text>
 
     <!-- Details grid -->

@@ -1,7 +1,7 @@
 // Показує превью карточок вакансій в Telegram
 import fs from "fs";
 import path from "path";
-import { VACANCIES } from "../lib/data";
+import { VACANCIES, salaryFmt } from "../lib/data";
 import { generateVacancyCardSVG } from "../lib/vacancy-card";
 
 function getRecentVacancies(hours = 24) {
@@ -21,7 +21,7 @@ function formatVacancy(v: (typeof VACANCIES)[0]): string {
 
   return (
     `${badge}*${v.title}*\n` +
-    `💰 ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴\n` +
+    `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
     `${v.exp ? "💪 Досвід від 1 року" : "📚 Без досвіду"}\n` +
@@ -49,7 +49,7 @@ const cards = vacancies.map((v) => {
 
   return (
     `${badge} *${v.title}*\n` +
-    `💰 ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴\n` +
+    `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
     `${exp} ${v.exp ? "Досвід від 1 року" : "Без досвіду"} · ${v.typeName}\n` +

@@ -22,8 +22,12 @@ export async function generateMetadata({
   const { id } = await params;
   const v = VACANCIES.find((x) => x.id === Number(id));
   if (!v) return { title: "Вакансію не знайдено" };
+  const salaryTitle =
+    v.salary[0] === 0 && v.salary[1] === 0
+      ? "договірна оплата"
+      : `${v.salary[0].toLocaleString("uk-UA")} ₴`;
   return {
-    title: `${v.title} — робота у Смілі, ${v.salary[0].toLocaleString("uk-UA")} ₴`,
+    title: `${v.title} — робота у Смілі, ${salaryTitle}`,
     description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Відгукніться онлайн вже сьогодні!`,
     alternates: { canonical: `/vakansiya/${v.id}` },
   };
@@ -40,6 +44,7 @@ export default async function VacancyPage({
 
   const similar = VACANCIES.filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
 
+  const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const ld = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
@@ -62,16 +67,19 @@ export default async function VacancyPage({
         addressCountry: "UA",
       },
     },
-    baseSalary: {
-      "@type": "MonetaryAmount",
-      currency: "UAH",
-      value: {
-        "@type": "QuantitativeValue",
-        minValue: v.salary[0],
-        maxValue: v.salary[1],
-        unitText: "MONTH",
+    // baseSalary додаємо лише коли є конкретні цифри (для «Договірна» — пропускаємо)
+    ...(hasSalary && {
+      baseSalary: {
+        "@type": "MonetaryAmount",
+        currency: "UAH",
+        value: {
+          "@type": "QuantitativeValue",
+          minValue: v.salary[0],
+          maxValue: v.salary[1],
+          unitText: "MONTH",
+        },
       },
-    },
+    }),
   };
 
   return (
