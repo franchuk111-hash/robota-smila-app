@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
+import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 import FavButton from "./FavButton";
 import ShareButton from "./ShareButton";
 import { SpringLink } from "./SpringButton";
@@ -15,6 +16,15 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         viewport: { once: true, margin: "-40px" },
         transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
       };
+
+  const handleApply = () => {
+    trackEvent(GA4_EVENTS.APPLY_VACANCY, {
+      vacancy_id: v.id,
+      vacancy_title: v.title,
+      category: v.cat,
+    });
+  };
+
   return (
     <motion.article
       className={"vac" + (v.hot ? " hot" : "")}
@@ -50,7 +60,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       <div className="apply">
         <span className="date">{dateFmt(v.date)}</span>
-        <SpringLink className="btn" href={`/vakansiya/${v.id}`}>
+        <SpringLink className="btn" href={`/vakansiya/${v.id}`} onClick={handleApply}>
           Відгукнутися
         </SpringLink>
       </div>

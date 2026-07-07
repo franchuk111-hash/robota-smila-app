@@ -12,11 +12,13 @@ export function SpringLink({
   className,
   children,
   style,
+  onClick,
 }: {
   href: string;
   className?: string;
   children: ReactNode;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }) {
   return (
     <motion.span
@@ -24,6 +26,7 @@ export function SpringLink({
       whileHover={{ scale: 1.045 }}
       whileTap={{ scale: 0.94 }}
       transition={spring}
+      onClick={onClick}
     >
       <Link href={href} className={className}>
         {children}

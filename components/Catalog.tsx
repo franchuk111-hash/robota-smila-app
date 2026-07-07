@@ -4,6 +4,22 @@ import { motion, AnimatePresence } from "motion/react";
 import VacCard from "./VacCard";
 import { Vacancy, Category } from "@/lib/data";
 
+const filterGroupVariants = {
+  hidden: { opacity: 0, y: 12 },
+  show: (i: number) => ({
+    opacity: 1, y: 0,
+    transition: { delay: i * 0.08, duration: 0.3, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
+const labelVariants = {
+  hidden: { opacity: 0, x: -8 },
+  show: (i: number) => ({
+    opacity: 1, x: 0,
+    transition: { delay: i * 0.04, duration: 0.25, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
 export default function Catalog({
   vacancies,
   categories,
@@ -57,48 +73,85 @@ export default function Catalog({
 
       <div className="layout">
         <aside className="filters">
-          <h3>Фільтри</h3>
-          <div className="fgroup">
+          <motion.h3 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+            Фільтри
+          </motion.h3>
+          <motion.div
+            className="fgroup"
+            custom={0}
+            initial="hidden"
+            animate="show"
+            variants={filterGroupVariants}
+          >
             <div className="lbl">Категорія</div>
-            {categories.map((c) => (
-              <label key={c.slug}>
+            {categories.map((c, i) => (
+              <motion.label
+                key={c.slug}
+                custom={i}
+                initial="hidden"
+                animate="show"
+                variants={labelVariants}
+              >
                 <input
                   type="checkbox"
                   checked={cats.has(c.slug)}
                   onChange={() => toggle(cats, c.slug, setCats)}
                 />
                 {c.name}
-              </label>
+              </motion.label>
             ))}
-          </div>
-          <div className="fgroup">
+          </motion.div>
+          <motion.div
+            className="fgroup"
+            custom={1}
+            initial="hidden"
+            animate="show"
+            variants={filterGroupVariants}
+          >
             <div className="lbl">Зайнятість</div>
             {[
               ["FULL_TIME", "Повна"],
               ["PART_TIME", "Часткова"],
               ["SHIFT", "Змінна"],
-            ].map(([val, label]) => (
-              <label key={val}>
+            ].map(([val, label], i) => (
+              <motion.label
+                key={val}
+                custom={i}
+                initial="hidden"
+                animate="show"
+                variants={labelVariants}
+              >
                 <input
                   type="checkbox"
                   checked={types.has(val)}
                   onChange={() => toggle(types, val, setTypes)}
                 />
                 {label}
-              </label>
+              </motion.label>
             ))}
-          </div>
-          <div className="fgroup">
+          </motion.div>
+          <motion.div
+            className="fgroup"
+            custom={2}
+            initial="hidden"
+            animate="show"
+            variants={filterGroupVariants}
+          >
             <div className="lbl">Умови</div>
-            <label>
+            <motion.label
+              custom={0}
+              initial="hidden"
+              animate="show"
+              variants={labelVariants}
+            >
               <input
                 type="checkbox"
                 checked={exp}
                 onChange={(e) => setExp(e.target.checked)}
               />
               Без досвіду
-            </label>
-          </div>
+            </motion.label>
+          </motion.div>
         </aside>
 
         <main>

@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import Emblem from "./Emblem";
 import { IconTikTok, IconYouTube, IconTelegram } from "./SocialIcons";
+import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 
 export default function Footer() {
   return (
@@ -24,7 +26,14 @@ export default function Footer() {
               <a className="soc" href="https://www.youtube.com/@Robota-smila" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
                 <IconYouTube size={32} />
               </a>
-              <a className="soc" href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+              <a
+                className="soc"
+                href="https://t.me/Smila_admin"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+                onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
+              >
                 <IconTelegram size={32} />
               </a>
             </div>
@@ -50,7 +59,12 @@ export default function Footer() {
           <div>
             <h4>Інформація</h4>
             <Link href="/blog">Блог</Link>
-            <a href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://t.me/Smila_admin"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
+            >
               Зв&apos;язок: @Smila_admin
             </a>
           </div>

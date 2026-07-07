@@ -11,7 +11,9 @@
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "telegram-post": "tsx scripts/telegram-post.ts",
-    "add-vacancy": "tsx scripts/add-vacancy.ts"
+    "telegram-publish": "tsx scripts/telegram-channel-publish.ts",
+    "add-vacancy": "tsx scripts/add-vacancy.ts",
+    "add-vacancies-batch": "tsx scripts/add-vacancies-batch.ts"
   },
   "dependencies": {
     "motion": "^12.42.2",

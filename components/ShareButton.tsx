@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "motion/react";
+import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 
 export default function ShareButton({
   title,
@@ -15,6 +16,7 @@ export default function ShareButton({
 
   const share = async (e: React.MouseEvent) => {
     e.preventDefault();
+    trackEvent(GA4_EVENTS.SHARE_VACANCY);
     const fullUrl = typeof window !== "undefined" ? window.location.origin + url : url;
     if (navigator.share) {
       try {
