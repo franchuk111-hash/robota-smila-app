@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Vacancy, salaryFmt, dateFmt } from "@/lib/data";
+import { Vacancy, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 import FavButton from "./FavButton";
 import ShareButton from "./ShareButton";
@@ -22,6 +22,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       vacancy_id: v.id,
       vacancy_title: v.title,
       category: v.cat,
+      channel: "telegram",
     });
   };
 
@@ -60,7 +61,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       <div className="apply">
         <span className="date">{dateFmt(v.date)}</span>
-        <SpringLink className="btn" href={`/vakansiya/${v.id}`} onClick={handleApply}>
+        <SpringLink className="btn" href={vacancyTgLink(v)} onClick={handleApply} external>
           Відгукнутися
         </SpringLink>
       </div>

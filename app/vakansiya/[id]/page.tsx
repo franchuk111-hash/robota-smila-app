@@ -4,10 +4,10 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
-import ApplyForm from "@/components/ApplyForm";
+import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
-import { VACANCIES, salaryFmt, dateFmt } from "@/lib/data";
+import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
 import { validThrough } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -48,7 +48,7 @@ export default async function VacancyPage({
       `<p>${v.short}</p><ul>` + v.duties.map((d) => `<li>${d}</li>`).join("") + "</ul>",
     datePosted: v.date,
     validThrough: validThrough(v.date),
-    directApply: true,
+    directApply: false,
     url: `https://robota-smila.com.ua/vakansiya/${v.id}`,
     employmentType: v.type === "SHIFT" ? "OTHER" : v.type,
     hiringOrganization: { "@type": "Organization", name: v.company },
@@ -117,7 +117,12 @@ export default async function VacancyPage({
             <h3>Ми пропонуємо</h3>
             <ul>{v.offer.map((d) => <li key={d}>{d}</li>)}</ul>
           </article>
-          <ApplyForm vacancy={v.title} company={v.company} />
+          <ApplyTelegram
+            href={vacancyTgLink(v)}
+            vacancyId={v.id}
+            vacancyTitle={v.title}
+            category={v.cat}
+          />
         </div>
 
         <div style={{ margin: "30px 0" }}>

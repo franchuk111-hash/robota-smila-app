@@ -7,6 +7,7 @@ export type Vacancy = {
   short: string; duties: string[]; req: string[]; offer: string[];
   hot?: boolean;
   paymentFrequency?: "daily" | "weekly" | "monthly";
+  tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
 };
 
 export type Category = { slug: string; name: string; ico: string };
@@ -100,6 +101,14 @@ export const ARTICLES: Article[] = [
       "<b>Порада.</b> Щоденна оплата — гарний тимчасовий варіант, але стабільна робота з офіційним оформленням дає лікарняні, відпустку та стаж. Використовуйте підробіток як місток, а не як постійну модель.",
     ] },
 ];
+
+// Telegram-канал — сюди веде кнопка «Відгукнутися». Уся деталізація й контакт у ТГ.
+export const TELEGRAM_CHANNEL_URL = "https://t.me/robota_smila_ua";
+
+// Посилання на вакансію в каналі: якщо є tgMsgId — ведемо на конкретний пост,
+// інакше — на головну сторінку каналу.
+export const vacancyTgLink = (v: Vacancy) =>
+  v.tgMsgId ? `${TELEGRAM_CHANNEL_URL}/${v.tgMsgId}` : TELEGRAM_CHANNEL_URL;
 
 export const salaryFmt = (s: [number, number]) =>
   `${s[0].toLocaleString("uk-UA")} – ${s[1].toLocaleString("uk-UA")} ₴`;

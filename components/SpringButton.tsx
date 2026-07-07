@@ -13,12 +13,14 @@ export function SpringLink({
   children,
   style,
   onClick,
+  external = false,
 }: {
   href: string;
   className?: string;
   children: ReactNode;
   style?: React.CSSProperties;
   onClick?: () => void;
+  external?: boolean;
 }) {
   return (
     <motion.span
@@ -28,9 +30,15 @@ export function SpringLink({
       transition={spring}
       onClick={onClick}
     >
-      <Link href={href} className={className}>
-        {children}
-      </Link>
+      {external ? (
+        <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+          {children}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {children}
+        </Link>
+      )}
     </motion.span>
   );
 }
