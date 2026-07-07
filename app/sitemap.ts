@@ -20,6 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/terminovi-vakansii`, changeFrequency: "hourly", priority: 0.8 },
     { url: `${BASE}/robota-z-shchodennoyu-oplatoyu`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/aktsiya`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE}/polityka-konfidentsiynosti`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE}/umovy-korystuvannya`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE}/polityka-cookie`, changeFrequency: "yearly", priority: 0.3 },
   ];
   const cats = CATEGORIES.map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,

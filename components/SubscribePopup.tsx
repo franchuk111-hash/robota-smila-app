@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
+import { consentDecided } from "@/lib/consent";
 import SubscriberCount from "./SubscriberCount";
 
 const KEY = "rs_subpopup_seen";
@@ -17,6 +18,8 @@ export default function SubscribePopup() {
     let fired = false;
     const open = () => {
       if (fired) return;
+      // Поки не вирішено щодо cookie — не показуємо (щоб не перекривати банер).
+      if (!consentDecided()) return;
       fired = true;
       setShow(true);
       try {

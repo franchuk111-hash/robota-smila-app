@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
+import { consentDecided, CONSENT_EVENT } from "@/lib/consent";
 import SubscriberCount from "./SubscriberCount";
 
 const KEY = "rs_subbar_closed";
@@ -13,8 +14,20 @@ export default function SubscribeBar() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (localStorage.getItem(KEY)) return;
-    const t = setTimeout(() => setShow(true), 1200);
-    return () => clearTimeout(t);
+
+    let timer: ReturnType<typeof setTimeout>;
+    // Не перекриваємо cookie-банер: показуємо лише після вибору щодо cookie.
+    const start = () => {
+      if (!consentDecided()) return;
+      timer = setTimeout(() => setShow(true), 1200);
+      window.removeEventListener(CONSENT_EVENT, start);
+    };
+    start();
+    window.addEventListener(CONSENT_EVENT, start);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener(CONSENT_EVENT, start);
+    };
   }, []);
 
   const close = () => {

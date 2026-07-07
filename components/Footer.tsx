@@ -69,9 +69,17 @@ export default function Footer() {
               Зв&apos;язок: @Smila_admin
             </a>
           </div>
+          <div>
+            <h4>Правова інформація</h4>
+            <Link href="/polityka-konfidentsiynosti">Політика конфіденційності</Link>
+            <Link href="/umovy-korystuvannya">Умови користування</Link>
+            <Link href="/polityka-cookie">Політика cookie</Link>
+          </div>
         </div>
         <div className="fbottom">
           © 2026 robota-smila.com.ua — Робота у Смілі. Всі права захищені.
+          <br />
+          Сайт є інформаційним посередником і не є стороною трудових відносин.
         </div>
       </div>
     </footer>
