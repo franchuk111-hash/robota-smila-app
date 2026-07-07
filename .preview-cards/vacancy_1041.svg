@@ -1,0 +1,67 @@
+<svg width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background with gradient -->
+    <defs>
+      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#c26b00;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="topGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
+        <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
+      </linearGradient>
+    </defs>
+
+    <!-- Main background -->
+    <rect width="1080" height="1080" fill="url(#grad)"/>
+    <rect width="1080" height="1080" fill="url(#topGrad)"/>
+
+    <!-- Hot badge -->
+    
+      <circle cx="1000" cy="80" r="50" fill="#FF4444" opacity="0.9"/>
+      <text x="1000" y="95" font-size="48" font-weight="bold" fill="#FFF" text-anchor="middle">🔥</text>
+    
+
+    <!-- Company logo circle -->
+    <circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.2)"/>
+    <text x="100" y="120" font-size="60" text-anchor="middle">🚚</text>
+
+    <!-- Title -->
+    <text x="190" y="90" font-size="42" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">
+      Водій на доставку
+    </text>
+
+    <!-- Company name -->
+    <text x="190" y="135" font-size="26" fill="rgba(255,255,255,0.85)" font-family="Arial, sans-serif">
+      Служба доставки «ДеліЦС»
+    </text>
+
+    <!-- Divider line -->
+    <line x1="40" y1="220" x2="1040" y2="220" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+    <!-- Salary section -->
+    <text x="40" y="310" font-size="32" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">💰 Зарплата</text>
+    <text x="40" y="360" font-size="40" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">
+      22 000 – 28 000 ₴
+    </text>
+
+    <!-- Details grid -->
+    <text x="40" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">📍 центр</text>
+    <text x="540" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">🕐 5/2</text>
+
+    <text x="40" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">💪 Досвід від 1 року</text>
+    <text x="540" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">Повна зайнятість</text>
+
+    <!-- Divider line 2 -->
+    <line x1="40" y1="620" x2="1040" y2="620" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+
+    <!-- CTA Button -->
+    <rect x="40" y="680" width="1000" height="100" rx="20" fill="#FFF" opacity="0.95"/>
+    <text x="540" y="750" font-size="40" font-weight="bold" fill="#F59E0B" text-anchor="middle" font-family="Arial, sans-serif">
+      Відгукнутися на вакансію
+    </text>
+
+    <!-- Footer -->
+    <text x="540" y="1040" font-size="24" fill="rgba(255,255,255,0.6)" text-anchor="middle" font-family="Arial, sans-serif">
+      robota-smila.com.ua · Вакансія 1041
+    </text>
+  </svg>

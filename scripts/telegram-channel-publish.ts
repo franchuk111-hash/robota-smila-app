@@ -1,8 +1,9 @@
-// Публіковує нові вакансії у Telegram канал
+// Публіковує нові вакансії у Telegram канал з карточками
 // Використання: npm run telegram-publish або як Cloudflare Worker cron trigger
 import fs from "fs";
 import path from "path";
 import { VACANCIES } from "../lib/data";
+import { generateVacancyCardSVG } from "../lib/vacancy-card";
 
 // Завантаж змінні з .dev.vars якщо вони не встановлені
 let TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -54,7 +55,7 @@ function formatVacancy(v: (typeof VACANCIES)[0], index: number): string {
   );
 }
 
-// Відправ повідомлення в Telegram
+// Відправ красиво отформатована повідомлення в Telegram (текстові карточки)
 async function publishToTelegram() {
   const vacancies = getPublishVacancies(24);
 
@@ -63,19 +64,33 @@ async function publishToTelegram() {
     return;
   }
 
-  const header = `🔔 *Нові вакансії у Смілі* (${vacancies.length})\n\n`;
-  const body = vacancies.map((v, i) => formatVacancy(v, i)).join("\n\n");
-  const footer = `\n\n👉 [Всі вакансії](https://robota-smila.com.ua/vakansii)`;
-
-  const text = header + body + footer;
-
   try {
+    // Формуємо текстові карточки для кожної вакансії
+    const cards = vacancies.map((v) => {
+      const badge = v.hot ? "🔥" : "💼";
+      const exp = v.exp ? "💪" : "📚";
+
+      return (
+        `${badge} *${v.title}*\n` +
+        `💰 ${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴\n` +
+        `🏢 ${v.company}\n` +
+        `📍 ${v.district} · ${v.schedule}\n` +
+        `${exp} ${v.exp ? "Досвід від 1 року" : "Без досвіду"} · ${v.typeName}\n` +
+        `🔗 robota-smila.com.ua/vakansiya/${v.id}`
+      );
+    });
+
+    const header = `🔔 *Нові вакансії у Смілі* (${vacancies.length})\n\n`;
+    const divider = "\n━━━━━━━━━━━━━━━━━━━━━━━\n";
+    const fullText = header + cards.join(divider) + divider + `👉 [Всі вакансії](https://robota-smila.com.ua/vakansii)`;
+
+    // Відправ текстове повідомлення
     const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         chat_id: TELEGRAM_CHANNEL_ID,
-        text,
+        text: fullText,
         parse_mode: "Markdown",
         disable_web_page_preview: false,
       }),

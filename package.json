@@ -12,6 +12,7 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "telegram-post": "tsx scripts/telegram-post.ts",
     "telegram-publish": "tsx scripts/telegram-channel-publish.ts",
+    "telegram-preview": "tsx scripts/preview-telegram.ts",
     "add-vacancy": "tsx scripts/add-vacancy.ts",
     "add-vacancies-batch": "tsx scripts/add-vacancies-batch.ts"
   },
