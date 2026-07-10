@@ -1,0 +1,38 @@
+name: Daily Telegram Publish
+
+on:
+  schedule:
+    # Запускається кожного дня о 8:00 UTC (10:00 за Київським часом)
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Дозволяє ручне запускання
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish vacancies to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        run: npm run telegram-publish
+
+      - name: Log success
+        if: success()
+        run: echo "✅ Telegram publish completed successfully"
+
+      - name: Log failure
+        if: failure()
+        run: echo "❌ Telegram publish failed"
