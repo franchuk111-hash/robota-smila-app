@@ -1,7 +1,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Catalog from "@/components/Catalog";
+import JsonLd from "@/components/JsonLd";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { itemListLd } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,9 +19,13 @@ export default async function VakansiiPage({
   searchParams: Promise<{ q?: string; cat?: string; exp?: string }>;
 }) {
   const sp = await searchParams;
+  const recent = [...VACANCIES]
+    .sort((a, b) => +new Date(b.date) - +new Date(a.date))
+    .slice(0, 25);
   return (
     <>
       <Header />
+      <JsonLd data={itemListLd(recent)} />
       <Catalog
         vacancies={VACANCIES}
         categories={CATEGORIES}

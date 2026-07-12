@@ -338,3 +338,15 @@ footer.site a:hover{color:#fff;opacity:1}
 .legal table{width:100%;border-collapse:collapse;margin:6px 0 18px;font-size:14px}
 .legal th,.legal td{border:1px solid var(--border);padding:10px 12px;text-align:left;vertical-align:top}
 .legal th{background:var(--soft);color:var(--ink);font-weight:700}
+
+/* ===== FAQ + SEO-перелінковка на категоріях ===== */
+.faq-block{margin:34px 0}
+.faq-item{border:1px solid var(--border);border-radius:12px;padding:0;margin:0 0 10px;background:var(--card);overflow:hidden}
+.faq-item summary{cursor:pointer;padding:16px 18px;font-weight:700;color:var(--ink);list-style:none;position:relative}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";position:absolute;right:18px;top:14px;font-size:22px;color:var(--accent);font-weight:700}
+.faq-item[open] summary::after{content:"–"}
+.faq-item p{margin:0;padding:0 18px 16px;color:var(--muted);line-height:1.6}
+.seo-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.seo-links a{display:inline-block;padding:9px 16px;background:var(--soft);border:1px solid var(--border);border-radius:999px;color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
+.seo-links a:hover{background:var(--soft2)}

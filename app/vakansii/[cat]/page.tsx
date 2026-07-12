@@ -5,8 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
+import JsonLd from "@/components/JsonLd";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
-import { CATEGORY_SEO } from "@/lib/seo";
+import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq } from "@/lib/seo";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ cat: c.slug }));
@@ -41,6 +42,7 @@ export default async function CategoryPage({
     (a, b) => +new Date(b.date) - +new Date(a.date)
   );
   const others = CATEGORIES.filter((c) => c.slug !== cat);
+  const faqs = categoryFaq(category.name, list);
 
   return (
     <>
@@ -52,6 +54,8 @@ export default async function CategoryPage({
           { name: category.name, path: `/vakansii/${cat}` },
         ]}
       />
+      {list.length > 0 && <JsonLd data={itemListLd(list)} />}
+      <JsonLd data={faqLd(faqs)} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › <Link href="/vakansii">Вакансії</Link> ›{" "}
@@ -85,6 +89,32 @@ export default async function CategoryPage({
             <p key={i}>{p}</p>
           ))}
         </div>
+
+        <section className="faq-block">
+          <h2 className="title" style={{ fontSize: 24 }}>
+            Часті запитання
+          </h2>
+          {faqs.map((f, i) => (
+            <details key={i} className="faq-item">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </section>
+
+        <section className="block" style={{ paddingBottom: 0 }}>
+          <h2 className="title" style={{ fontSize: 24 }}>
+            Корисне для пошуку роботи у Смілі
+          </h2>
+          <div className="seo-links">
+            <Link href="/robota-bez-dosvidu">Робота без досвіду у Смілі</Link>
+            <Link href="/pidrobitok">Підробіток у Смілі</Link>
+            <Link href="/terminovi-vakansii">Термінові вакансії Сміли</Link>
+            <Link href="/robota-z-shchodennoyu-oplatoyu">Робота з щоденною оплатою</Link>
+            <Link href="/rezume">Приклад резюме</Link>
+            <Link href="/zarplatomir">Зарплати у Смілі</Link>
+          </div>
+        </section>
 
         <section className="block" style={{ paddingBottom: 0 }}>
           <h2 className="title" style={{ fontSize: 24 }}>

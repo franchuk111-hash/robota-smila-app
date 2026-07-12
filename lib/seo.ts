@@ -188,3 +188,78 @@ export function validThrough(datePosted: string): string {
   d.setDate(d.getDate() + 30);
   return d.toISOString().slice(0, 10);
 }
+
+const SITE = "https://robota-smila.com.ua";
+
+// Відомі сайти роботодавців (для hiringOrganization.url / sameAs у JobPosting).
+export const KNOWN_COMPANY_URLS: Record<string, string> = {
+  "V.G.BuildingTeam": "https://vgb.team",
+};
+
+// ItemList зі списку вакансій — сигнал Google, що сторінка є переліком вакансій.
+export function itemListLd(list: Vacancy[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: list.map((v, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${SITE}/vakansiya/${v.id}`,
+      name: `${v.title} — ${v.company}`,
+    })),
+  };
+}
+
+// FAQPage зі списку питань.
+export function faqLd(faqs: { q: string; a: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
+
+// Дата-орієнтований FAQ під категорію: формується з реальних вакансій категорії.
+export function categoryFaq(catName: string, list: Vacancy[]): { q: string; a: string }[] {
+  const paid = list.filter((v) => !(v.salary[0] === 0 && v.salary[1] === 0));
+  const min = paid.length ? Math.min(...paid.map((v) => v.salary[0])) : 0;
+  const max = paid.length ? Math.max(...paid.map((v) => v.salary[1])) : 0;
+  const noExp = list.some((v) => !v.exp);
+  const schedules = [...new Set(list.map((v) => v.schedule))].slice(0, 3).join(", ");
+  const fmt = (n: number) => n.toLocaleString("uk-UA");
+
+  const faqs: { q: string; a: string }[] = [];
+
+  faqs.push({
+    q: `Скільки платять за роботу в категорії «${catName}» у Смілі?`,
+    a:
+      min && max
+        ? `Актуальні вакансії «${catName}» у Смілі пропонують оплату приблизно ${fmt(min)}–${fmt(max)} грн на місяць. Точна сума залежить від досвіду, графіка та конкретного роботодавця.`
+        : `Оплата за напрямом «${catName}» у Смілі здебільшого договірна й залежить від досвіду та обсягу роботи. Дивіться умови в кожній вакансії.`,
+  });
+
+  faqs.push({
+    q: `Чи є вакансії «${catName}» без досвіду у Смілі?`,
+    a: noExp
+      ? `Так, серед вакансій «${catName}» у Смілі є позиції без досвіду — роботодавці навчають на місці. Використайте фільтр «Без досвіду» у каталозі.`
+      : `Наразі більшість вакансій «${catName}» у Смілі потребують досвіду, але добірка оновлюється щодня — заходьте перевіряти нові пропозиції.`,
+  });
+
+  faqs.push({
+    q: `Який графік роботи пропонують у категорії «${catName}»?`,
+    a: schedules
+      ? `Найчастіше зустрічаються графіки: ${schedules}. Конкретний графік вказано в описі кожної вакансії.`
+      : `Графік залежить від роботодавця й вказаний у кожній вакансії окремо.`,
+  });
+
+  faqs.push({
+    q: `Як відгукнутися на вакансію у Смілі?`,
+    a: `Відкрийте потрібну вакансію та натисніть «Відгукнутися» — ви перейдете в наш Telegram-канал «Робота Сміла», де всі деталі й прямий зв'язок із роботодавцем.`,
+  });
+
+  return faqs;
+}

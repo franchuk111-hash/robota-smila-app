@@ -8,7 +8,7 @@ import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
-import { validThrough } from "@/lib/seo";
+import { validThrough, KNOWN_COMPANY_URLS } from "@/lib/seo";
 
 export function generateStaticParams() {
   return VACANCIES.map((v) => ({ id: String(v.id) }));
@@ -45,18 +45,29 @@ export default async function VacancyPage({
   const similar = VACANCIES.filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
 
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
+  const companyUrl = KNOWN_COMPANY_URLS[v.company];
   const ld = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
     title: v.title,
     description:
       `<p>${v.short}</p><ul>` + v.duties.map((d) => `<li>${d}</li>`).join("") + "</ul>",
+    identifier: {
+      "@type": "PropertyValue",
+      name: v.company,
+      value: String(v.id),
+    },
     datePosted: v.date,
     validThrough: validThrough(v.date),
     directApply: false,
+    industry: v.catName,
     url: `https://robota-smila.com.ua/vakansiya/${v.id}`,
     employmentType: v.type === "SHIFT" ? "OTHER" : v.type,
-    hiringOrganization: { "@type": "Organization", name: v.company },
+    hiringOrganization: {
+      "@type": "Organization",
+      name: v.company,
+      ...(companyUrl && { url: companyUrl, sameAs: companyUrl }),
+    },
     jobLocation: {
       "@type": "Place",
       address: {
