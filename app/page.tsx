@@ -32,16 +32,14 @@ export default function Home() {
   const latest = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 6);
-  // Пріоритет у «Гарячих»: спершу вакансії VGB, далі решта гарячих за свіжістю
+  // «Гарячі» на головній: 3 вакансії VGB (пріоритет) + 3 інші гарячі, за свіжістю
   const PRIORITY_COMPANY = "V.G.BuildingTeam";
-  const hot = VACANCIES.filter((v) => v.hot)
-    .sort((a, b) => {
-      const pa = a.company === PRIORITY_COMPANY ? 0 : 1;
-      const pb = b.company === PRIORITY_COMPANY ? 0 : 1;
-      if (pa !== pb) return pa - pb;
-      return +new Date(b.date) - +new Date(a.date);
-    })
-    .slice(0, 6);
+  const byDate = (a: (typeof VACANCIES)[number], b: (typeof VACANCIES)[number]) =>
+    +new Date(b.date) - +new Date(a.date);
+  const hotAll = VACANCIES.filter((v) => v.hot);
+  const hotVgb = hotAll.filter((v) => v.company === PRIORITY_COMPANY).sort(byDate).slice(0, 3);
+  const hotRest = hotAll.filter((v) => v.company !== PRIORITY_COMPANY).sort(byDate).slice(0, 3);
+  const hot = [...hotVgb, ...hotRest];
 
   return (
     <>
