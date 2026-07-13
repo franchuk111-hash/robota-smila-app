@@ -7,8 +7,9 @@ import VacCard from "@/components/VacCard";
 import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
+import JsonLd from "@/components/JsonLd";
 import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
-import { validThrough, KNOWN_COMPANY_URLS } from "@/lib/seo";
+import { validThrough, KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return VACANCIES.map((v) => ({ id: String(v.id) }));
@@ -43,6 +44,7 @@ export default async function VacancyPage({
   if (!v) notFound();
 
   const similar = VACANCIES.filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
+  const faqs = vacancyFaq(v);
 
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
@@ -143,6 +145,19 @@ export default async function VacancyPage({
             category={v.cat}
           />
         </div>
+
+        <JsonLd data={faqLd(faqs)} />
+        <section className="faq-block">
+          <h2 className="title" style={{ fontSize: 24 }}>
+            Часті запитання про вакансію
+          </h2>
+          {faqs.map((f, i) => (
+            <details key={i} className="faq-item">
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </section>
 
         <div style={{ margin: "30px 0" }}>
           <h2 className="title">Схожі вакансії у Смілі</h2>
