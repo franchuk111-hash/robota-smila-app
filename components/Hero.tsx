@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import StatsMotion from "./StatsMotion";
+import DisplayCards from "./DisplayCards";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const item = {
@@ -11,36 +12,7 @@ const item = {
 export default function Hero() {
   return (
     <section className="hero">
-      <motion.span
-        className="illus i1"
-        data-parallax="0.18"
-        data-rot="-8"
-        initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
-        animate={{ opacity: 1, scale: 1, rotate: -8 }}
-        transition={{ delay: 0.5, duration: 0.6, ease }}
-      >
-        👩‍🍳
-      </motion.span>
-      <motion.span
-        className="illus i2"
-        data-parallax="-0.12"
-        data-rot="7"
-        initial={{ opacity: 0, scale: 0.6, rotate: 7 }}
-        animate={{ opacity: 1, scale: 1, rotate: 7 }}
-        transition={{ delay: 0.65, duration: 0.6, ease }}
-      >
-        🚚
-      </motion.span>
-      <motion.span
-        className="illus i3"
-        data-parallax="0.24"
-        data-rot="-5"
-        initial={{ opacity: 0, scale: 0.6, rotate: -5 }}
-        animate={{ opacity: 1, scale: 1, rotate: -5 }}
-        transition={{ delay: 0.8, duration: 0.6, ease }}
-      >
-        🧑‍💼
-      </motion.span>
+      <DisplayCards />
 
       <motion.div
         className="container"

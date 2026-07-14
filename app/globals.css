@@ -350,3 +350,34 @@ footer.site a:hover{color:#fff;opacity:1}
 .seo-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .seo-links a{display:inline-block;padding:9px 16px;background:var(--soft);border:1px solid var(--border);border-radius:999px;color:var(--accent);font-size:14px;font-weight:600;text-decoration:none}
 .seo-links a:hover{background:var(--soft2)}
+
+/* ===== Display Cards — колода гарячих вакансій у hero ===== */
+.hero-deck{position:absolute;top:44%;right:5%;transform:translateY(-50%) translateX(-70px);z-index:2;pointer-events:none}
+/* на десктопі звужуємо пошук, щоб не перекривався колодою */
+@media(min-width:1181px){.hero .searchbar{max-width:620px}}
+.hero-deck .deck{display:grid;grid-template-areas:"stack";place-items:center}
+.deck-card{grid-area:stack;pointer-events:auto;width:290px;height:132px;border-radius:16px;border:2px solid var(--border);background:var(--card);box-shadow:0 10px 30px rgba(30,55,110,.10);padding:15px 18px;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;
+  transition:transform .6s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,filter .5s ease,border-color .3s ease;will-change:transform}
+.deck-card::after{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;background:linear-gradient(to left,var(--bg) 6%,transparent 55%);transition:opacity .5s ease}
+.deck-card .dc-head{display:flex;align-items:center;gap:10px}
+.deck-card .dc-ico{width:34px;height:34px;border-radius:50%;background:var(--soft2);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+.deck-card .dc-title{font-weight:800;color:var(--ink);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.deck-card .dc-sal{font-weight:800;color:var(--accent);font-size:18px}
+.deck-card .dc-meta{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* три позиції колоди (скіс + зсув вниз-вправо) */
+.deck-card.c1{transform:skewY(-7deg) translate(0,0);filter:grayscale(65%);z-index:1}
+.deck-card.c2{transform:skewY(-7deg) translate(36px,30px);filter:grayscale(35%);z-index:2}
+.deck-card.c3{transform:skewY(-7deg) translate(72px,60px);z-index:3}
+
+/* ховер колоди — розсуваємо, підсвічуємо, прибираємо grayscale і градієнт */
+.deck:hover .deck-card{filter:grayscale(0)}
+.deck:hover .deck-card::after{opacity:0}
+.deck:hover .deck-card.c1{transform:skewY(-7deg) translate(0,-24px)}
+.deck:hover .deck-card.c2{transform:skewY(-7deg) translate(36px,16px)}
+.deck:hover .deck-card.c3{transform:skewY(-7deg) translate(72px,58px)}
+/* окрема картка під курсором — трохи вперед */
+.deck-card:hover{border-color:var(--accent);box-shadow:0 16px 40px rgba(45,90,200,.20)}
+
+@media(max-width:1180px){.hero-deck{display:none}}
+@media(prefers-reduced-motion:reduce){.deck-card{transition:none}}
