@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "motion/react";
 import StatsMotion from "./StatsMotion";
-import DisplayCards from "./DisplayCards";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const item = {
@@ -9,10 +8,32 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 };
 
+// Плаваюча анімація для емодзі: поява + безкінечний bob і легке похитування.
+function floatAnim(delay: number, rot: [number, number, number]) {
+  return {
+    initial: { opacity: 0, scale: 0.6, rotate: rot[0] },
+    animate: { opacity: 1, scale: 1, y: [0, -14, 0], rotate: rot },
+    transition: {
+      opacity: { delay, duration: 0.6, ease },
+      scale: { delay, duration: 0.6, ease },
+      y: { delay, duration: 3.6, repeat: Infinity, ease: "easeInOut" as const },
+      rotate: { delay, duration: 5, repeat: Infinity, ease: "easeInOut" as const },
+    },
+  };
+}
+
 export default function Hero() {
   return (
     <section className="hero">
-      <DisplayCards />
+      <motion.span className="illus i1" data-parallax="0.18" {...floatAnim(0.5, [-10, -6, -10])}>
+        👩‍🍳
+      </motion.span>
+      <motion.span className="illus i2" data-parallax="-0.12" {...floatAnim(0.65, [5, 9, 5])}>
+        🚚
+      </motion.span>
+      <motion.span className="illus i3" data-parallax="0.24" {...floatAnim(0.8, [-7, -3, -7])}>
+        🧑‍💼
+      </motion.span>
 
       <motion.div
         className="container"
