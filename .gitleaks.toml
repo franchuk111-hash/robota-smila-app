@@ -1,0 +1,16 @@
+title = "portfolio gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telegram-bot-token"
+description = "Telegram Bot API token"
+regex = '''[0-9]{8,10}:[A-Za-z0-9_-]{35}'''
+keywords = ["bot", "telegram"]
+
+[[rules]]
+id = "cloudflare-api-token"
+description = "Cloudflare API Token"
+regex = '''(?i)cloudflare.{0,20}['\"][A-Za-z0-9_-]{40}['\"]'''
+keywords = ["cloudflare"]
