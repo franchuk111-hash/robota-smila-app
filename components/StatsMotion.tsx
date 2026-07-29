@@ -1,10 +1,13 @@
 "use client";
 import { motion } from "motion/react";
 import Counter from "./Counter";
+import { VACANCIES, CATEGORIES } from "@/lib/data";
 
 // Моушн-блок статистики в hero: пружинна поява зі стаггером,
 // «поп» цифри після докрутки лічильника, акцентна лінія, що
-// малюється, і жива пульсуюча точка біля «нових сьогодні».
+// малюється.
+// Цифри рахуються з реальних даних (lib/data.ts), а не задані вручну —
+// щоб hero ніколи не розходився з фактичною кількістю вакансій/роботодавців.
 const spring = { type: "spring" as const, stiffness: 220, damping: 14 };
 
 const item = {
@@ -12,10 +15,12 @@ const item = {
   show: { opacity: 1, y: 0, scale: 1, transition: spring },
 };
 
+const uniqueCompanies = new Set(VACANCIES.map((v) => v.company)).size;
+
 const STATS = [
-  { to: 420, suffix: "+", label: "активних вакансій", live: false },
-  { to: 85, suffix: "", label: "компаній Сміли", live: false },
-  { to: 17, suffix: "", label: "нових сьогодні", live: true },
+  { to: VACANCIES.length, suffix: "", label: "активних вакансій", live: false },
+  { to: uniqueCompanies, suffix: "", label: "роботодавців Сміли", live: false },
+  { to: CATEGORIES.length, suffix: "", label: "категорій вакансій", live: false },
 ];
 
 export default function StatsMotion() {

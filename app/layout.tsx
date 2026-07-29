@@ -9,7 +9,7 @@ import Analytics from "@/components/Analytics";
 export const metadata: Metadata = {
   metadataBase: new URL("https://robota-smila.com.ua"),
   title: {
-    default: "Робота в Смілі — свіжі вакансії 2026 | robota-smila.com.ua",
+    default: "Робота в Смілі 2026: нові вакансії щодня, відгук у Telegram",
     template: "%s | robota-smila",
   },
   description:

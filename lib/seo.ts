@@ -325,6 +325,49 @@ export function vacancyFaq(v: Vacancy): { q: string; a: string }[] {
   ];
 }
 
+// Organization-схема для головної сторінки.
+export const organizationLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Робота Сміла",
+  alternateName: "robota-smila.com.ua",
+  url: SITE,
+  areaServed: { "@type": "City", name: "Сміла" },
+  sameAs: ["https://t.me/robota_smila_ua"],
+};
+
+// FAQ для головної: рахується з реальних вакансій, ніколи не розходиться з даними.
+export function homepageFaq(list: Vacancy[]): { q: string; a: string }[] {
+  const counts = new Map<string, number>();
+  for (const v of list) counts.set(v.catName, (counts.get(v.catName) ?? 0) + 1);
+  const topCat = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+  const noExpCount = list.filter((v) => !v.exp).length;
+
+  return [
+    {
+      q: "Скільки вакансій зараз у Смілі?",
+      a: `Наразі на сайті ${list.length} актуальних вакансій від роботодавців Сміли та Черкаської області. Список оновлюється по мірі надходження нових пропозицій.`,
+    },
+    {
+      q: "Як швидко можна відгукнутися на вакансію без резюме?",
+      a: "Резюме не обов'язкове. Натисніть «Відгукнутися» на потрібній вакансії — це відкриє наш Telegram-канал «Робота Сміла», де достатньо залишити ім'я та телефон.",
+    },
+    {
+      q: "Які професії найбільш затребувані у Смілі?",
+      a: topCat
+        ? `Найбільше поточних вакансій — у категорії «${topCat}». Повний перелік напрямків дивіться на сторінці «Вакансії за категоріями».`
+        : "Перелік найпопулярніших напрямків дивіться на сторінці «Вакансії за категоріями».",
+    },
+    {
+      q: "Чи є у Смілі вакансії без досвіду роботи?",
+      a:
+        noExpCount > 0
+          ? `Так, ${noExpCount} із ${list.length} поточних вакансій не вимагають досвіду — роботодавці навчають на місці.`
+          : "Наявність вакансій без досвіду залежить від поточної добірки — перевірте сторінку «Робота без досвіду».",
+    },
+  ];
+}
+
 // Дата-орієнтований FAQ під категорію: формується з реальних вакансій категорії.
 export function categoryFaq(catName: string, list: Vacancy[]): { q: string; a: string }[] {
   const paid = list.filter((v) => !(v.salary[0] === 0 && v.salary[1] === 0));

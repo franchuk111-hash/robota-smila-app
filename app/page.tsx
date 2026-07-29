@@ -5,10 +5,14 @@ import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import Hero from "@/components/Hero";
 import Reveal from "@/components/Reveal";
+import JsonLd from "@/components/JsonLd";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { organizationLd, homepageFaq, itemListLd, faqLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
+  description:
+    "Нові вакансії у Смілі щодня від перевірених роботодавців. Без досвіду, підробіток чи повна зайнятість. Відгукніться за хвилину в Telegram — без реєстрації.",
 };
 
 const websiteLd = {
@@ -41,12 +45,14 @@ export default function Home() {
   const hotRest = hotAll.filter((v) => v.company !== PRIORITY_COMPANY).sort(byDate).slice(0, 3);
   const hot = [...hotVgb, ...hotRest];
 
+  const faqs = homepageFaq(VACANCIES);
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteLd) }}
-      />
+      <JsonLd data={websiteLd} />
+      <JsonLd data={organizationLd} />
+      <JsonLd data={itemListLd(latest)} />
+      <JsonLd data={faqLd(faqs)} />
       <Header />
       <Hero />
 
@@ -142,7 +148,7 @@ export default function Home() {
       <section className="block" style={{ paddingTop: 0 }}>
         <div className="container">
           <Reveal>
-            <h2 className="title center">420 актуальних вакансій у Смілі</h2>
+            <h2 className="title center">{VACANCIES.length} актуальних вакансій у Смілі</h2>
           </Reveal>
           <div className="grid3">
             {latest.map((v) => (
@@ -176,6 +182,22 @@ export default function Home() {
               </p>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      <section className="block soft">
+        <div className="container">
+          <Reveal>
+            <h2 className="title center">Часті запитання</h2>
+          </Reveal>
+          <section className="faq-block">
+            {faqs.map((f) => (
+              <details key={f.q} className="faq-item">
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </section>
         </div>
       </section>
 
