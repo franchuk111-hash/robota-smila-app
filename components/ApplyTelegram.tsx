@@ -16,7 +16,8 @@ export default function ApplyTelegram({
   category: string;
 }) {
   const handleApply = () => {
-    trackEvent(GA4_EVENTS.APPLY_VACANCY, {
+    trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
+      source: "vacancy_detail",
       vacancy_id: vacancyId,
       vacancy_title: vacancyTitle,
       category,
@@ -26,10 +27,9 @@ export default function ApplyTelegram({
 
   return (
     <aside className="aside-apply">
-      <h3 style={{ marginTop: 0 }}>Відгукнутися</h3>
+      <h3 style={{ marginTop: 0 }}>Вакансії в Telegram</h3>
       <p style={{ color: "var(--muted)", fontSize: 15, margin: "0 0 16px" }}>
-        Усі деталі вакансії та зв&apos;язок із роботодавцем — у нашому Telegram-каналі.
-        Тисни кнопку й відгукуйся за секунду.
+        Перейдіть у Telegram-канал, щоб переглянути нові вакансії Сміли.
       </p>
       <motion.a
         href={href}
@@ -50,7 +50,7 @@ export default function ApplyTelegram({
         transition={spring}
       >
         <TelegramGlyph />
-        Відгукнутися в Telegram
+        Відкрити канал вакансій
       </motion.a>
       <p style={{ color: "var(--muted)", fontSize: 13, margin: "12px 0 0" }}>
         Відкриється Telegram · @robota_smila_ua

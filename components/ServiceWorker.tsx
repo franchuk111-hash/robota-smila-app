@@ -3,9 +3,12 @@ import { useEffect } from "react";
 
 export default function ServiceWorker() {
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    if (!("serviceWorker" in navigator)) return;
+    if (process.env.NODE_ENV === "production") {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
+      return;
     }
+    navigator.serviceWorker.getRegistrations().then((items) => items.forEach((item) => item.unregister()));
   }, []);
   return null;
 }

@@ -18,7 +18,8 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       };
 
   const handleApply = () => {
-    trackEvent(GA4_EVENTS.APPLY_VACANCY, {
+    trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
+      source: "vacancy_card",
       vacancy_id: v.id,
       vacancy_title: v.title,
       category: v.cat,
@@ -40,7 +41,13 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         </span>
       )}
       <h3>
-        <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
+        {v.tgMsgId ? (
+          <a href={vacancyTgLink(v)} target="_blank" rel="noopener noreferrer" onClick={handleApply}>
+            {v.title}
+          </a>
+        ) : (
+          <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
+        )}
       </h3>
       <div className="salary">{salaryFmt(v.salary)}</div>
       <div className="company">
@@ -49,8 +56,13 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         <span className="verified">✓</span>
       </div>
       <div className="locs">
-        Сміла<span className="dot">·</span>
-        {v.district}
+        Сміла
+        {v.district && v.district !== "Сміла" && (
+          <>
+            <span className="dot">·</span>
+            {v.district}
+          </>
+        )}
         <span className="dot">·</span>
         {v.schedule}
       </div>
@@ -62,7 +74,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       <div className="apply">
         <span className="date">{dateFmt(v.date)}</span>
         <SpringLink className="btn" href={vacancyTgLink(v)} onClick={handleApply} external>
-          Відгукнутися
+          {v.tgMsgId ? "Дивитись у Telegram" : "Канал вакансій"}
         </SpringLink>
       </div>
     </motion.article>

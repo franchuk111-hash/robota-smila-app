@@ -20,6 +20,21 @@ export const MONTH_NAMES = [
   "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень",
 ];
 
+// Слуги для якірних посилань на місяць (напр. /kalendar#zhovten-2026)
+export const MONTH_SLUGS = [
+  "sichen", "lyutyi", "berezen", "kviten", "traven", "cherven",
+  "lypen", "serpen", "veresen", "zhovten", "lystopad", "hruden",
+];
+
+// Родовий відмінок для дат: «1 січня», «25 грудня»
+export const MONTH_GENITIVE = [
+  "січня", "лютого", "березня", "квітня", "травня", "червня",
+  "липня", "серпня", "вересня", "жовтня", "листопада", "грудня",
+];
+
+// Робочі години за 40-годинним тижнем (5 днів × 8 годин)
+export const HOURS_PER_DAY = 8;
+
 export const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
 
 export type Day = { day: number; iso: string; weekend: boolean; holiday?: string };
@@ -48,4 +63,32 @@ export function yearStats() {
     }
   }
   return { work, off, holidays: Object.keys(HOLIDAYS).length };
+}
+
+// Статистика одного місяця: робочі дні, вихідні/святкові, норми годин.
+export function monthStats(month: number) {
+  let work = 0;
+  let off = 0;
+  const holidays: { day: number; name: string; onWeekend: boolean }[] = [];
+  for (const c of buildMonth(month)) {
+    if (!c) continue;
+    if (c.weekend || c.holiday) {
+      off++;
+      if (c.holiday) {
+        holidays.push({ day: c.day, name: c.holiday, onWeekend: c.weekend });
+      }
+    } else {
+      work++;
+    }
+  }
+  return { work, off, holidays, days: work + off, hours: work * HOURS_PER_DAY };
+}
+
+// Українські відмінки для кількості робочих днів: 21 → «21 робочий день».
+export function workDaysLabel(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} робочий день`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${n} робочі дні`;
+  return `${n} робочих днів`;
 }

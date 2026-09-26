@@ -57,5 +57,18 @@ npx wrangler secret put ADMIN_TELEGRAM_CHAT_ID
 ## Дані
 Демо-вакансії/компанії/статті — у `lib/data.ts`. Для реальної бази (постійне зберігання відгуків, вакансій від роботодавців, профілів) підключається Supabase/Postgres — наступний крок.
 
+## Автоматичний збір вакансій
+
+`npm run vacancies:sync` отримує вакансії Сміли з публічного порталу Державної служби зайнятості, який об'єднує DCZ, Work.ua та robota.ua. Скрипт прибирає дублікати, публікує кожну нову вакансію окремим постом у `@robota_smila_ua` та записує Telegram `message_id` у `data/collected-vacancies.json`. Картки сайту ведуть прямо на відповідний пост.
+
+Для перевірки без публікації:
+
+```bash
+npm run vacancies:sync -- --dry-run
+npm run vacancies:test
+```
+
+GitHub Actions запускає синхронізацію кожні три години. У репозиторії потрібні secrets `TELEGRAM_BOT_TOKEN` і `TELEGRAM_CHANNEL_ID`. За один запуск публікується не більше 10 вакансій, щоб канал не отримував різкий потік повідомлень.
+
 ## Ліцензії
 Іконка логотипа (лупа) — [Twemoji](https://github.com/twitter/twemoji) © Twitter, ліцензія CC-BY 4.0.

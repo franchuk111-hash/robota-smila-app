@@ -13,6 +13,8 @@
     "telegram-post": "tsx scripts/telegram-post.ts",
     "telegram-publish": "tsx scripts/telegram-channel-publish.ts",
     "telegram-preview": "tsx scripts/preview-telegram.ts",
+    "vacancies:sync": "tsx scripts/vacancy-pipeline.ts",
+    "vacancies:test": "tsx scripts/vacancy-pipeline.test.ts",
     "add-vacancy": "tsx scripts/add-vacancy.ts",
     "add-vacancies-batch": "tsx scripts/add-vacancies-batch.ts"
   },

@@ -7,7 +7,7 @@ import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
-import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq } from "@/lib/seo";
+import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq, categoryTitle } from "@/lib/seo";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ cat: c.slug }));
@@ -21,8 +21,9 @@ export async function generateMetadata({
   const { cat } = await params;
   const seo = CATEGORY_SEO[cat];
   if (!seo) return { title: "Категорію не знайдено" };
+  const count = VACANCIES.filter((v) => v.cat === cat).length;
   return {
-    title: seo.title,
+    title: categoryTitle(seo.h1, count),
     description: seo.description,
     alternates: { canonical: `/vakansii/${cat}` },
   };
@@ -63,7 +64,8 @@ export default async function CategoryPage({
         </nav>
         <h1 className="page-h1">{seo.h1}</h1>
         <p className="sub">
-          Знайдено вакансій: {list.length}. Нові пропозиції додаються щотижня.
+          Знайдено вакансій: {list.length}. Список оновлюємо щодня — заходьте
+          перевірити нові пропозиції.
         </p>
 
         <div className="grid3">

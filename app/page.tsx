@@ -6,13 +6,12 @@ import VacCard from "@/components/VacCard";
 import Hero from "@/components/Hero";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { VACANCIES, CATEGORIES, dateFmt } from "@/lib/data";
 import { organizationLd, homepageFaq, itemListLd, faqLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  description:
-    "Нові вакансії у Смілі щодня від перевірених роботодавців. Без досвіду, підробіток чи повна зайнятість. Відгукніться за хвилину в Telegram — без реєстрації.",
+  description: `Вакансії у Смілі (Черкаська область): ${VACANCIES.length} пропозицій — без досвіду, підробіток, повна зайнятість і робота з щоденною оплатою. Оновлюємо щодня, відгук онлайн у Telegram.`,
 };
 
 const websiteLd = {
@@ -36,15 +35,6 @@ export default function Home() {
   const latest = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 6);
-  // «Гарячі» на головній: 3 вакансії VGB (пріоритет) + 3 інші гарячі, за свіжістю
-  const PRIORITY_COMPANY = "V.G.BuildingTeam";
-  const byDate = (a: (typeof VACANCIES)[number], b: (typeof VACANCIES)[number]) =>
-    +new Date(b.date) - +new Date(a.date);
-  const hotAll = VACANCIES.filter((v) => v.hot);
-  const hotVgb = hotAll.filter((v) => v.company === PRIORITY_COMPANY).sort(byDate).slice(0, 3);
-  const hotRest = hotAll.filter((v) => v.company !== PRIORITY_COMPANY).sort(byDate).slice(0, 3);
-  const hot = [...hotVgb, ...hotRest];
-
   const faqs = homepageFaq(VACANCIES);
 
   return (
@@ -56,23 +46,25 @@ export default function Home() {
       <Header />
       <Hero />
 
-      {hot.length > 0 && (
-        <section className="block" style={{ paddingBottom: 0 }}>
-          <div className="container">
-            <Reveal>
-              <h2 className="title center">🔥 Гарячі вакансії</h2>
-              <p className="sub center">
-                Найактуальніші пропозиції — роботодавці шукають прямо зараз
-              </p>
-            </Reveal>
-            <div className="grid3">
-              {hot.map((v) => (
-                <VacCard key={v.id} v={v} />
-              ))}
-            </div>
+      <section className="block">
+        <div className="container">
+          <Reveal>
+            <h2 className="title center">Нові вакансії у Смілі</h2>
+            <p className="sub center">
+              Оновлено {dateFmt(latest[0].date)}. Відкрийте вакансію — і потрапите одразу до
+              потрібного поста в Telegram.
+            </p>
+          </Reveal>
+          <div className="grid3">
+            {latest.map((v) => <VacCard key={v.id} v={v} />)}
           </div>
-        </section>
-      )}
+          <p style={{ textAlign: "center", marginTop: 36 }}>
+            <Link href="/vakansii" className="btn lg">
+              Усі вакансії
+            </Link>
+          </p>
+        </div>
+      </section>
 
       <section className="block">
         <div className="container">
@@ -142,24 +134,6 @@ export default function Home() {
               </Link>
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      <section className="block" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <Reveal>
-            <h2 className="title center">{VACANCIES.length} актуальних вакансій у Смілі</h2>
-          </Reveal>
-          <div className="grid3">
-            {latest.map((v) => (
-              <VacCard key={v.id} v={v} />
-            ))}
-          </div>
-          <p style={{ textAlign: "center", marginTop: 36 }}>
-            <Link href="/vakansii" className="btn lg">
-              Ще вакансії
-            </Link>
-          </p>
         </div>
       </section>
 

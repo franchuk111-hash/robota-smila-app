@@ -8,7 +8,7 @@ import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
+import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink, isStale, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { validThrough, KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -45,6 +45,7 @@ export default async function VacancyPage({
 
   const similar = VACANCIES.filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
   const faqs = vacancyFaq(v);
+  const stale = isStale(v.date, 30);
 
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
@@ -127,16 +128,33 @@ export default async function VacancyPage({
               <span className="tag">{v.typeName}</span>
               <span className="tag gray">{v.schedule}</span>
               {!v.exp && <span className="tag">Без досвіду</span>}
-              <span className="tag gray">📍 Сміла, {v.district}</span>
-              <span className="tag gray">Оновлено: {dateFmt(v.date)}</span>
+              <span className="tag gray">
+                📍 Сміла{v.district && v.district !== "Сміла" ? `, ${v.district}` : ""}
+              </span>
+              <span className="tag gray">Опубліковано: {dateFmt(v.date)}</span>
             </div>
             <p style={{ fontSize: 18 }}>{v.short}</p>
-            <h3>Обов&apos;язки</h3>
-            <ul>{v.duties.map((d) => <li key={d}>{d}</li>)}</ul>
-            <h3>Вимоги</h3>
-            <ul>{v.req.map((d) => <li key={d}>{d}</li>)}</ul>
-            <h3>Ми пропонуємо</h3>
-            <ul>{v.offer.map((d) => <li key={d}>{d}</li>)}</ul>
+            {stale ? (
+              <div className="callout warn">
+                <b>Перевірте актуальність.</b> Оголошення опубліковано {dateFmt(v.date)} (
+                {ageInDays(v.date)} дн. тому) — роботодавець міг уже закрити цю вакансію.
+                Уточнюйте умови перед відгуком.{" "}
+                <Link href={`/vakansii/${v.cat}`}>Свіжі вакансії категорії</Link> та нові
+                пропозиції Сміли ми публікуємо щодня в{" "}
+                <a href={TELEGRAM_CHANNEL_URL} target="_blank" rel="noopener noreferrer">
+                  Telegram-каналі
+                </a>
+                .
+              </div>
+            ) : (
+              <div className="callout tip">
+                <b>Свіже оголошення.</b> Опубліковано {dateFmt(v.date)} — {ageInDays(v.date)} дн.
+                тому. Відгукнутися можна за 1 хвилину: заявка йде роботодавцю в Telegram.
+              </div>
+            )}
+            {v.duties.length > 0 && <><h3>Деталі вакансії</h3><ul>{v.duties.map((d) => <li key={d}>{d}</li>)}</ul></>}
+            {v.req.length > 0 && <><h3>Вимоги</h3><ul>{v.req.map((d) => <li key={d}>{d}</li>)}</ul></>}
+            {v.offer.length > 0 && <><h3>Ми пропонуємо</h3><ul>{v.offer.map((d) => <li key={d}>{d}</li>)}</ul></>}
           </article>
           <ApplyTelegram
             href={vacancyTgLink(v)}

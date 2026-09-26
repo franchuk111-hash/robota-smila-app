@@ -1,3 +1,5 @@
+import collectedVacancies from "@/data/collected-vacancies.json";
+
 // Демо-дані для robota-smila (Сміла, Черкаська область)
 export type Vacancy = {
   id: number; slug: string; title: string; company: string;
@@ -8,6 +10,9 @@ export type Vacancy = {
   hot?: boolean;
   paymentFrequency?: "daily" | "weekly" | "monthly";
   tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
+  source?: string;
+  sourceUrl?: string;
+  sourceId?: string;
 };
 
 export type Category = { slug: string; name: string; ico: string };
@@ -25,7 +30,7 @@ export const CATEGORIES: Category[] = [
   { slug: "other", name: "Інше", ico: "✨" },
 ];
 
-export const VACANCIES: Vacancy[] = [
+const SEED_VACANCIES: Vacancy[] = [
   { id: 1024, slug: "prodavets-kasyr", title: "Продавець-касир", company: "Магазин «Продукти Плюс»", salary: [16000, 20000], cat: "prodavets", catName: "Продавці / касири", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Графік 3/3", district: "центр", exp: false, date: "2026-07-02", short: "Мережа продуктових магазинів у Смілі запрошує продавця-касира. Досвід не обов'язковий — навчаємо.", duties: ["Обслуговування покупців на касі", "Викладка та контроль товару", "Підтримання чистоти в залі"], req: ["Уважність та відповідальність", "Досвід не обов'язковий", "Бажання працювати з людьми"], offer: ["Офіційне працевлаштування", "Графік 3/3", "Своєчасна виплата зарплати", "Знижки для працівників"] },
   { id: 1025, hot: true, slug: "vodiy-kat-c", title: "Водій категорії C", company: "ТОВ «Смілаагротранс»", salary: [25000, 35000], cat: "voditel", catName: "Водії", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "5/2", district: "промзона", exp: true, date: "2026-07-01", short: "Потрібен водій категорії C для місцевих та регіональних перевезень по Черкаській області.", duties: ["Перевезення вантажів по регіону", "Контроль технічного стану авто", "Оформлення документів"], req: ["Права категорії C", "Досвід водіння від 2 років", "Знання Черкаської області"], offer: ["З/п від 25 000 грн", "Офіційне оформлення", "Справна техніка", "Оплата пального"] },
   { id: 1026, hot: true, slug: "operator-vyrobnytstva", title: "Оператор виробничої лінії", company: "Кондитерська фабрика «Ласуня»", salary: [18000, 23000], cat: "robitnyk", catName: "Робітники / виробництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зміни день/ніч", district: "промзона", exp: false, date: "2026-07-02", short: "Кондитерська фабрика у Смілі набирає операторів на виробничу лінію. Навчання на місці.", duties: ["Робота на виробничій лінії", "Контроль якості продукції", "Пакування готової продукції"], req: ["Досвід не обов'язковий", "Уважність", "Готовність до змінної роботи"], offer: ["Навчання за рахунок компанії", "Премії за результат", "Безкоштовні обіди", "Офіційне працевлаштування"] },
@@ -56,6 +61,17 @@ export const VACANCIES: Vacancy[] = [
   { id: 1051, hot: true, slug: "mulyar", title: "Муляр", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-07-07", short: "Будівельна компанія V.G.BuildingTeam шукає мулярів. Кладка, стабільні обсяги робіт, своєчасна оплата та розвозка.", duties: ["Мурувальні роботи", "Кладка стін та конструкцій", "Робота в бригаді"], req: ["Досвід мурувальних робіт", "Бригади або майстри (мін. 2 особи)", "Відповідальність"], offer: ["Оплата за обсяг кладки (кубатуру)", "Розвозка на об'єкти", "Бонуси за темп і рівність кладки", "Стабільні замовлення на мурування", "Виплати вчасно"] },
   { id: 1052, hot: true, slug: "pokrivelnyk", title: "Покрівельник", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-07-07", short: "V.G.BuildingTeam (спеціалізація — покрівля) запрошує покрівельників. Монтаж дахів, стабільні об'єми, бонуси за результат.", duties: ["Монтаж покрівельних систем", "Улаштування дахів", "Гідроізоляція та утеплення покрівлі"], req: ["Досвід покрівельних робіт", "Бригади або майстри (мін. 2 особи)", "Робота на висоті"], offer: ["Підвищена оплата за покрівельні роботи", "Забезпечення інструментом і розвозка", "Премії за складні та скатні дахи", "Постійні об'єкти покрівлі", "Своєчасні розрахунки"] },
   { id: 1053, hot: true, slug: "mayster-universal", title: "Майстер-універсал", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-07-07", short: "Потрібні майстри-універсали у бригаду V.G.BuildingTeam. Різнопланові будівельні роботи, постійні обсяги та своєчасна оплата.", duties: ["Різнопланові будівельні та оздоблювальні роботи", "Робота на різних етапах об'єкта", "Взаємодія в бригаді"], req: ["Досвід у кількох будівельних напрямах", "Бригади або майстри (мін. 2 особи)", "Універсальність та відповідальність"], offer: ["Оплата за широкий спектр виконаних робіт", "Гнучкий графік і розвозка на об'єкти", "Бонуси за універсальність і якість", "Різнопланові об'єкти — без простоїв", "Стабільні виплати"] },
+];
+
+const COLLECTED_VACANCIES = collectedVacancies as unknown as Vacancy[];
+
+// Зібрані з порталів вакансії (з живими посиланнями на Telegram-пости) йдуть
+// першими, решта демо-набір лишається, щоб уже проіндексовані сторінки не
+// зникали. Дублікати за id не допускаємо.
+const collectedIds = new Set(COLLECTED_VACANCIES.map((v) => v.id));
+export const VACANCIES: Vacancy[] = [
+  ...COLLECTED_VACANCIES,
+  ...SEED_VACANCIES.filter((v) => !collectedIds.has(v.id)),
 ];
 
 export const COMPANIES: Company[] = [
@@ -123,8 +139,19 @@ export const salaryFmt = (s: [number, number]) =>
     : `${s[0].toLocaleString("uk-UA")} – ${s[1].toLocaleString("uk-UA")} ₴`;
 
 export const dateFmt = (d: string) => {
-  const days = Math.floor((new Date("2026-07-03").getTime() - new Date(d).getTime()) / 86400000);
-  if (days <= 0) return "сьогодні";
-  if (days === 1) return "вчора";
-  return `${days} дн. тому`;
+  const dt = new Date(d);
+  if (Number.isNaN(dt.getTime())) return "";
+  return dt.toLocaleDateString("uk-UA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 };
+
+// Вік оголошення в днях. Використовувати лише в серверних компонентах:
+// значення фіксується під час збірки і не викликає розбіжностей гідратації.
+export const ageInDays = (d: string) =>
+  Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+
+// Вакансія вважається такою, що могла закритися, якщо опублікована давно.
+export const isStale = (d: string, days = 30) => ageInDays(d) > days;
