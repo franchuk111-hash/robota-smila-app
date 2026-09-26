@@ -34,10 +34,10 @@ jobs:
           git config user.name "robota-smila-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/collected-vacancies.json
-          git commit -m "Keep vacancy cards linked to published Telegram posts" \
-            -m "Constraint: Telegram message IDs must be persisted for direct card links
+          git commit -F - <<'MSG'
+          Keep vacancy cards linked to published Telegram posts
 
-Confidence: high
-Scope-risk: narrow
-Tested: vacancy sync pipeline completed before commit"
+          Telegram message IDs must be persisted so website cards can link
+          directly to the published post for each vacancy.
+          MSG
           git push
