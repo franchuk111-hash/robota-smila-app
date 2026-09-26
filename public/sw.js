@@ -1,5 +1,5 @@
 // Простий service worker для PWA robota-smila
-const CACHE = "robota-smila-v1";
+const CACHE = "robota-smila-v2";
 const OFFLINE_URLS = ["/", "/vakansii", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
