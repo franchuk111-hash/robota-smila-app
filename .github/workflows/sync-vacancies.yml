@@ -1,0 +1,43 @@
+name: Sync vacancies to Telegram
+
+on:
+  schedule:
+    - cron: "17 5-20/3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: vacancy-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Collect and publish new vacancies
+        run: npm run vacancies:sync
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          MAX_NEW_VACANCIES: "10"
+      - name: Save Telegram message links for the website
+        run: |
+          if git diff --quiet -- data/collected-vacancies.json; then exit 0; fi
+          git config user.name "robota-smila-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/collected-vacancies.json
+          git commit -m "Keep vacancy cards linked to published Telegram posts" \
+            -m "Constraint: Telegram message IDs must be persisted for direct card links
+
+Confidence: high
+Scope-risk: narrow
+Tested: vacancy sync pipeline completed before commit"
+          git push
