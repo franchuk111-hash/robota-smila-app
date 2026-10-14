@@ -228,6 +228,7 @@ const SITE = "https://robota-smila.com.ua";
 // Відомі сайти роботодавців (для hiringOrganization.url / sameAs у JobPosting).
 export const KNOWN_COMPANY_URLS: Record<string, string> = {
   "V.G.BuildingTeam": "https://vgb.team",
+  "Раціотека": "https://racioteka.com.ua/",
 };
 
 // ItemList зі списку вакансій — сигнал Google, що сторінка є переліком вакансій.
