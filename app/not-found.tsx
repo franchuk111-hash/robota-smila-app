@@ -6,6 +6,7 @@ export default function NotFound() {
   return (
     <>
       <Header />
+      <main>
       <div className="container" style={{ textAlign: "center", padding: "70px 22px" }}>
         <div style={{ fontSize: 64, marginBottom: 8 }}>🔍</div>
         <h1 className="page-h1">Сторінку не знайдено</h1>
@@ -18,7 +19,8 @@ export default function NotFound() {
           <Link href="/" className="btn ghost lg">На головну</Link>
         </div>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

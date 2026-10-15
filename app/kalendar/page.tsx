@@ -63,6 +63,7 @@ export default function CalendarPage() {
   return (
     <>
       <Header />
+      <main>
       <BreadcrumbLd
         items={[
           { name: "Головна", path: "/" },
@@ -247,7 +248,8 @@ export default function CalendarPage() {
           <Link href="/vakansii">усі вакансії Сміли</Link>
         </p>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

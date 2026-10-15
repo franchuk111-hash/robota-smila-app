@@ -2,18 +2,23 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 
 export const metadata: Metadata = {
   title: "Політика cookie — Робота Сміла",
   description:
     "Політика використання файлів cookie на сайті robota-smila.com.ua: які cookie ми застосовуємо та як ними керувати.",
   alternates: { canonical: "/polityka-cookie" },
+  robots: { index: false, follow: true },
 };
 
 export default function CookiePolicyPage() {
   return (
     <>
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" },
+          { name: "Політика cookie", path: "/polityka-cookie" }]} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Політика cookie
@@ -111,7 +116,8 @@ export default function CookiePolicyPage() {
           </p>
         </article>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

@@ -25,6 +25,7 @@ export default async function VakansiiPage({
   return (
     <>
       <Header />
+      <main>
       <JsonLd data={itemListLd(recent)} />
       <Catalog
         vacancies={VACANCIES}
@@ -33,7 +34,8 @@ export default async function VakansiiPage({
         initialCat={sp.cat || ""}
         initialExp={!!sp.exp}
       />
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

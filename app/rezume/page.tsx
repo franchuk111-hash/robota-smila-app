@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 
 export const metadata: Metadata = {
   title: "Приклад резюме 2026 — як скласти резюме (зразок + поради)",
@@ -14,6 +15,9 @@ export default function RezumePage() {
   return (
     <>
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" },
+          { name: "Приклад резюме", path: "/rezume" }]} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Приклад резюме
@@ -152,8 +156,21 @@ export default function RezumePage() {
             </Link>
           </p>
         </section>
+        <section className="seo-text">
+          <h2>Кому підійде цей зразок резюме</h2>
+          <p>Наведений приклад підходить для будь-якої стартової позиції у Смілі: продавця, касира, офіціанта, адміністратора чи працівника виробництва. Якщо у вас немає досвіду, не залишайте цей розділ порожнім — замініть його описом навчання, підробітків, волонтерства чи допомоги в сімейному бізнесі.</p>
+          <p>Головне правило: резюме має бути чесним і конкретним. Замінюйте загальні фрази фактами — цифрами, назвами посад, конкретним обсягом роботи. Таке резюме роботодавець прочитає до кінця.</p>
+        </section>
+
+        <section className="faq-block">
+          <h2 className="title" style={{ fontSize: 24 }}>Часті запитання</h2>
+          <details className="faq-item"><summary>Чи потрібне резюме для роботи у Смілі?</summary><p>Для багатьох вакансій достатньо залишити ім’я та телефон. Проте з резюме ваша заявка виглядає професійніше, і шансів на запрошення більше.</p></details>
+          <details className="faq-item"><summary>Як довгим має бути резюме?</summary><p>Оптимально — одна сторінка. Цього достатньо, щоб указати контакти, досвід або навички, освіту та коротке «про себе».</p></details>
+          <details className="faq-item"><summary>Що робити, якщо зовсім немає що написати?</summary><p>Згадайте навчання, практику, будь-яку роботу — навіть тимчасову, а також особисті якості. Додайте готовність навчатися й одразу відгукуйтесь на вакансії без досвіду.</p></details>
+        </section>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

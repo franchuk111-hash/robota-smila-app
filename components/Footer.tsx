@@ -68,6 +68,13 @@ export default function Footer() {
             >
               Зв&apos;язок: @Smila_admin
             </a>
+            <a
+              href="https://search.google.com/local/writereview?placeid=ChIJiU080ehB0UARKN0Knb2MH4A"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ⭐ Залишити відгук на Google
+            </a>
           </div>
           <div>
             <h4>Правова інформація</h4>

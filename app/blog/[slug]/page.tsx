@@ -48,6 +48,7 @@ export default async function ArticlePage({
   return (
     <>
       <Header />
+      <main>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
@@ -82,7 +83,8 @@ export default async function ArticlePage({
           </Link>
         </div>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

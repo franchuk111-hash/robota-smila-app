@@ -10,6 +10,7 @@ export default function LoginPage() {
   return (
     <>
       <Header />
+      <main>
       <div className="container">
         <div className="auth-card">
           <div className="brand" style={{ justifyContent: "center", marginBottom: 22 }}>
@@ -39,7 +40,8 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

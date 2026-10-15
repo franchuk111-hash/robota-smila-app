@@ -52,6 +52,7 @@ export default async function CompanyPage({
   return (
     <>
       <Header />
+      <main>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
@@ -102,7 +103,8 @@ export default async function CompanyPage({
           )}
         </div>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

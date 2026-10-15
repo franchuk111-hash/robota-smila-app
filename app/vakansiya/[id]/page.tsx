@@ -99,6 +99,7 @@ export default async function VacancyPage({
   return (
     <>
       <Header />
+      <main>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
@@ -186,7 +187,8 @@ export default async function VacancyPage({
           </div>
         </div>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

@@ -2,18 +2,23 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 
 export const metadata: Metadata = {
   title: "Умови користування — Робота Сміла",
   description:
     "Умови користування сайтом robota-smila.com.ua: правила використання сервісу, відповідальність сторін та обмеження.",
   alternates: { canonical: "/umovy-korystuvannya" },
+  robots: { index: false, follow: true },
 };
 
 export default function TermsPage() {
   return (
     <>
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" },
+          { name: "Умови користування", path: "/umovy-korystuvannya" }]} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Умови користування
@@ -116,7 +121,8 @@ export default function TermsPage() {
           </p>
         </article>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

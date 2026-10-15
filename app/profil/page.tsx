@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 import VacCard from "@/components/VacCard";
 import { getFavorites } from "@/components/FavButton";
 import { VACANCIES } from "@/lib/data";
@@ -18,6 +19,9 @@ export default function ProfilePage() {
   return (
     <>
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" },
+          { name: "Профіль", path: "/profil" }]} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Профіль
@@ -70,7 +74,8 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

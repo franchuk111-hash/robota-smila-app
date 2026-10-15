@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 import VacCard from "@/components/VacCard";
 import Hero from "@/components/Hero";
 import Reveal from "@/components/Reveal";
@@ -44,6 +45,8 @@ export default function Home() {
       <JsonLd data={itemListLd(latest)} />
       <JsonLd data={faqLd(faqs)} />
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" }]} />
       <Hero />
 
       <section className="block">
@@ -175,7 +178,8 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

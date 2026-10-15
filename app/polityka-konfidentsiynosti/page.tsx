@@ -2,18 +2,23 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BreadcrumbLd from "@/components/BreadcrumbLd";
 
 export const metadata: Metadata = {
   title: "Політика конфіденційності — Робота Сміла",
   description:
     "Політика конфіденційності robota-smila.com.ua: які персональні дані ми збираємо, з якою метою, на яких підставах та які у вас права.",
   alternates: { canonical: "/polityka-konfidentsiynosti" },
+  robots: { index: false, follow: true },
 };
 
 export default function PrivacyPage() {
   return (
     <>
       <Header />
+      <main>
+      <BreadcrumbLd items={[{ name: "Головна", path: "/" },
+          { name: "Політика конфіденційності", path: "/polityka-konfidentsiynosti" }]} />
       <div className="container">
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Політика конфіденційності
@@ -147,7 +152,8 @@ export default function PrivacyPage() {
           </p>
         </article>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

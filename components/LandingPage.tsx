@@ -17,6 +17,7 @@ export default function LandingPage({ seo }: { seo: LandingSeo }) {
   return (
     <>
       <Header />
+      <main>
       <BreadcrumbLd
         items={[
           { name: "Головна", path: "/" },
@@ -65,7 +66,8 @@ export default function LandingPage({ seo }: { seo: LandingSeo }) {
           </Link>
         </p>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }

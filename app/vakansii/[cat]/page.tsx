@@ -48,6 +48,7 @@ export default async function CategoryPage({
   return (
     <>
       <Header />
+      <main>
       <BreadcrumbLd
         items={[
           { name: "Головна", path: "/" },
@@ -139,7 +140,8 @@ export default async function CategoryPage({
           </div>
         </section>
       </div>
-      <Footer />
+            </main>
+<Footer />
     </>
   );
 }
