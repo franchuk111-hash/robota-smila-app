@@ -121,7 +121,13 @@ export default async function VacancyPage({
           <article className="detail">
             <h1>{v.title}</h1>
             <div className="company" style={{ fontSize: 18 }}>
-              {v.company}
+              {companyUrl ? (
+                <a href={companyUrl} target="_blank" rel="noopener noreferrer">
+                  {v.company} ↗
+                </a>
+              ) : (
+                v.company
+              )}
             </div>
             <div className="salary">{salaryFmt(v.salary)}</div>
             <ShareButton standalone title={v.title} url={`/vakansiya/${v.id}`} />
