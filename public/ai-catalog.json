@@ -1,0 +1,42 @@
+{
+  "name": "Робота Сміла",
+  "type": "job-board",
+  "url": "https://robota-smila.com.ua/",
+  "inLanguage": "uk",
+  "updated": "2026-10-15",
+  "catalog": [
+    {
+      "Роботодавцям": "/rabotodavtsyam"
+    },
+    {
+      "Вакансії": "/vakansii"
+    },
+    {
+      "Компанії": "/kompanii"
+    },
+    {
+      "Резюме": "/rezume"
+    },
+    {
+      "Блог": "/blog"
+    },
+    {
+      "Робота без досвіду": "/robota-bez-dosvidu"
+    },
+    {
+      "Підробіток у Смілі": "/pidrobitok"
+    },
+    {
+      "Робота для студентів": "/robota-dlya-studentiv"
+    },
+    {
+      "Термінові вакансії": "/terminovi-vakansii"
+    },
+    {
+      "Робота з щоденною оплатою": "/robota-z-shchodennoyu-oplatoyu"
+    }
+  ],
+  "sitemap": "/sitemap.xml",
+  "llms": "/llms.txt",
+  "verify": "/sitemap.xml"
+}
