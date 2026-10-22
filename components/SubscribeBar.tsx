@@ -54,7 +54,8 @@ export default function SubscribeBar() {
             <div className="subbar-text">
               <span className="subbar-ico">🔔</span>
               <div>
-                <b>Нові вакансії Сміли — щодня в Telegram</b>
+                <b className="subbar-title-full">Нові вакансії Сміли — щодня в Telegram</b>
+                <b className="subbar-title-mobile">Вакансії в Telegram</b>
                 <SubscriberCount compact />
               </div>
             </div>

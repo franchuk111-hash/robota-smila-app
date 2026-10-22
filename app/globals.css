@@ -468,3 +468,16 @@ footer.site a:hover{color:#fff;opacity:1}
 .vac-readable.hot{padding-top:54px}
 @media(max-width:980px){.grid3:has(> .vac-readable),.grid2:has(> .vac-readable){grid-template-columns:1fr}}
 @media(max-width:520px){.vac-readable{padding:21px}.vac-readable h3{font-size:22px;margin-right:59px}.vac-readable .salary{font-size:26px}.vac-readable .salary-negotiable{font-size:16px}.vac-readable .vac-actions .btn{font-size:13px}.vac-readable.hot{padding-top:54px}}
+
+/* Mobile subscription is a compact single row, rather than a large card. */
+.subbar-title-mobile{display:none!important}
+@media(max-width:640px){
+  .subbar{padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+  .subbar-inner{flex-direction:row;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;box-shadow:0 3px 15px rgba(30,55,110,.12)}
+  .subbar-text{gap:0;flex:1;min-width:0}.subbar-text>div{min-width:0}
+  .subbar-ico,.subbar-title-full,.subbar .sub-count-inline{display:none!important}
+  .subbar-text .subbar-title-mobile{display:block!important;font-size:12px;line-height:1.3}
+  .subbar-actions{gap:4px}.subbar-actions .btn{flex:0 0 auto;min-height:44px;padding:9px 11px;font-size:12px;border-radius:8px;box-shadow:none}
+  .subbar-close{width:44px;height:44px;background:transparent}
+  body:has(.subbar){padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+}
