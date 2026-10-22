@@ -1,5 +1,5 @@
 "use client";
-import { experienceLabel, vacancyLocation } from "@/lib/vacancy-facts";
+import { experienceLabel, experienceStatus, vacancyLocation } from "@/lib/vacancy-facts";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
@@ -30,7 +30,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
 
   return (
     <motion.article
-      className={"vac" + (v.hot ? " hot" : "")}
+      className={"vac vac-readable" + (v.hot ? " hot" : "")}
       {...reveal}
       whileHover={{ y: -4 }}
     >
@@ -44,27 +44,27 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       <h3>
         <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
       </h3>
-      <div className="salary">{salaryFmt(v.salary)}</div>
       <div className="company">
-        <span className="co-ico"></span>
+        <span className="co-ico" aria-hidden="true">{v.company.trim().slice(0, 1).toLocaleUpperCase("uk-UA")}</span>
         {v.company}
-
       </div>
-      <div className="locs">
-        {vacancyLocation(v)}
-        <span className="dot">·</span>
-        {v.schedule}
+      <div className={"salary" + (v.salary.every(amount => amount === 0) ? " salary-negotiable" : "")}>
+        {v.salary.every(amount => amount === 0) ? "Оплата за домовленістю" : salaryFmt(v.salary)}
       </div>
-      <div className="locs dim">
-        {experienceLabel(v)}
-        <span className="dot">·</span>
-        {v.typeName}
+      <div className="vac-conditions">
+        <div><span aria-hidden="true">⌖</span>{vacancyLocation(v)}</div>
+        <div><span aria-hidden="true">◷</span>{[v.schedule, v.typeName].filter((value, index, all) => value && all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index).join(" · ")}</div>
+        {experienceStatus(v) !== "unknown" && <div><span aria-hidden="true">✓</span>{experienceLabel(v)}</div>}
       </div>
+      {v.short && <p className="vac-excerpt">{v.short}</p>}
       <div className="apply">
         <span className="date">{dateFmt(v.date)}</span>
-        <SpringLink className="btn" href={vacancyTgLink(v)} onClick={handleApply} external>
-          {v.tgMsgId ? "Дивитись у Telegram" : "Канал вакансій"}
+        <div className="vac-actions">
+        <Link className="btn vac-details" href={`/vakansiya/${v.id}`}>Детальніше</Link>
+        <SpringLink className="btn vac-telegram" href={vacancyTgLink(v)} onClick={handleApply} external>
+          {v.tgMsgId ? "Telegram ↗" : "Канал Telegram ↗"}
         </SpringLink>
+        </div>
       </div>
     </motion.article>
   );
