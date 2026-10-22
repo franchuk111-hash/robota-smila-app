@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { SITE_NAME } from "@/lib/site-metadata";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "robota-smila — робота у Смілі",
-    short_name: "robota-smila",
+    name: SITE_NAME,
+    short_name: SITE_NAME,
     description:
       "Актуальні вакансії та пошук роботи у Смілі, Черкаська область.",
     start_url: "/",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SITE_NAME, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/site-metadata";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
@@ -12,14 +13,32 @@ import { organizationLd, homepageFaq, itemListLd, faqLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  description: `Вакансії у Смілі (Черкаська область): пропозиції — без досвіду, підробіток, повна зайнятість і робота з щоденною оплатою. Переглядайте умови та спосіб відгуку у вакансіях.`,
+  title: { absolute: HOME_TITLE },
+  description: HOME_DESCRIPTION,
+  openGraph: {
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    siteName: SITE_NAME,
+    url: "https://robota-smila.com.ua/",
+    locale: "uk_UA",
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Робота Сміла — вакансії міста" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    images: ["/og.png"],
+  },
 };
 
 const websiteLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Робота Сміла",
-  alternateName: "robota-smila.com.ua",
+  "@id": "https://robota-smila.com.ua/#website",
+  name: SITE_NAME,
+  alternateName: ["Robota Smila", "robota-smila.com.ua"],
+  publisher: { "@id": "https://robota-smila.com.ua/#organization" },
   url: "https://robota-smila.com.ua/",
   inLanguage: "uk-UA",
   potentialAction: {
@@ -58,7 +77,7 @@ export default function Home() {
               {latest.length ? `Найновіше оголошення: ${dateFmt(latest[0].date)}.` : "Наразі свіжих оголошень немає."} Перегляньте деталі на сайті або відкрийте пост у Telegram.
             </p>
           </Reveal>
-          <div className="grid3">
+          <div className="grid3" data-nosnippet>
             {latest.map((v) => <VacCard key={v.id} v={v} />)}
           </div>
           <p style={{ textAlign: "center", marginTop: 36 }}>

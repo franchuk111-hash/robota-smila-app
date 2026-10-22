@@ -400,6 +400,7 @@ export function vacancyFaq(v: Vacancy): { q: string; a: string }[] {
 // Organization-схема для головної сторінки.
 export const organizationLd = {
   "@context": "https://schema.org",
+  "@id": `${SITE}/#organization`,
   "@type": "Organization",
   name: "Робота Сміла",
   alternateName: "robota-smila.com.ua",

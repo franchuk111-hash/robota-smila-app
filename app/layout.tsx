@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SITE_NAME, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/site-metadata";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import ServiceWorker from "@/components/ServiceWorker";
@@ -10,16 +11,15 @@ import Analytics from "@/components/Analytics";
 export const metadata: Metadata = {
   metadataBase: new URL("https://robota-smila.com.ua"),
   title: {
-    default: "Робота в Смілі 2026: нові вакансії щодня, відгук у Telegram",
+    default: HOME_TITLE,
     template: "%s | robota-smila",
   },
-  description:
-    "Актуальні вакансії у Смілі та Черкаській області. Знайдіть роботу без досвіду, підробіток чи повну зайнятість. Нові вакансії щодня.",
-  applicationName: "robota-smila",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "robota-smila" },
+  description: HOME_DESCRIPTION,
+  applicationName: SITE_NAME,
+  appleWebApp: { capable: true, statusBarStyle: "default", title: SITE_NAME },
   formatDetection: { telephone: false },
   openGraph: {
-    siteName: "Робота Сміла",
+    siteName: SITE_NAME,
     locale: "uk_UA",
     type: "website",
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "Робота Сміла — вакансії міста" }],
