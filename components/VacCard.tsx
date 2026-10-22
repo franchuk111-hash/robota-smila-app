@@ -18,6 +18,8 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
       };
 
+  const schedule = v.type === "FULL_TIME" ? v.schedule.replace(/^повна(?: зайнятість)?(?:,\s*|$)/iu, "").trim() : v.schedule;
+
   const handleApply = () => {
     trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
       source: "vacancy_card",
@@ -53,7 +55,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       <div className="vac-conditions">
         <div><span aria-hidden="true">⌖</span>{vacancyLocation(v)}</div>
-        <div><span aria-hidden="true">◷</span>{[v.schedule, v.typeName].filter((value, index, all) => value && all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index).join(" · ")}</div>
+        <div><span aria-hidden="true">◷</span>{[v.typeName, schedule].filter((value, index, all) => value && all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index).join(" · ")}</div>
         {experienceStatus(v) !== "unknown" && <div><span aria-hidden="true">✓</span>{experienceLabel(v)}</div>}
       </div>
       {v.short && <p className="vac-excerpt">{v.short}</p>}
