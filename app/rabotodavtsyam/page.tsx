@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,7 +6,7 @@ import EmployerForm from "@/components/EmployerForm";
 export const metadata: Metadata = {
   title: "Розмістити вакансію у Смілі — пошук працівників",
   description:
-    "Розмістіть вакансію у Смілі та знайдіть співробітників швидко. Ваше оголошення побачать сотні місцевих шукачів роботи. Просте розміщення за 5 хвилин!",
+    "Залиште заявку на розміщення вакансії у Смілі на сайті та в Telegram. Умови і вартість узгоджуються з адміністратором до публікації.",
   alternates: { canonical: "/rabotodavtsyam" },
 };
 
@@ -20,8 +19,8 @@ export default function EmployerPage() {
         <div className="container">
           <h1>Знайдіть працівників у Смілі</h1>
           <p>
-            Розмістіть вакансію на robota-smila.com.ua — і ваше оголошення побачать
-            сотні місцевих шукачів роботи вже сьогодні.
+            Залиште заявку на розміщення на сайті та в Telegram-каналі «Робота Сміла».
+            Допомогу з текстом, вартість і строки узгодимо з вами до публікації.
           </p>
           <a href="#form" className="btn lg">
             ➕ Розмістити вакансію
@@ -43,16 +42,16 @@ export default function EmployerPage() {
             </div>
             <div className="step">
               <div className="num">2</div>
-              <h3>Ми публікуємо</h3>
+              <h3>Узгоджуємо розміщення</h3>
               <p style={{ color: "var(--muted)" }}>
-                Після модерації вакансія з&apos;являється у каталозі та в пошуку Google.
+                Адміністратор перевіряє текст і погоджує з вами формат, вартість та час публікації.
               </p>
             </div>
             <div className="step">
               <div className="num">3</div>
-              <h3>Отримуйте відгуки</h3>
+              <h3>Публікуємо погоджений текст</h3>
               <p style={{ color: "var(--muted)" }}>
-                Кандидати відгукуються онлайн — ви отримуєте їхні контакти.
+                Після погодження розміщуємо вакансію з вашими контактами. Кандидати звертаються за ними; кількість відгуків і найм не гарантуються.
               </p>
             </div>
           </div>

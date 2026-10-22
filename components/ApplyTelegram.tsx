@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import { motion } from "motion/react";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 
@@ -15,6 +17,7 @@ export default function ApplyTelegram({
   vacancyTitle: string;
   category: string;
 }) {
+  const pathname = usePathname();
   const handleApply = () => {
     trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
       source: "vacancy_detail",
@@ -29,12 +32,12 @@ export default function ApplyTelegram({
     <aside className="aside-apply">
       <h3 style={{ marginTop: 0 }}>Вакансії в Telegram</h3>
       <p style={{ color: "var(--muted)", fontSize: 15, margin: "0 0 16px" }}>
-        Перейдіть у Telegram-канал, щоб переглянути нові вакансії Сміли.
+        Перегляньте оголошення в Telegram. Спосіб зв’язку з роботодавцем вказано в пості; автоматичної відправки заявки немає.
       </p>
       <motion.a
-        href={href}
+        href={getOutboundHref(href, pathname)}
         target="_blank"
-        rel="noopener noreferrer"
+        rel={OUTBOUND_REL}
         onClick={handleApply}
         className="btn tg-apply"
         style={{
@@ -50,7 +53,7 @@ export default function ApplyTelegram({
         transition={spring}
       >
         <TelegramGlyph />
-        Відкрити канал вакансій
+        Переглянути в Telegram
       </motion.a>
       <p style={{ color: "var(--muted)", fontSize: 13, margin: "12px 0 0" }}>
         Відкриється Telegram · @robota_smila_ua

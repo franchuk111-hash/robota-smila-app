@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
-import { COMPANIES, VACANCIES } from "@/lib/data";
+import { COMPANIES, getActiveVacancies } from "@/lib/data";
 
 export function generateStaticParams() {
   return COMPANIES.map((c) => ({ slug: c.slug }));
@@ -16,12 +16,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  const VACANCIES = getActiveVacancies();
   const { slug } = await params;
   const c = COMPANIES.find((x) => x.slug === slug);
   if (!c) return { title: "Компанію не знайдено" };
   return {
     title: `${c.name} — вакансії у Смілі`,
     description: `${c.name}: ${c.about} Актуальні вакансії у Смілі.`,
+    robots: VACANCIES.some(v => v.company === c.name) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/kompaniya/${c.slug}` },
   };
 }
@@ -31,6 +33,7 @@ export default async function CompanyPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const VACANCIES = getActiveVacancies();
   const { slug } = await params;
   const c = COMPANIES.find((x) => x.slug === slug);
   if (!c) notFound();
@@ -41,12 +44,6 @@ export default async function CompanyPage({
     "@type": "Organization",
     name: c.name,
     description: c.about,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Сміла",
-      addressRegion: "Черкаська область",
-      addressCountry: "UA",
-    },
   };
 
   return (
@@ -88,7 +85,7 @@ export default async function CompanyPage({
           </div>
           <div className="locs" style={{ fontSize: 16 }}>
             {c.industry}
-            <span className="dot">·</span>Сміла, {c.district}
+            <span className="dot">·</span>{c.district}
           </div>
           <p style={{ fontSize: 18, marginTop: 14 }}>{c.about}</p>
         </div>
@@ -108,3 +105,5 @@ export default async function CompanyPage({
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

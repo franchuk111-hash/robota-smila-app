@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import { salaryStatistics } from "@/lib/vacancy-facts";
 import { VACANCIES, CATEGORIES } from "@/lib/data";
 
 export default function Zarplatomir() {
@@ -9,13 +10,7 @@ export default function Zarplatomir() {
   const stat = useMemo(() => {
     const list = VACANCIES.filter((v) => v.cat === cat);
     if (!list.length) return null;
-    // Для середньої рахуємо лише вакансії з вказаною зарплатою (не «Договірна»)
-    const paid = list.filter((v) => !(v.salary[0] === 0 && v.salary[1] === 0));
-    if (!paid.length) return { count: list.length, avgMin: 0, avgMax: 0, mid: 0 };
-    const avgMin = Math.round(paid.reduce((s, v) => s + v.salary[0], 0) / paid.length);
-    const avgMax = Math.round(paid.reduce((s, v) => s + v.salary[1], 0) / paid.length);
-    const mid = Math.round((avgMin + avgMax) / 2);
-    return { count: list.length, avgMin, avgMax, mid };
+    return salaryStatistics(list);
   }, [cat]);
 
   const f = (n: number) => n.toLocaleString("uk-UA");
@@ -35,7 +30,7 @@ export default function Zarplatomir() {
 
       {stat ? (
         <div className="result">
-          <div className="lbl">Середня зарплата у Смілі</div>
+          <div className="lbl">Середня зарплата у вибірці</div>
           <div className="big">{f(stat.mid)} ₴</div>
           <div className="lbl" style={{ marginTop: 6 }}>
             діапазон {f(stat.avgMin)} – {f(stat.avgMax)} ₴ · за {stat.count} вакансіями
@@ -49,7 +44,7 @@ export default function Zarplatomir() {
           </Link>
         </div>
       ) : (
-        <div className="result">Немає даних за цим напрямком</div>
+        <div className="result">Немає вакансій із зазначеною зарплатою за цим напрямком</div>
       )}
     </div>
   );

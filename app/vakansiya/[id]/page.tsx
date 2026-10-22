@@ -1,3 +1,6 @@
+import { experienceStatus, vacancyLocation, canPublishJobPosting } from "@/lib/vacancy-facts";
+import { getOutboundHref, getVacancySourceHref, OUTBOUND_REL } from "@/lib/outbound-links";
+import { isListedVacancy } from "@/lib/vacancy-lifecycle";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -8,11 +11,11 @@ import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, salaryFmt, dateFmt, vacancyTgLink, isStale, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
-import { validThrough, KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
+import { ALL_VACANCIES, getActiveVacancies, salaryFmt, dateFmt, vacancyTgLink, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
+import { KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
 
 export function generateStaticParams() {
-  return VACANCIES.map((v) => ({ id: String(v.id) }));
+  return ALL_VACANCIES.map((v) => ({ id: String(v.id) }));
 }
 
 export async function generateMetadata({
@@ -21,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const v = VACANCIES.find((x) => x.id === Number(id));
+  const v = ALL_VACANCIES.find((x) => x.id === Number(id));
   if (!v) return { title: "Вакансію не знайдено" };
   const salaryTitle =
     v.salary[0] === 0 && v.salary[1] === 0
@@ -29,7 +32,8 @@ export async function generateMetadata({
       : `${v.salary[0].toLocaleString("uk-UA")} ₴`;
   return {
     title: `${v.title} — робота у Смілі, ${salaryTitle}`,
-    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Відгукніться онлайн вже сьогодні!`,
+    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Перегляньте умови та спосіб відгуку в оголошенні.`,
+    robots: isListedVacancy(v) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/vakansiya/${v.id}` },
   };
 }
@@ -40,12 +44,12 @@ export default async function VacancyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const v = VACANCIES.find((x) => x.id === Number(id));
+  const v = ALL_VACANCIES.find((x) => x.id === Number(id));
   if (!v) notFound();
 
-  const similar = VACANCIES.filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
+  const similar = getActiveVacancies().filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);
   const faqs = vacancyFaq(v);
-  const stale = isStale(v.date, 30);
+  const stale = !isListedVacancy(v);
 
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
@@ -53,15 +57,17 @@ export default async function VacancyPage({
     "@context": "https://schema.org/",
     "@type": "JobPosting",
     title: v.title,
-    description:
-      `<p>${v.short}</p><ul>` + v.duties.map((d) => `<li>${d}</li>`).join("") + "</ul>",
+    description: `<p>${escapeHtml(v.short)}</p>` +
+      [["Деталі вакансії", v.duties], ["Вимоги", v.req], ["Ми пропонуємо", v.offer]].map(([heading, values]) =>
+        (values as string[]).length ? `<h3>${heading}</h3><ul>${(values as string[]).map((d) => `<li>${escapeHtml(d)}</li>`).join("")}</ul>` : ""
+      ).join(""),
     identifier: {
       "@type": "PropertyValue",
       name: v.company,
       value: String(v.id),
     },
     datePosted: v.date,
-    validThrough: validThrough(v.date),
+    ...(v.validThrough && { validThrough: v.validThrough }),
     directApply: false,
     industry: v.catName,
     url: `https://robota-smila.com.ua/vakansiya/${v.id}`,
@@ -77,7 +83,6 @@ export default async function VacancyPage({
         "@type": "PostalAddress",
         addressLocality: "Сміла",
         addressRegion: "Черкаська область",
-        postalCode: "20700",
         addressCountry: "UA",
       },
     },
@@ -100,10 +105,7 @@ export default async function VacancyPage({
     <>
       <Header />
       <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
-      />
+      {!stale && canPublishJobPosting(v) && <JsonLd data={ld} />}
       <BreadcrumbLd
         items={[
           { name: "Головна", path: "/" },
@@ -134,21 +136,21 @@ export default async function VacancyPage({
             <div className="tags">
               <span className="tag">{v.typeName}</span>
               <span className="tag gray">{v.schedule}</span>
-              {!v.exp && <span className="tag">Без досвіду</span>}
+              {experienceStatus(v) === "not-required" && <span className="tag">Без досвіду</span>}
               <span className="tag gray">
-                📍 Сміла{v.district && v.district !== "Сміла" ? `, ${v.district}` : ""}
+                📍 {vacancyLocation(v)}
               </span>
               <span className="tag gray">Опубліковано: {dateFmt(v.date)}</span>
             </div>
             <p style={{ fontSize: 18 }}>{v.short}</p>
             {stale ? (
               <div className="callout warn">
-                <b>Перевірте актуальність.</b> Оголошення опубліковано {dateFmt(v.date)} (
+                <b>Архівне оголошення — актуальність не підтверджена.</b> Оголошення опубліковано {dateFmt(v.date)} (
                 {ageInDays(v.date)} дн. тому) — роботодавець міг уже закрити цю вакансію.
-                Уточнюйте умови перед відгуком.{" "}
+                Цю вакансію не включено до поточної добірки. Уточнюйте стан у джерелі.{" "}
                 <Link href={`/vakansii/${v.cat}`}>Свіжі вакансії категорії</Link> та нові
-                пропозиції Сміли ми публікуємо щодня в{" "}
-                <a href={TELEGRAM_CHANNEL_URL} target="_blank" rel="noopener noreferrer">
+                пропозиції Сміли дивіться в{" "}
+                <a href={getOutboundHref(TELEGRAM_CHANNEL_URL, `/vakansiya/${v.id}`)} target="_blank" rel={OUTBOUND_REL}>
                   Telegram-каналі
                 </a>
                 .
@@ -156,9 +158,10 @@ export default async function VacancyPage({
             ) : (
               <div className="callout tip">
                 <b>Свіже оголошення.</b> Опубліковано {dateFmt(v.date)} — {ageInDays(v.date)} дн.
-                тому. Відгукнутися можна за 1 хвилину: заявка йде роботодавцю в Telegram.
+                тому. Відкрийте пост у Telegram, щоб перевірити спосіб зв’язку з роботодавцем. Заявка автоматично не надсилається.
               </div>
             )}
+            {v.sourceUrl && <p>Джерело: <a href={getVacancySourceHref(v.id)} target="_blank" rel={OUTBOUND_REL}>{v.source || "Оригінальне оголошення"}</a>. Уточнюйте актуальність і спосіб відгуку у джерелі.</p>}
             {v.duties.length > 0 && <><h3>Деталі вакансії</h3><ul>{v.duties.map((d) => <li key={d}>{d}</li>)}</ul></>}
             {v.req.length > 0 && <><h3>Вимоги</h3><ul>{v.req.map((d) => <li key={d}>{d}</li>)}</ul></>}
             {v.offer.length > 0 && <><h3>Ми пропонуємо</h3><ul>{v.offer.map((d) => <li key={d}>{d}</li>)}</ul></>}
@@ -197,4 +200,10 @@ export default async function VacancyPage({
 <Footer />
     </>
   );
+}
+
+export const dynamic = "force-dynamic";
+
+function escapeHtml(value: string) {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

@@ -1,3 +1,4 @@
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
@@ -39,7 +40,7 @@ export default function PrivacyPage() {
             <b>Реквізити володільця персональних даних:</b> [ФОП / ТОВ «Назва»],
             [ЄДРПОУ / РНОКПП], м. Сміла, Черкаська область. Контакт для питань щодо
             даних: Telegram{" "}
-            <a href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
+            <a href={getOutboundHref("https://t.me/Smila_admin", "/polityka-konfidentsiynosti")} target="_blank" rel={OUTBOUND_REL}>
               @Smila_admin
             </a>
             . Ці реквізити слід замінити на актуальні дані оператора.
@@ -117,7 +118,7 @@ export default function PrivacyPage() {
           </ul>
           <p>
             Щоб скористатися правами, напишіть нам у Telegram{" "}
-            <a href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
+            <a href={getOutboundHref("https://t.me/Smila_admin", "/polityka-konfidentsiynosti")} target="_blank" rel={OUTBOUND_REL}>
               @Smila_admin
             </a>
             .
@@ -139,7 +140,7 @@ export default function PrivacyPage() {
           <h2>9. Контакти</h2>
           <p>
             З питань щодо обробки персональних даних звертайтесь у Telegram{" "}
-            <a href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
+            <a href={getOutboundHref("https://t.me/Smila_admin", "/polityka-konfidentsiynosti")} target="_blank" rel={OUTBOUND_REL}>
               @Smila_admin
             </a>
             .

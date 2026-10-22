@@ -1,3 +1,4 @@
+import { experienceLabel } from "./vacancy-facts";
 // Генерує SVG карточку вакансії для Telegram
 import { Vacancy } from "./data";
 
@@ -79,7 +80,7 @@ export function generateVacancyCardSVG(v: Vacancy): string {
     <text x="${padding}" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">📍 ${escapeXML(v.district)}</text>
     <text x="${width / 2}" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">🕐 ${escapeXML(v.schedule)}</text>
 
-    <text x="${padding}" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">${v.exp ? "💪 Досвід від 1 року" : "📚 Без досвіду"}</text>
+    <text x="${padding}" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">${experienceLabel(v)}</text>
     <text x="${width / 2}" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">${escapeXML(v.typeName)}</text>
 
     <!-- Divider line 2 -->

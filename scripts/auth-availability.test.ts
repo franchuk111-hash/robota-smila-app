@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { authAvailability } from '../lib/auth-availability';
+const ready = { AUTH_SECRET: 'fixture-session', AUTH_GOOGLE_ID: 'fixture-id', AUTH_GOOGLE_SECRET: 'fixture-client', TELEGRAM_BOT_TOKEN: 'fixture-token', TELEGRAM_BOT_USERNAME: 'Example_bot' };
+assert.deepEqual(authAvailability({}), { google: false, telegram: false, telegramUsername: null });
+assert.deepEqual(authAvailability(ready), { google: true, telegram: true, telegramUsername: 'Example_bot' });
+assert.deepEqual(authAvailability({ ...ready, AUTH_SECRET: '' }), { google: false, telegram: false, telegramUsername: null });
+assert.equal(authAvailability({ ...ready, AUTH_GOOGLE_SECRET: '' }).google, false);
+assert.equal(authAvailability({ ...ready, AUTH_GOOGLE_ID: '' }).google, false);
+assert.equal(authAvailability({ ...ready, TELEGRAM_BOT_TOKEN: '' }).telegramUsername, null);
+assert.equal(authAvailability({ ...ready, TELEGRAM_BOT_USERNAME: 'bad username' }).telegramUsername, null);
+assert.equal(authAvailability({ ...ready, TELEGRAM_BOT_USERNAME: '@Example_bot' }).telegramUsername, 'Example_bot');
+assert.equal(authAvailability({ ...ready, TELEGRAM_BOT_USERNAME: '', NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: 'Legacy_bot' }).telegramUsername, 'Legacy_bot');
+assert.equal(authAvailability({ ...ready, NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: 'Legacy_bot' }).telegramUsername, 'Example_bot');
+assert.equal(authAvailability({ ...ready, AUTH_SECRET: '', NEXTAUTH_SECRET: 'legacy-session' }).google, true);
+assert.deepEqual(Object.keys(authAvailability(ready)).sort(), ['google', 'telegram', 'telegramUsername']);
+assert.equal(authAvailability({ AUTH_SECRET: 'fixture', TELEGRAM_BOT_TOKEN: 'fixture' }).telegram, true);
+assert.equal(authAvailability({ AUTH_SECRET: 'fixture', TELEGRAM_BOT_TOKEN: 'fixture' }).telegramUsername, null);
+console.log('PASS: runtime availability, missing credentials/session secret, username validation, public-only response and legacy fallback.');

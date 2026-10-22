@@ -39,7 +39,7 @@ npx wrangler secret put AUTH_GOOGLE_SECRET
 npx wrangler secret put TELEGRAM_BOT_TOKEN
 npx wrangler secret put ADMIN_TELEGRAM_CHAT_ID
 ```
-`NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` — публічна змінна, вона вшивається в код на етапі **збірки** (`next build`), тому її потрібно покласти в `.env.local` (або передати як build-time env у налаштуваннях CI) ПЕРЕД `npm run deploy` — `wrangler secret`/`vars` тут не підходять, бо ті доступні лише в рантаймі.
+`TELEGRAM_BOT_USERNAME` — публічне ім’я бота без `@`, доступне в runtime. Якщо його не задано, сервер визначає ім’я через `getMe`; токен не передається браузеру. `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` підтримується як legacy fallback. Google показується лише за наявності обох OAuth credentials та session secret. У BotFather потрібно прив’язати до бота домен `robota-smila.com.ua` командою `/setdomain`.
 
 **Домен:** Cloudflare Dashboard → Workers & Pages → цей Worker → Settings → Domains & Routes → додай `robota-smila.com.ua` (домен має бути підключений до цього ж Cloudflare-акаунту).
 
@@ -51,7 +51,7 @@ npx wrangler secret put ADMIN_TELEGRAM_CHAT_ID
 | `AUTH_SECRET` | `openssl rand -base64 32` |
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google Cloud Console → Credentials → OAuth client ID (Web). Redirect URI: `https://ТВІЙ-ДОМЕН/api/auth/callback/google` |
 | `TELEGRAM_BOT_TOKEN` | @BotFather → новий бот. Далі `/setdomain` → вкажи домен сайту |
-| `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` | ім'я бота без `@` |
+| `TELEGRAM_BOT_USERNAME` | ім'я бота без `@`, необов’язкове за доступного `getMe` |
 | `ADMIN_TELEGRAM_CHAT_ID` | (необов'язково) куди слати відгуки; дізнатися через @userinfobot |
 
 ## Дані
@@ -72,3 +72,37 @@ GitHub Actions запускає синхронізацію кожні три г�
 
 ## Ліцензії
 Іконка логотипа (лупа) — [Twemoji](https://github.com/twitter/twemoji) © Twitter, ліцензія CC-BY 4.0.
+
+
+### Runtime login configuration
+
+Authentication reads Cloudflare Worker secrets at request time. `AUTH_SECRET`
+(or legacy `NEXTAUTH_SECRET`) is required. Google is shown only when both
+`AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` exist. Telegram requires
+`TELEGRAM_BOT_TOKEN`; `/api/auth-options` resolves its public username with the
+read-only Telegram `getMe` method when `TELEGRAM_BOT_USERNAME` is absent. Only
+the validated public username is cached for five minutes and sent to the client.
+`NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` remains a legacy fallback; rebuilding with
+that variable is no longer required to enable the widget. Failed discovery hides
+the Telegram option and never exposes the token. CSP must allow the widget script
+and iframe as described in SECURITY.md.
+
+### Production source and rollback protection
+
+Use `npm run deploy` from the current `main` source. It checks required production
+features before building and verifies the built phone video before publishing
+with `--keep-vars`, preserving Google OAuth configuration.
+
+The optional local scheduler entrypoint is `scripts/robota-smila-auto-deploy.sh`.
+It accepts only a clean tracked checkout of this repository on `main`, preserves
+live vacancy IDs and Telegram post references, checks the remote SHA again after
+building, archives the exact source, then verifies production HTTP routes.
+Installing this entrypoint does not enable its external scheduler.
+
+The legacy Hermes job `85d49d2419b6` published the retired design from
+`~/robota-smila-app`; keep that job paused until deliberately re-enabling this
+protected entrypoint. Do not run a saved `.open-next` build directly.
+
+Run `npm test`, `npm run typecheck`, and the production build before publishing.
+The release-specific snapshot verifier `scripts/verify-reconciliation-evidence.mjs`
+requires the local `reports` archive and is separate from portable unit tests.

@@ -1,7 +1,9 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import VacCard from "./VacCard";
+import { matchesVacancyQuery } from "@/lib/vacancy-search";
+import { experienceStatus } from "@/lib/vacancy-facts";
 import { Vacancy, Category } from "@/lib/data";
 
 const filterGroupVariants = {
@@ -38,16 +40,18 @@ export default function Catalog({
   );
   const [types, setTypes] = useState<Set<string>>(new Set());
   const [exp, setExp] = useState(initialExp);
-  const q = initialQ.toLowerCase();
+  const [query, setQuery] = useState(initialQ);
+  useEffect(() => setQuery(initialQ), [initialQ]);
+  const q = query.trim().toLowerCase();
 
   const items = useMemo(() => {
     let list = vacancies.slice();
     if (cats.size) list = list.filter((v) => cats.has(v.cat));
     if (types.size) list = list.filter((v) => types.has(v.type));
-    if (exp) list = list.filter((v) => !v.exp);
+    if (exp) list = list.filter((v) => experienceStatus(v) === "not-required");
     if (q)
       list = list.filter((v) =>
-        (v.title + " " + v.company + " " + v.short).toLowerCase().includes(q)
+        matchesVacancyQuery(v, q)
       );
     return list.sort((a, b) => +new Date(b.date) - +new Date(a.date));
   }, [vacancies, cats, types, exp, q]);
@@ -70,6 +74,11 @@ export default function Catalog({
       </nav>
       <h1 className="page-h1">{heading}</h1>
       <p className="sub">Актуальні пропозиції роботи з фільтрами за напрямком і графіком</p>
+
+      <form className="searchbar" onSubmit={(event) => event.preventDefault()}>
+        <input type="search" aria-label="Пошук вакансій" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Наприклад: водій, без досвіду" />
+        {query && <button type="button" className="btn" onClick={() => setQuery("")}>Очистити</button>}
+      </form>
 
       <div className="layout">
         <aside className="filters">

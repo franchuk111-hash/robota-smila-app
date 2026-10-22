@@ -1,4 +1,7 @@
+import { isListedVacancy } from "./vacancy-lifecycle";
+import { vacancyCategory } from "./vacancy-category";
 import collectedVacancies from "@/data/collected-vacancies.json";
+import manualVacancies from "@/data/manual-vacancies.json";
 
 // Демо-дані для robota-smila (Сміла, Черкаська область)
 export type Vacancy = {
@@ -13,6 +16,7 @@ export type Vacancy = {
   source?: string;
   sourceUrl?: string;
   sourceId?: string;
+  validThrough?: string; // Only a source-confirmed deadline, never an automatically extended date.
 };
 
 export type Category = { slug: string; name: string; ico: string };
@@ -63,23 +67,23 @@ const SEED_VACANCIES: Vacancy[] = [
   { id: 1053, hot: true, slug: "mayster-universal", title: "Майстер-універсал", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-07-07", short: "Потрібні майстри-універсали у бригаду V.G.BuildingTeam. Різнопланові будівельні роботи, постійні обсяги та своєчасна оплата.", duties: ["Різнопланові будівельні та оздоблювальні роботи", "Робота на різних етапах об'єкта", "Взаємодія в бригаді"], req: ["Досвід у кількох будівельних напрямах", "Бригади або майстри (мін. 2 особи)", "Універсальність та відповідальність"], offer: ["Оплата за широкий спектр виконаних робіт", "Гнучкий графік і розвозка на об'єкти", "Бонуси за універсальність і якість", "Різнопланові об'єкти — без простоїв", "Стабільні виплати"] },
 ];
 
-const COLLECTED_VACANCIES = collectedVacancies as unknown as Vacancy[];
+const COLLECTED_VACANCIES = (collectedVacancies as unknown as Vacancy[]).map((v) => ({ ...v, ...vacancyCategory(v.title, v.catName) }));
 
 // Зібрані з порталів вакансії (з живими посиланнями на Telegram-пости) йдуть
 // першими, решта демо-набір лишається, щоб уже проіндексовані сторінки не
 // зникали. Дублікати за id не допускаємо.
 const collectedIds = new Set(COLLECTED_VACANCIES.map((v) => v.id));
-export const VACANCIES: Vacancy[] = [
+export const ALL_VACANCIES: Vacancy[] = [
   ...COLLECTED_VACANCIES,
-  ...SEED_VACANCIES.filter((v) => !collectedIds.has(v.id)),
-  { id: 1898377601, slug: "kontent-meiker-administrator-racioteka", title: "Контент-мейкер / адміністратор проєкту «Раціотека»", company: "Раціотека", salary: [0, 0], cat: "office", catName: "Офіс / фінанси", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Віддалено, гнучкий графік", district: "віддалено", exp: false, date: "2026-10-14", paymentFrequency: "monthly", short: "Проєкт «Раціотека» — український каталог сервісів доставки готових раціонів — шукає контент-мейкера й адміністратора. Формат і графік обговорюються, робота віддалена.", duties: ["Готувати й редагувати українською тексти для сайту та соціальних мереж", "Створювати пости, короткі відео та візуальні матеріали в корпоративному стилі", "Перевіряти й оновлювати інформацію про сервіси: меню, ціни, посилання та умови доставки", "Модерувати коментарі й звернення, відповідати на типові запитання", "Планувати публікації та пропонувати теми, корисні для аудиторії", "Стежити за коректним оформленням матеріалів на сайті"], req: ["Грамотна українська мова, вміння писати зрозуміло й без зайвих слів", "Розуміння просування та адміністрування онлайн-проєктів", "Базові знання SEO та роботи соціальних мереж", "Вміння перевіряти інформацію, працювати з джерелами й бути уважним до деталей", "Навички створення зображень і монтажу коротких відео", "Відповідальність і здатність самостійно організовувати роботу"], offer: ["Проєкт «Раціотека» — каталог для порівняння сервісів доставки готових раціонів (racioteka.com.ua)", "Робота віддалена: виконувати завдання можна зі Сміли", "Оплата за домовленістю — залежно від досвіду й погодженого обсягу завдань", "Зайнятість і графік обговорюються індивідуально", "Комерційний досвід не обов'язковий: без нього можна надіслати власні роботи", "Відгук: коротка розповідь про себе та приклади текстів, публікацій чи відео на info@racioteka.com.ua"] },
-  { id: 1054, hot: true, slug: "kameniar", title: "Каменяр (кам'яні роботи)", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-10-15", short: "V.G.BuildingTeam запрошує каменярів на кам'яні та цегляні роботи. Постійні об'єкти у Смілі й регіоні, розвозка та оплата за обсяг.", duties: ["Кладка каменю, цегли та блоків", "Влаштування стін, перегородок і опорних конструкцій", "Підготовка розчину й основи під кладку"], req: ["Досвід кам'яних або мурувальних робіт", "Бригади або майстри (мін. 2 особи)", "Охайність і дотримання геометрії"], offer: ["Відрядна оплата за обсяг кладки", "Розвозка на об'єкти по Смілі та регіону", "Премії за рівність кладки й темп", "Стабільний потік замовлень", "Своєчасні розрахунки"] },
-  { id: 1055, hot: true, slug: "betoniuvalnyk", title: "Бетонувальник", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-10-15", short: "Потрібні бетонувальники у бригаду V.G.BuildingTeam: опалубка, армування та заливка бетону на постійних об'єктах.", duties: ["Влаштування опалубки та арматурних каркасів", "Заливка, ущільнення й вирівнювання бетону", "Догляд за бетоном до набору міцності"], req: ["Досвід бетонних робіт", "Бригади або майстри (мін. 2 особи)", "Готовність до фізичної роботи на об'єкті"], offer: ["Оплата за обсяг бетонних робіт", "Забезпечення інструментом і розвозка", "Премії за якість поверхні та темп", "Постійні об'єкти без простоїв", "Виплати без затримок"] },
-  { id: 1056, hot: true, slug: "demontazhnyk", title: "Демонтажник", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-10-15", short: "V.G.BuildingTeam набирає демонтажників на розбирання конструкцій і підготовку об'єктів до робіт. Обсяги постійні.", duties: ["Демонтаж стін, перегородок і конструкцій", "Розбирання покриттів і оздоблення", "Сортування та винесення будівельного сміття"], req: ["Досвід демонтажних робіт або готовність навчатися", "Бригади або майстри (мін. 2 особи)", "Дотримання техніки безпеки"], offer: ["Погодинна або відрядна оплата за обсяг", "Засоби захисту й інструмент від компанії", "Розвозка на об'єкти по Смілі та регіону", "Постійний потік об'єктів", "Своєчасні розрахунки"] },
-  { id: 1057, hot: true, slug: "ozdobliuvalnyk", title: "Оздоблювач (спеціаліст)", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-10-15", short: "Запрошуємо спеціалістів-оздоблювальників: штукатурні, шпаклювальні та фінішні роботи у V.G.BuildingTeam.", duties: ["Штукатурні та шпаклювальні роботи", "Фінішне оздоблення стель і стін", "Підготовка поверхонь під фарбування та плитку"], req: ["Досвід оздоблювальних робіт", "Бригади або майстри (мін. 2 особи)", "Акуратність і відповідальність за результат"], offer: ["Оплата за обсяг оздоблювальних робіт", "Розвозка на об'єкти", "Премії за чистоту й якість фінішу", "Стабільні об'єкти з оздоблення", "Виплати вчасно"] },
+  ...(manualVacancies as Vacancy[]).filter(v => !collectedIds.has(v.id)),
+  ...SEED_VACANCIES.filter((v) => !collectedIds.has(v.id) && !(manualVacancies as Vacancy[]).some(manual => manual.id === v.id)),
 ];
 
-export const COMPANIES: Company[] = [
+export const getActiveVacancies = (now = Date.now()): Vacancy[] => ALL_VACANCIES.filter((v) => isListedVacancy(v, now));
+// Snapshot for existing client utilities; server lists call getActiveVacancies per request.
+export const VACANCIES = getActiveVacancies();
+
+const LEGACY_COMPANIES: Company[] = [
   { slug: "produkty-plus", name: "Магазин «Продукти Плюс»", ico: "🛒", industry: "Роздрібна торгівля", about: "Мережа продуктових магазинів у Смілі. Понад 6 точок у різних районах міста.", district: "центр" },
   { slug: "smilaagrotrans", name: "ТОВ «Смілаагротранс»", ico: "🚚", industry: "Логістика та перевезення", about: "Транспортна компанія, що виконує вантажні перевезення по Черкаській області та Україні.", district: "промзона" },
   { slug: "lasunya", name: "Кондитерська фабрика «Ласуня»", ico: "🍭", industry: "Харчове виробництво", about: "Виробник кондитерських виробів у Смілі. Сучасне обладнання, стабільний колектив.", district: "промзона" },
@@ -88,6 +92,24 @@ export const COMPANIES: Company[] = [
   { slug: "agrarny-dvir", name: "ТОВ «Аграрний двір»", ico: "🌾", industry: "Сільське господарство", about: "Аграрне підприємство Черкаської області. Офіційне працевлаштування, соцпакет.", district: "центр" },
   { slug: "smilabud", name: "Будівельна компанія «СмілаБуд»", ico: "🏗️", industry: "Будівництво", about: "Будівельна компанія повного циклу. Об'єкти у Смілі та районі.", district: "промзона" },
 ];
+
+// Preserve historical employer URLs, but derive the catalog from published records.
+function companySlug(name: string): string {
+  const known = LEGACY_COMPANIES.find(c => c.name === name);
+  if (known) return known.slug;
+  let hash = 2166136261;
+  for (const char of name) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
+  return `employer-${(hash >>> 0).toString(36)}`;
+}
+export const COMPANIES: Company[] = [...new Set(ALL_VACANCIES.map(v => v.company))].map(name => {
+  const vacancy = ALL_VACANCIES.find(v => v.company === name)!;
+  const known = LEGACY_COMPANIES.find(c => c.name === name);
+  return { slug: companySlug(name), name, ico: known?.ico ?? "🏢", industry: "Роботодавець", about: `Оголошення роботодавця «${name}». Умови та контакти перевіряйте в конкретній вакансії.`, district: vacancy.district || "Уточнюйте в оголошенні" };
+});
+export function getActiveCompanies(now = Date.now()): Company[] {
+  const names = new Set(getActiveVacancies(now).map(v => v.company));
+  return COMPANIES.filter(c => names.has(c.name));
+}
 
 export const ARTICLES: Article[] = [
   { slug: "serednya-zarplata-smila-2026", date: "2026-06-25", title: "Середня зарплата в Смілі 2026: огляд по професіях", excerpt: "Скільки реально платять у Смілі продавцям, водіям, робітникам та офісним працівникам. Актуальні цифри та поради, як заробляти більше.", body: ["Ринок праці Сміли у 2026 році залишається стабільним, а рівень зарплат поступово зростає слідом за інфляцією. У цій статті ми зібрали орієнтовні діапазони оплати за найпопулярнішими напрямками.", "<b>Торгівля та сфера послуг.</b> Продавці та касири у Смілі отримують від 16 000 до 22 000 грн, адміністратори — 14 000–19 000 грн. Заробіток часто залежить від графіка та наявності премій.", "<b>Виробництво та робітничі спеціальності.</b> Оператори виробничих ліній та різнороби заробляють 16 000–24 000 грн, кваліфіковані спеціалісти (електрики, наладчики) — до 28 000 грн.", "<b>Водії.</b> Одна з найоплачуваніших категорій: водії категорії C заробляють від 25 000 грн, а на далеких рейсах — до 35 000 грн і більше.", "<b>Як заробляти більше.</b> Обирайте вакансії з офіційним працевлаштуванням та системою премій, підвищуйте кваліфікацію та відгукуйтесь на кілька вакансій одночасно, щоб мати вибір.",

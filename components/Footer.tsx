@@ -1,10 +1,13 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import Emblem from "./Emblem";
 import { IconTikTok, IconYouTube, IconTelegram } from "./SocialIcons";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 
 export default function Footer() {
+  const pathname = usePathname();
   return (
     <footer className="site">
       <div className="container">
@@ -20,17 +23,17 @@ export default function Footer() {
               Знайди роботу в Смілі. Розвивай місто разом із нами.
             </p>
             <div className="socials">
-              <a className="soc" href="https://www.tiktok.com/@robota_smila" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+              <a className="soc" href={getOutboundHref("https://www.tiktok.com/@robota_smila")} target="_blank" rel={OUTBOUND_REL} aria-label="TikTok">
                 <IconTikTok size={32} />
               </a>
-              <a className="soc" href="https://www.youtube.com/@Robota-smila" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <a className="soc" href={getOutboundHref("https://www.youtube.com/@Robota-smila")} target="_blank" rel={OUTBOUND_REL} aria-label="YouTube">
                 <IconYouTube size={32} />
               </a>
               <a
                 className="soc"
-                href="https://t.me/Smila_admin"
+                href={getOutboundHref("https://t.me/Smila_admin", pathname)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel={OUTBOUND_REL}
                 aria-label="Telegram"
                 onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
               >
@@ -61,9 +64,9 @@ export default function Footer() {
             <Link href="/aktsiya">🎁 Розіграш для підписників</Link>
             <Link href="/blog">Блог</Link>
             <a
-              href="https://t.me/Smila_admin"
+              href={getOutboundHref("https://t.me/Smila_admin", pathname)}
               target="_blank"
-              rel="noopener noreferrer"
+              rel={OUTBOUND_REL}
               onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
             >
               Зв&apos;язок: @Smila_admin

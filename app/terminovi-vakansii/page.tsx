@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import LandingPage from "@/components/LandingPage";
 import { LANDINGS, landingTitle } from "@/lib/seo";
-import { VACANCIES } from "@/lib/data";
+import { getActiveVacancies } from "@/lib/data";
 
 const seo = LANDINGS.find((l) => l.slug === "terminovi-vakansii")!;
-const count = VACANCIES.filter(seo.filter).length;
 
-export const metadata: Metadata = {
+export function generateMetadata(): Metadata {
+  const count = getActiveVacancies().filter(seo.filter).length;
+  return {
   title: landingTitle(seo.h1, count),
   description: seo.description,
   alternates: { canonical: `/${seo.slug}` },
-};
+  };
+}
 
 export default function Page() {
   return <LandingPage seo={seo} />;
 }
+
+export const dynamic = "force-dynamic";

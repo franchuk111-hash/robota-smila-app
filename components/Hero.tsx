@@ -2,7 +2,7 @@
 import { motion } from "motion/react";
 import StatsMotion from "./StatsMotion";
 import SubscribeCTA from "./SubscribeCTA";
-import HeroVideoPortrait from "./HeroVideoPortrait";
+import HeroPhoneVideo from "./HeroPhoneVideo";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const item = {
@@ -10,7 +10,7 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 };
 
-export default function Hero() {
+export default function Hero({ vacancyCount, companyCount }: { vacancyCount: number; companyCount: number }) {
   return (
     <section className="hero">
       <motion.div
@@ -24,7 +24,7 @@ export default function Hero() {
             <span className="live-dot" aria-hidden="true" /> Нові вакансії Сміли щодня
           </motion.div>
           <motion.h1 variants={item}>
-            Знайдіть роботу<br /><span>у своєму місті</span>
+            Робота <span>у Смілі</span>
           </motion.h1>
           <motion.p variants={item}>
             Свіжі вакансії, зарплата й графік без зайвих переходів. Оберіть роботу на сайті — відкрийте точний пост у Telegram.
@@ -39,13 +39,13 @@ export default function Hero() {
             <SubscribeCTA source="homepage_hero" label="Підписатись у Telegram" />
             <span>Безкоштовно · лише вакансії Сміли</span>
           </motion.div>
-          <StatsMotion />
+          <StatsMotion vacancyCount={vacancyCount} companyCount={companyCount} />
         </div>
 
+        <div className="hero-visual">
+          <HeroPhoneVideo />
+        </div>
       </motion.div>
-      <div className="hero-visual" aria-hidden="true">
-        <HeroVideoPortrait />
-      </div>
     </section>
   );
 }

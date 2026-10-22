@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { TELEGRAM_CHANNEL_URL } from "@/lib/data";
@@ -9,6 +11,7 @@ import SubscriberCount from "./SubscriberCount";
 const KEY = "rs_subbar_closed";
 
 export default function SubscribeBar() {
+  const pathname = usePathname();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -57,9 +60,9 @@ export default function SubscribeBar() {
             </div>
             <div className="subbar-actions">
               <motion.a
-                href={TELEGRAM_CHANNEL_URL}
+                href={getOutboundHref(TELEGRAM_CHANNEL_URL, pathname)}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel={OUTBOUND_REL}
                 className="btn"
                 onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, { source: "sticky_bar" })}
                 whileHover={{ scale: 1.04 }}

@@ -1,8 +1,12 @@
+import { COOKIE_CONSENT_KEY } from "./consent";
 // GA4 event tracking utility
 export function trackEvent(eventName: string, eventParams?: Record<string, string | number>) {
-  if (typeof window !== "undefined" && "gtag" in window) {
-    (window as any).gtag("event", eventName, eventParams);
-  }
+  try {
+    if (typeof window !== "undefined" && localStorage.getItem(COOKIE_CONSENT_KEY) === "accepted") {
+      const gtag = (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (typeof gtag === "function") gtag("event", eventName, eventParams);
+    }
+  } catch { /* Analytics and storage failures must not affect navigation or forms. */ }
 }
 
 export const GA4_EVENTS = {

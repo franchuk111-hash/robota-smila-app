@@ -1,10 +1,11 @@
+import { experienceStatus } from "@/lib/vacancy-facts";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import VacCard from "@/components/VacCard";
-import { VACANCIES } from "@/lib/data";
+import { getActiveVacancies } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Старт кар'єри у Смілі — робота для студентів і без досвіду",
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default function StartCareerPage() {
-  const beginner = VACANCIES.filter((v) => !v.exp).slice(0, 6);
+  const VACANCIES = getActiveVacancies();
+  const beginner = VACANCIES.filter((v) => experienceStatus(v) === "not-required").slice(0, 6);
 
   return (
     <>
@@ -39,7 +41,7 @@ export default function StartCareerPage() {
           <Link href="/robota-bez-dosvidu" className="service">
             <div className="s-ico">🌱</div>
             <h3>Робота без досвіду</h3>
-            <p>Вакансії, де вас навчать з нуля прямо на робочому місці.</p>
+            <p>Вакансії без обов’язкового досвіду. Умови навчання уточнюйте в оголошенні.</p>
           </Link>
           <Link href="/robota-dlya-studentiv" className="service">
             <div className="s-ico">🎓</div>
@@ -114,3 +116,5 @@ export default function StartCareerPage() {
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

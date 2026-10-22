@@ -7,12 +7,12 @@ import VacCard from "@/components/VacCard";
 import Hero from "@/components/Hero";
 import Reveal from "@/components/Reveal";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, CATEGORIES, dateFmt } from "@/lib/data";
+import { getActiveVacancies, CATEGORIES, dateFmt } from "@/lib/data";
 import { organizationLd, homepageFaq, itemListLd, faqLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  description: `Вакансії у Смілі (Черкаська область): ${VACANCIES.length} пропозицій — без досвіду, підробіток, повна зайнятість і робота з щоденною оплатою. Оновлюємо щодня, відгук онлайн у Telegram.`,
+  description: `Вакансії у Смілі (Черкаська область): пропозиції — без досвіду, підробіток, повна зайнятість і робота з щоденною оплатою. Переглядайте умови та спосіб відгуку у вакансіях.`,
 };
 
 const websiteLd = {
@@ -33,6 +33,7 @@ const websiteLd = {
 };
 
 export default function Home() {
+  const VACANCIES = getActiveVacancies();
   const latest = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 6);
@@ -47,15 +48,14 @@ export default function Home() {
       <Header />
       <main>
       <BreadcrumbLd items={[{ name: "Головна", path: "/" }]} />
-      <Hero />
+      <Hero vacancyCount={VACANCIES.length} companyCount={new Set(VACANCIES.map((v) => v.company)).size} />
 
       <section className="block">
         <div className="container">
           <Reveal>
             <h2 className="title center">Нові вакансії у Смілі</h2>
             <p className="sub center">
-              Оновлено {dateFmt(latest[0].date)}. Відкрийте вакансію — і потрапите одразу до
-              потрібного поста в Telegram.
+              {latest.length ? `Найновіше оголошення: ${dateFmt(latest[0].date)}.` : "Наразі свіжих оголошень немає."} Перегляньте деталі на сайті або відкрийте пост у Telegram.
             </p>
           </Reveal>
           <div className="grid3">
@@ -147,15 +147,15 @@ export default function Home() {
               <h2>Пошук роботи у Смілі, Черкаська область</h2>
               <p>
                 <b>robota-smila.com.ua</b> — локальний сайт вакансій для міста
-                Сміла. Тут зібрані актуальні пропозиції роботи від перевірених
+                Сміла. Тут зібрані пропозиції роботи з відкритих джерел від
                 роботодавців Черкаської області: від продавців і водіїв до
                 операторів виробництва, бухгалтерів та охоронців.
               </p>
               <p>
                 Шукаєте <b>роботу без досвіду</b> або <b>підробіток у Смілі</b>?
                 Використовуйте зручні фільтри за типом зайнятості, графіком і
-                зарплатою. Реєструйтесь через Google або Telegram, зберігайте
-                вакансії та відгукуйтесь онлайн за кілька хвилин.
+                зарплатою. Зберігайте вакансії та відкривайте оголошення в
+                Telegram, щоб уточнити актуальність і спосіб зв’язку з роботодавцем.
               </p>
             </div>
           </Reveal>
@@ -183,3 +183,5 @@ export default function Home() {
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

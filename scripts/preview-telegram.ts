@@ -1,3 +1,4 @@
+import { experienceLabel } from "../lib/vacancy-facts";
 // Показує превью карточок вакансій в Telegram
 import fs from "fs";
 import path from "path";
@@ -24,7 +25,7 @@ function formatVacancy(v: (typeof VACANCIES)[0]): string {
     `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
-    `${v.exp ? "💪 Досвід від 1 року" : "📚 Без досвіду"}\n` +
+    `${experienceLabel(v)}\n` +
     `🕐 ${dateStr}\n` +
     `🔗 https://robota-smila.com.ua/vakansiya/${v.id}`
   );
@@ -52,7 +53,7 @@ const cards = vacancies.map((v) => {
     `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
-    `${exp} ${v.exp ? "Досвід від 1 року" : "Без досвіду"} · ${v.typeName}\n` +
+    `${exp} ${experienceLabel(v)} · ${v.typeName}\n` +
     `🔗 robota-smila.com.ua/vakansiya/${v.id}`
   );
 });

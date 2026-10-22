@@ -1,3 +1,4 @@
+import { experienceLabel } from "../lib/vacancy-facts";
 // Агент 6 (розділ 12 стратегії): генерує текст ранкового Telegram-поста
 // з актуальних вакансій сайту. Запуск: npm run telegram-post
 import { VACANCIES, salaryFmt, dateFmt } from "../lib/data";
@@ -18,7 +19,7 @@ function buildPost(): string {
     const badge = v.hot ? "🔥 " : "";
     lines.push(
       `${badge}${v.title} — ${salaryFmt(v.salary)}\n` +
-        `${v.company}, ${v.district} · ${v.schedule}${v.exp ? "" : " · без досвіду"}\n` +
+        `${v.company}, ${v.district} · ${v.schedule} · ${experienceLabel(v)}\n` +
         `${SITE}/vakansiya/${v.id}\n`
     );
   });

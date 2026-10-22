@@ -11,8 +11,9 @@ export default function Analytics() {
   const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    const check = () =>
-      setAllowed(localStorage.getItem(COOKIE_CONSENT_KEY) === "accepted");
+    const check = () => {
+      try { setAllowed(localStorage.getItem(COOKIE_CONSENT_KEY) === "accepted"); } catch { setAllowed(false); }
+    };
     check();
     window.addEventListener(CONSENT_EVENT, check);
     return () => window.removeEventListener(CONSENT_EVENT, check);

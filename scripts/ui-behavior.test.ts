@@ -1,0 +1,35 @@
+import assert from "node:assert/strict";
+import { getActiveVacancies, VACANCIES } from "../lib/data";
+import { matchesVacancyQuery } from "../lib/vacancy-search";
+import { experienceStatus } from "../lib/vacancy-facts";
+import { getFavorites, toggleFavorite, subscribeFavorites } from "../lib/favorites";
+
+const vacancies = getActiveVacancies();
+assert.deepEqual(vacancies.filter(v => matchesVacancyQuery(v, " БЕЗ ДОСВІДУ ")).map(v => v.id), vacancies.filter(v => experienceStatus(v) === "not-required").map(v => v.id));
+assert.equal(matchesVacancyQuery(VACANCIES[0], ""), true);
+const noExperience = { ...VACANCIES[0], title: "Продавець", short: "Досвід не обов'язковий", req: ["Без досвіду"], exp: false };
+assert.equal(matchesVacancyQuery(noExperience, "продавець без досвіду"), true);
+const unknownExperience = { ...VACANCIES[0], source: "workua", title: "Продавець", short: "Робота в магазині", req: [], offer: [], duties: [], exp: false };
+assert.equal(matchesVacancyQuery(unknownExperience, "без досвіду"), false);
+assert.equal(matchesVacancyQuery({ ...VACANCIES[0], short: "Потрібен досвід роботи", req: ["Досвід від 1 року"], exp: true }, "без досвіду"), false);
+assert.equal(matchesVacancyQuery(VACANCIES[0], "такої вакансії не існує"), false);
+
+const target = new EventTarget();
+const stored = new Map<string, string>();
+const storage = { getItem: (key: string) => stored.get(key) ?? null, setItem: (key: string, value: string) => stored.set(key, value) };
+Object.defineProperty(globalThis, "window", { configurable: true, value: target });
+Object.defineProperty(globalThis, "localStorage", { configurable: true, value: storage });
+let profileSnapshot: number[] = [];
+const stop = subscribeFavorites(() => { profileSnapshot = getFavorites(); });
+toggleFavorite(1024);
+assert.deepEqual(profileSnapshot, [1024]);
+toggleFavorite(1024);
+assert.deepEqual(profileSnapshot, []);
+storage.setItem("rs_favorites", '{"invalid":true}');
+assert.deepEqual(getFavorites(), []);
+storage.setItem("rs_favorites", '[1,"2",null,3]');
+assert.deepEqual(getFavorites(), [1, 3]);
+stop();
+toggleFavorite(4);
+assert.deepEqual(profileSnapshot, []);
+console.log("PASS: experience search, combined query, favorite removal notification and storage validation");

@@ -1,4 +1,6 @@
 "use client";
+import { usePathname } from "next/navigation";
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import { motion } from "motion/react";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
@@ -22,6 +24,7 @@ export function SpringLink({
   onClick?: () => void;
   external?: boolean;
 }) {
+  const pathname = usePathname();
   return (
     <motion.span
       style={{ display: "inline-block", ...style }}
@@ -31,7 +34,7 @@ export function SpringLink({
       onClick={onClick}
     >
       {external ? (
-        <a href={href} className={className} target="_blank" rel="noopener noreferrer">
+        <a href={getOutboundHref(href, pathname)} className={className} target="_blank" rel={OUTBOUND_REL}>
           {children}
         </a>
       ) : (

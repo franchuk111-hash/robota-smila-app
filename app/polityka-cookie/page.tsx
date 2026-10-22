@@ -1,7 +1,9 @@
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieSettingsButton from "@/components/CookieSettingsButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 
 export const metadata: Metadata = {
@@ -79,9 +81,9 @@ export default function CookiePolicyPage() {
             Ми використовуємо Google Analytics для розуміння того, як відвідувачі
             користуються сайтом. IP-адреса анонімізується. Дані обробляються згідно з{" "}
             <a
-              href="https://policies.google.com/privacy"
+              href={getOutboundHref("https://policies.google.com/privacy")}
               target="_blank"
-              rel="noopener noreferrer"
+              rel={OUTBOUND_REL}
             >
               Політикою конфіденційності Google
             </a>
@@ -95,13 +97,14 @@ export default function CookiePolicyPage() {
               / Тільки необхідні).
             </li>
             <li>
-              Щоб змінити рішення, очистіть дані сайту у браузері — банер з’явиться знову.
+              Щоб змінити рішення, відкрийте налаштування cookie кнопкою нижче.
             </li>
             <li>
               Ви також можете заблокувати чи видалити cookie в налаштуваннях свого
               браузера.
             </li>
           </ul>
+          <CookieSettingsButton />
 
           <h2>5. Зміни до Політики</h2>
           <p>

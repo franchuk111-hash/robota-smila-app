@@ -1,3 +1,4 @@
+import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
@@ -114,7 +115,7 @@ export default function TermsPage() {
           <h2>9. Контакти</h2>
           <p>
             З питань щодо роботи Сайту звертайтесь у Telegram{" "}
-            <a href="https://t.me/Smila_admin" target="_blank" rel="noopener noreferrer">
+            <a href={getOutboundHref("https://t.me/Smila_admin", "/umovy-korystuvannya")} target="_blank" rel={OUTBOUND_REL}>
               @Smila_admin
             </a>
             .

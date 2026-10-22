@@ -1,53 +1,42 @@
-// Простий service worker для PWA robota-smila
-const CACHE = "robota-smila-v2";
-const OFFLINE_URLS = ["/", "/vakansii", "/manifest.webmanifest"];
+// Cache only public static files. Auth, redirects, HTML and RSC always use the network.
+const CACHE = "robota-smila-v3";
+const PUBLIC_FILES = new Set([
+  "/manifest.webmanifest", "/favicon.ico", "/icon.svg", "/apple-icon.png",
+  "/icon-192x192.png", "/icon-512x512.png", "/icon-maskable-512.png",
+]);
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(OFFLINE_URLS).catch(() => {}))
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
+      Promise.all(keys.filter((key) => key.startsWith("robota-smila-") && key !== CACHE)
+        .map((key) => caches.delete(key)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Network-first для навігації, cache-first для статики
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-  if (request.method !== "GET") return;
+  if (request.method !== "GET" || request.mode === "navigate") return;
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin || url.search || request.headers.has("RSC")) return;
+  if (!url.pathname.startsWith("/_next/static/") && !PUBLIC_FILES.has(url.pathname)) return;
 
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(request, copy));
-          return res;
-        })
-        .catch(() => caches.match(request).then((r) => r || caches.match("/")))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      return (
-        cached ||
-        fetch(request).then((res) => {
-          if (res.ok && request.url.startsWith(self.location.origin)) {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(request, copy));
-          }
-          return res;
-        })
-      );
-    })
-  );
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    const response = await fetch(request);
+    const policy = response.headers.get("Cache-Control") || "";
+    const type = response.headers.get("Content-Type") || "";
+    if (response.ok && !response.redirected && !/\b(no-store|private|no-cache)\b/i.test(policy) &&
+        !/text\/(html|x-component)/i.test(type)) {
+      const copy = response.clone();
+      event.waitUntil(cache.put(request, copy).catch(() => {}));
+    }
+    return response;
+  })());
 });

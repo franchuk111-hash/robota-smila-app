@@ -1,3 +1,5 @@
+import { inferRequiredExperience } from "../lib/vacancy-experience";
+import { vacancyCategory } from "../lib/vacancy-category";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -58,9 +60,8 @@ function stableId(value: string): number {
 
 function salaryRange(record: SourceVacancy): [number, number] {
   const values = (record.salarytxt ?? "")
-    .replace(/\s/g, "")
-    .match(/\d{4,6}/g)
-    ?.map(Number)
+    .match(/\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d{4,6}/g)
+    ?.map((value) => Number(value.replace(/\s/g, "")))
     .filter((value) => value >= 1_000 && value <= 500_000)
     .slice(0, 2) ?? [];
   if (values.length === 2) return [Math.min(...values), Math.max(...values)];
@@ -68,20 +69,6 @@ function salaryRange(record: SourceVacancy): [number, number] {
   return [salary, salary];
 }
 
-function category(record: SourceVacancy): Pick<Vacancy, "cat" | "catName"> {
-  const text = `${record.branchnname ?? ""} ${record.vacname}`.toLowerCase();
-  const rules: Array<[RegExp, string, string]> = [
-    [/торг|продав|касир/, "prodavets", "Продавці / касири"],
-    [/воді|водит|транспорт|логіст/, "voditel", "Водії"],
-    [/вироб|промис|робіт|вантаж|швач|звар|слюсар|пекар/, "robitnyk", "Робітники / виробництво"],
-    [/ресторан|кафе|кухар|офіціант|бариста|horeca/, "horeca", "Кафе / ресторани"],
-    [/охорон/, "ohorona", "Охорона"],
-    [/будів|ремонт/, "budivnyctvo", "Будівництво"],
-    [/офіс|фінанс|банк|бухгалтер|менедж|юрист|економіст/, "office", "Офіс / фінанси"],
-  ];
-  const match = rules.find(([pattern]) => pattern.test(text));
-  return match ? { cat: match[1], catName: match[2] } : { cat: "other", catName: "Інше" };
-}
 
 export function normalizeRecord(record: SourceVacancy): Vacancy {
   const sourceKey = `${record.source}:${record.vacid}`;
@@ -93,7 +80,7 @@ export function normalizeRecord(record: SourceVacancy): Vacancy {
     .slice(0, 20);
   const work = record.workcond?.trim() || "Умови в описі";
   const isPartTime = /неповн|частков/i.test(work);
-  const hasExperience = /досвід/i.test(description) && !/без досвіду/i.test(description);
+  const hasExperience = inferRequiredExperience(description) ?? false;
 
   return {
     id: stableId(sourceKey),
@@ -101,7 +88,7 @@ export function normalizeRecord(record: SourceVacancy): Vacancy {
     title: record.vacname.trim(),
     company: record.companyname.trim() || "Роботодавець не вказаний",
     salary: salaryRange(record),
-    ...category(record),
+    ...vacancyCategory(record.vacname, record.branchnname ?? ""),
     type: isPartTime ? "PART_TIME" : "FULL_TIME",
     typeName: isPartTime ? "Часткова зайнятість" : "Повна зайнятість",
     schedule: work,
@@ -241,29 +228,34 @@ function savePublished(vacancies: Vacancy[]): void {
   fs.writeFileSync(DATA_FILE, `${JSON.stringify(vacancies, null, 2)}\n`);
 }
 
-async function main(): Promise<void> {
-  const dryRun = process.argv.includes("--dry-run");
-  const refresh = process.argv.includes("--refresh");
+export async function runPipeline(
+  { dryRun = false, refresh = false } = {},
+  operations = { collect, loadPublished, savePublished, updateTelegram, sendToTelegram },
+): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHANNEL_ID;
   if (!dryRun && (!token || !chatId)) throw new Error("TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID are required");
 
   if (refresh) {
-    const current = new Map((await collect()).map((record) => [`${record.source}:${record.vacid}`, record]));
-    const refreshed = loadPublished().map((vacancy) => {
+    const current = new Map((await operations.collect()).map((record) => [`${record.source}:${record.vacid}`, record]));
+    const refreshed = operations.loadPublished().map((vacancy) => {
       const record = current.get(`${vacancy.source}:${vacancy.sourceId}`);
-      return record ? { ...normalizeRecord(record), tgMsgId: vacancy.tgMsgId } : vacancy;
+      return record ? { ...vacancy, ...normalizeRecord(record), tgMsgId: vacancy.tgMsgId } : vacancy;
     });
+    if (dryRun) {
+      console.log(`Preview: ${refreshed.length} vacancies; no messages or files changed.`);
+      return;
+    }
     for (const vacancy of refreshed.filter((item) => item.tgMsgId)) {
-      await updateTelegram(vacancy, token!, chatId!);
+      await operations.updateTelegram(vacancy, token!, chatId!);
       console.log(`Updated Telegram message ${vacancy.tgMsgId}`);
     }
-    savePublished(refreshed);
+    operations.savePublished(refreshed);
     return;
   }
 
-  const collected = await collect();
-  const published = loadPublished();
+  const collected = await operations.collect();
+  const published = operations.loadPublished();
   const publishedKeys = new Set(published.map((v) => `${v.source}:${v.sourceId}`));
   const maxNew = Math.max(1, Number(process.env.MAX_NEW_VACANCIES || 10));
   const candidates = collected
@@ -279,16 +271,16 @@ async function main(): Promise<void> {
 
   for (const record of candidates) {
     const vacancy = normalizeRecord(record);
-    vacancy.tgMsgId = await sendToTelegram(vacancy, token!, chatId!);
+    vacancy.tgMsgId = await operations.sendToTelegram(vacancy, token!, chatId!);
     published.unshift(vacancy);
-    savePublished(published.slice(0, 200));
+    operations.savePublished(published);
     console.log(`Published ${vacancy.source}:${vacancy.sourceId} as Telegram message ${vacancy.tgMsgId}`);
     await new Promise((resolve) => setTimeout(resolve, 1_100));
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((error) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  runPipeline({ dryRun: process.argv.includes("--dry-run"), refresh: process.argv.includes("--refresh") }).catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   });

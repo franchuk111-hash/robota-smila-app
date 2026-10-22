@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { VACANCIES, COMPANIES, ARTICLES, CATEGORIES } from "@/lib/data";
+import { getActiveVacancies, COMPANIES, ARTICLES, CATEGORIES } from "@/lib/data";
 
 const BASE = "https://robota-smila.com.ua";
 
@@ -9,6 +9,7 @@ const BASE = "https://robota-smila.com.ua";
 const UPDATED = "2026-10-02";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${BASE}/`, lastModified: UPDATED, changeFrequency: "daily", priority: 1 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
@@ -26,9 +27,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/robota-z-shchodennoyu-oplatoyu`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/aktsiya`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
   ];
-  const cats = CATEGORIES.map((c) => ({
+  const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
-    lastModified: UPDATED,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
@@ -38,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "daily" as const,
     priority: 0.7,
   }));
-  const comps = COMPANIES.map((c) => ({
+  const comps = COMPANIES.filter((c) => VACANCIES.some((v) => v.company === c.name)).map((c) => ({
     url: `${BASE}/kompaniya/${c.slug}`,
     changeFrequency: "weekly" as const,
     priority: 0.6,
@@ -51,3 +51,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
   return [...staticPages, ...cats, ...vacs, ...comps, ...arts];
 }
+
+export const dynamic = "force-dynamic";

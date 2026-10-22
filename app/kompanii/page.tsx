@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
-import { COMPANIES, VACANCIES } from "@/lib/data";
+import { getActiveCompanies, getActiveVacancies } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Компанії Сміли — роботодавці та їхні вакансії",
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function KompaniiPage() {
+  const VACANCIES = getActiveVacancies();
   return (
     <>
       <Header />
@@ -24,9 +25,9 @@ export default function KompaniiPage() {
           <Link href="/">Головна</Link> › Компанії
         </nav>
         <h1 className="page-h1">Компанії Сміли</h1>
-        <p className="sub">Роботодавці міста та їхні актуальні вакансії</p>
+        <p className="sub">Роботодавці з поточної добірки оголошень</p>
         <div className="grid3">
-          {COMPANIES.map((c) => {
+          {getActiveCompanies().map((c) => {
             const n = VACANCIES.filter((v) => v.company === c.name).length;
             return (
               <article className="vac" key={c.slug}>
@@ -51,7 +52,7 @@ export default function KompaniiPage() {
                 </div>
                 <div className="locs">
                   {c.industry}
-                  <span className="dot">·</span>Сміла, {c.district}
+                  <span className="dot">·</span>{c.district}
                 </div>
                 <p style={{ color: "var(--muted)", margin: "12px 0 16px" }}>{c.about}</p>
                 <Link href={`/kompaniya/${c.slug}`} className="btn ghost">
@@ -83,3 +84,5 @@ export default function KompaniiPage() {
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

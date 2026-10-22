@@ -4,6 +4,7 @@ import Providers from "@/components/Providers";
 import ServiceWorker from "@/components/ServiceWorker";
 import SubscribeMechanics from "@/components/SubscribeMechanics";
 import CookieConsent from "@/components/CookieConsent";
+import TelegramClickAnalytics from "@/components/TelegramClickAnalytics";
 import Analytics from "@/components/Analytics";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function RootLayout({
         <SubscribeMechanics />
         <CookieConsent />
         <Analytics />
+        <TelegramClickAnalytics />
         <ServiceWorker />
       </body>
     </html>

@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { getActiveVacancies, CATEGORIES } from "@/lib/data";
 import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq, categoryTitle } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -18,6 +18,7 @@ export async function generateMetadata({
 }: {
   params: Promise<{ cat: string }>;
 }): Promise<Metadata> {
+  const VACANCIES = getActiveVacancies();
   const { cat } = await params;
   const seo = CATEGORY_SEO[cat];
   if (!seo) return { title: "Категорію не знайдено" };
@@ -25,6 +26,7 @@ export async function generateMetadata({
   return {
     title: categoryTitle(seo.h1, count),
     description: seo.description,
+    robots: count ? undefined : { index: false, follow: true },
     alternates: { canonical: `/vakansii/${cat}` },
   };
 }
@@ -34,6 +36,7 @@ export default async function CategoryPage({
 }: {
   params: Promise<{ cat: string }>;
 }) {
+  const VACANCIES = getActiveVacancies();
   const { cat } = await params;
   const seo = CATEGORY_SEO[cat];
   const category = CATEGORIES.find((c) => c.slug === cat);
@@ -145,3 +148,5 @@ export default async function CategoryPage({
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

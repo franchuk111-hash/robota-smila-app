@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Catalog from "@/components/Catalog";
 import JsonLd from "@/components/JsonLd";
-import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { getActiveVacancies, CATEGORIES } from "@/lib/data";
 import { itemListLd } from "@/lib/seo";
 import type { Metadata } from "next";
 
@@ -18,6 +18,7 @@ export default async function VakansiiPage({
 }: {
   searchParams: Promise<{ q?: string; cat?: string; exp?: string }>;
 }) {
+  const VACANCIES = getActiveVacancies();
   const sp = await searchParams;
   const recent = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
@@ -39,3 +40,5 @@ export default async function VakansiiPage({
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

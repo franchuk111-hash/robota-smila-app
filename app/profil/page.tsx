@@ -6,13 +6,17 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import VacCard from "@/components/VacCard";
-import { getFavorites } from "@/components/FavButton";
+import { getFavorites, subscribeFavorites } from "@/lib/favorites";
 import { VACANCIES } from "@/lib/data";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const [favIds, setFavIds] = useState<number[]>([]);
-  useEffect(() => setFavIds(getFavorites()), []);
+  useEffect(() => {
+    const update = () => setFavIds(getFavorites());
+    update();
+    return subscribeFavorites(update);
+  }, []);
 
   const saved = VACANCIES.filter((v) => favIds.includes(v.id));
 

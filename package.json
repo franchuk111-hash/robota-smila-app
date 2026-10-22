@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "test": "node --import tsx --test scripts/*.test.ts scripts/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "next build --webpack",
     "dev": "next dev",
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "deploy": "node scripts/release-guard.mjs && opennextjs-cloudflare build && node scripts/release-guard.mjs --built && wrangler deploy --keep-vars",
+    "upload": "node scripts/release-guard.mjs && opennextjs-cloudflare build && node scripts/release-guard.mjs --built && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "telegram-post": "tsx scripts/telegram-post.ts",
     "telegram-publish": "tsx scripts/telegram-channel-publish.ts",
@@ -16,7 +18,8 @@
     "vacancies:sync": "tsx scripts/vacancy-pipeline.ts",
     "vacancies:test": "tsx scripts/vacancy-pipeline.test.ts",
     "add-vacancy": "tsx scripts/add-vacancy.ts",
-    "add-vacancies-batch": "tsx scripts/add-vacancies-batch.ts"
+    "add-vacancies-batch": "tsx scripts/add-vacancies-batch.ts",
+    "release:check": "node scripts/release-guard.mjs"
   },
   "dependencies": {
     "motion": "^12.42.2",

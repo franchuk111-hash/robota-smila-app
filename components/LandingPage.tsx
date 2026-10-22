@@ -4,11 +4,12 @@ import Footer from "./Footer";
 import VacCard from "./VacCard";
 import BreadcrumbLd from "./BreadcrumbLd";
 import JsonLd from "./JsonLd";
-import { VACANCIES } from "@/lib/data";
+import { getActiveVacancies } from "@/lib/data";
 import { LANDING_FAQ, itemListLd, faqLd, type LandingSeo } from "@/lib/seo";
 
 // Спільний шаблон посадкових сторінок (без досвіду / підробіток / студентам)
 export default function LandingPage({ seo }: { seo: LandingSeo }) {
+  const VACANCIES = getActiveVacancies();
   const list = VACANCIES.filter(seo.filter).sort(
     (a, b) => +new Date(b.date) - +new Date(a.date)
   );

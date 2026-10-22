@@ -2,14 +2,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { COOKIE_CONSENT_KEY, CONSENT_EVENT } from "@/lib/consent";
+import { COOKIE_CONSENT_KEY, CONSENT_EVENT, CONSENT_SETTINGS_EVENT } from "@/lib/consent";
 
 export default function CookieConsent() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!localStorage.getItem(COOKIE_CONSENT_KEY)) setShow(true);
+    try { if (!localStorage.getItem(COOKIE_CONSENT_KEY)) setShow(true); } catch { setShow(true); }
+    const reopen = () => setShow(true);
+    window.addEventListener(CONSENT_SETTINGS_EVENT, reopen);
+    return () => window.removeEventListener(CONSENT_SETTINGS_EVENT, reopen);
   }, []);
 
   const choose = (value: "accepted" | "declined") => {

@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import Counter from "./Counter";
-import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { CATEGORIES } from "@/lib/data";
 
 // Моушн-блок статистики в hero: пружинна поява зі стаггером,
 // «поп» цифри після докрутки лічильника, акцентна лінія, що
@@ -15,15 +15,12 @@ const item = {
   show: { opacity: 1, y: 0, scale: 1, transition: spring },
 };
 
-const uniqueCompanies = new Set(VACANCIES.map((v) => v.company)).size;
-
-const STATS = [
-  { to: VACANCIES.length, suffix: "", label: "активних вакансій", live: false },
-  { to: uniqueCompanies, suffix: "", label: "роботодавців Сміли", live: false },
-  { to: CATEGORIES.length, suffix: "", label: "категорій вакансій", live: false },
-];
-
-export default function StatsMotion() {
+export default function StatsMotion({ vacancyCount, companyCount }: { vacancyCount: number; companyCount: number }) {
+  const STATS = [
+    { to: vacancyCount, suffix: "", label: "вакансій у добірці", live: false },
+    { to: companyCount, suffix: "", label: "роботодавців у добірці", live: false },
+    { to: CATEGORIES.length, suffix: "", label: "категорій вакансій", live: false },
+  ];
   return (
     <motion.div
       className="stats"

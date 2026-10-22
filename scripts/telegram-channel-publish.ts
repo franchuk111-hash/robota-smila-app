@@ -1,3 +1,4 @@
+import { experienceLabel } from "../lib/vacancy-facts";
 // Публіковує нові вакансії у Telegram канал з карточками
 // Використання: npm run telegram-publish або як Cloudflare Worker cron trigger
 import fs from "fs";
@@ -49,7 +50,7 @@ function formatVacancy(v: (typeof VACANCIES)[0], index: number): string {
     `💰 ${salaryFmt(v.salary)}\n` +
     `🏢 ${v.company}\n` +
     `📍 ${v.district} · ${v.schedule}\n` +
-    `${v.exp ? "💪 Досвід від 1 року" : "📚 Без досвіду"}\n` +
+    `${experienceLabel(v)}\n` +
     `🕐 ${dateStr}\n` +
     `🔗 https://robota-smila.com.ua/vakansiya/${v.id}`
   );
@@ -75,7 +76,7 @@ async function publishToTelegram() {
         `💰 ${salaryFmt(v.salary)}\n` +
         `🏢 ${v.company}\n` +
         `📍 ${v.district} · ${v.schedule}\n` +
-        `${exp} ${v.exp ? "Досвід від 1 року" : "Без досвіду"} · ${v.typeName}\n` +
+        `${exp} ${experienceLabel(v)} · ${v.typeName}\n` +
         `🔗 robota-smila.com.ua/vakansiya/${v.id}`
       );
     });

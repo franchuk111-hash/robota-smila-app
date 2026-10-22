@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { prepareManualVacancies } from './manual-vacancies';
+import { inferRequiredExperience } from '../lib/vacancy-experience';
+const input = { title: 'Тест "лапки"\n\\шлях', company: 'Тест', salary: [10000, 20000], cat: 'prodavets', type: 'FULL_TIME', schedule: '5/2', district: 'Сміла', exp: false, short: 'Опис', duties: [], req: [], offer: [], date: '2026-10-20' };
+const now = new Date('2026-10-21');
+const records = prepareManualVacancies([input], [], now);
+assert.equal(records.length, 1);
+assert.equal(JSON.parse(JSON.stringify(records))[0].title, input.title);
+assert.throws(() => prepareManualVacancies([input, input], [], now), /slug/);
+assert.throws(() => prepareManualVacancies([{ ...input, salary: [20, 10] }], [], now), /зарплати/);
+assert.throws(() => prepareManualVacancies([{ ...input, date: '2026-02-30' }], [], now), /дата/);
+assert.equal(inferRequiredExperience('Досвід не потрібен'), false);
+assert.equal(inferRequiredExperience('Досвід роботи від 2 років'), true);
+assert.equal(inferRequiredExperience('Робота у магазині'), undefined);
+console.log('manual-vacancies: validation, duplicate prevention, JSON roundtrip and experience inference passed');

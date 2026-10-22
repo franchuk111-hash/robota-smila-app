@@ -1,4 +1,5 @@
 "use client";
+import { experienceLabel, vacancyLocation } from "@/lib/vacancy-facts";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
@@ -41,33 +42,21 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         </span>
       )}
       <h3>
-        {v.tgMsgId ? (
-          <a href={vacancyTgLink(v)} target="_blank" rel="noopener noreferrer" onClick={handleApply}>
-            {v.title}
-          </a>
-        ) : (
-          <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
-        )}
+        <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
       </h3>
       <div className="salary">{salaryFmt(v.salary)}</div>
       <div className="company">
         <span className="co-ico"></span>
         {v.company}
-        <span className="verified">✓</span>
+
       </div>
       <div className="locs">
-        Сміла
-        {v.district && v.district !== "Сміла" && (
-          <>
-            <span className="dot">·</span>
-            {v.district}
-          </>
-        )}
+        {vacancyLocation(v)}
         <span className="dot">·</span>
         {v.schedule}
       </div>
       <div className="locs dim">
-        {v.exp ? "Досвід від 1 року" : "Без досвіду"}
+        {experienceLabel(v)}
         <span className="dot">·</span>
         {v.typeName}
       </div>

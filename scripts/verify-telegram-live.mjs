@@ -1,0 +1,12 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const inventory=JSON.parse(await fs.readFile('reports/telegram-live-inventory.json','utf8'));
+const routes=[...new Map(inventory.placements.map(p=>[p.href.split('?')[0],p])).values()];
+const pending=routes.slice(),failures=[];
+await Promise.all(Array.from({length:6},async()=>{while(pending.length){const p=pending.shift();try{const r=await fetch(new URL(p.href.replaceAll('&amp;','&'),'https://robota-smila.com.ua'),{redirect:'manual',signal:AbortSignal.timeout(20000)}); const u=new URL(r.headers.get('location')); const expected=new URL(p.destination); assert.equal(r.status,302);assert.equal(u.origin+u.pathname,expected.origin+expected.pathname);assert.equal(u.searchParams.get('utm_source'),'robota-smila');assert.equal(u.searchParams.get('utm_medium'),'referral');assert.equal(u.searchParams.get('utm_content'),new URL(p.href,'https://robota-smila.com.ua').searchParams.get('s'));assert.match(u.searchParams.get('rtk'),/^[a-f0-9-]{36}$/);assert.match(r.headers.get('cache-control'),/no-store/);assert.match(r.headers.get('x-robots-tag'),/noindex/);}catch(e){failures.push({href:p.href,error:String(e)})}}}));
+const token='745790f0-fc59-4266-a45f-5a3664034994';
+const injected=await fetch('https://robota-smila.com.ua/go/telegram-channel/?s=john-doe&url=https://evil.example&rtk='+token,{redirect:'manual'});
+const target=new URL(injected.headers.get('location'));assert.equal(target.hostname,'t.me');assert.equal(target.searchParams.get('utm_content'),'unknown');assert.equal(target.searchParams.get('rtk'),token);
+assert.equal((await fetch('https://robota-smila.com.ua/go/not-a-brand/',{redirect:'manual'})).status,404);
+assert.equal((await fetch('https://robota-smila.com.ua/go/telegram-channel/',{method:'POST',redirect:'manual'})).status,405);
+const result={checkedAt:new Date().toISOString(),routes:routes.length,failures,openRedirect:'pass',sourcePrivacy:'pass',tokenParity:'pass',unknown404:'pass',post405:'pass',noJavaScript:'native HTTP302 all routes'};await fs.writeFile('reports/telegram-live-redirects.json',JSON.stringify(result,null,2));console.log(result);assert.equal(failures.length,0);

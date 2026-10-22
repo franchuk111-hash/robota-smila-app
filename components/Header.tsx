@@ -41,6 +41,7 @@ export default function Header({ employer = false }: { employer?: boolean }) {
 
         <form className="search" onSubmit={go}>
           <input
+            aria-label="Пошук вакансій"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Пошук: продавець, водій, без досвіду…"
