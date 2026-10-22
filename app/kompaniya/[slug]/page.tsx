@@ -20,8 +20,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = COMPANIES.find((x) => x.slug === slug);
   if (!c) return { title: "Компанію не знайдено" };
+  const suffix = " — вакансії у Смілі";
+  const nameBudget = 65 - Array.from(" | robota-smila").length - Array.from(suffix).length;
+  // Abbreviate the legal form before truncating, retaining the distinctive name.
+  const conciseName = c.name.trim()
+    .replace(/^ТОВАРИСТВО З ОБМЕЖЕНОЮ ВІДПОВІДАЛЬНІСТЮ\s*/iu, "ТОВ ")
+    .replace(/^ПРИВАТНЕ ПІДПРИЄМСТВО\s*/iu, "ПП ");
+  const name = Array.from(conciseName);
+  const titleName = name.length > nameBudget
+    ? `${name.slice(0, nameBudget - 1).join("").trimEnd()}…`
+    : conciseName;
   return {
-    title: `${c.name} — вакансії у Смілі`,
+    title: `${titleName}${suffix}`,
     description: `${c.name}: ${c.about} Актуальні вакансії у Смілі.`,
     robots: VACANCIES.some(v => v.company === c.name) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/kompaniya/${c.slug}` },

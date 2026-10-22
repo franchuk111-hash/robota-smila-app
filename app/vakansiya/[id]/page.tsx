@@ -14,6 +14,34 @@ import JsonLd from "@/components/JsonLd";
 import { ALL_VACANCIES, getActiveVacancies, salaryFmt, dateFmt, vacancyTgLink, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
 
+const metadataTitleBudget = 70 - Array.from(" | robota-smila").length;
+function fitMetadata(value: string, budget: number) {
+  const chars = Array.from(value.trim());
+  return chars.length > budget ? `${chars.slice(0, budget - 1).join("").trimEnd()}…` : value.trim();
+}
+
+function vacancyMetadataTitle(v: (typeof ALL_VACANCIES)[number]) {
+  const peers = ALL_VACANCIES.filter(x => x.title.trim() === v.title.trim());
+  const sameCompany = peers.filter(x => x.company === v.company).length > 1;
+  const suffix = sameCompany ? ` — Сміла №${v.id}` : " — Сміла";
+  const role = fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length);
+  if (peers.length === 1 || sameCompany) return `${role}${suffix}`;
+  const remaining = metadataTitleBudget - Array.from(role + suffix + " · ").length;
+  // Preserve the role first; add company context only when it can remain readable.
+  return remaining >= 6
+    ? `${role} · ${fitMetadata(v.company, remaining)}${suffix}`
+    : `${role}${suffix}`;
+}
+
+const vacancyTitles = new Map(ALL_VACANCIES.map(v => [v.id, vacancyMetadataTitle(v)]));
+const repeatedTitles = new Set([...vacancyTitles.values()].filter((title, index, values) => values.indexOf(title) !== index));
+for (const v of ALL_VACANCIES) {
+  if (repeatedTitles.has(vacancyTitles.get(v.id)!)) {
+    const suffix = ` — Сміла №${v.id}`;
+    vacancyTitles.set(v.id, `${fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length)}${suffix}`);
+  }
+}
+
 export function generateStaticParams() {
   return ALL_VACANCIES.map((v) => ({ id: String(v.id) }));
 }
@@ -26,13 +54,11 @@ export async function generateMetadata({
   const { id } = await params;
   const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) return { title: "Вакансію не знайдено" };
-  const salaryTitle =
-    v.salary[0] === 0 && v.salary[1] === 0
-      ? "договірна оплата"
-      : `${v.salary[0].toLocaleString("uk-UA")} ₴`;
+  const title = vacancyTitles.get(v.id)!;
+  const identifier = title.includes(`№${v.id}`) ? ` №${v.id}` : "";
   return {
-    title: `${v.title} — робота у Смілі, ${salaryTitle}`,
-    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Перегляньте умови та спосіб відгуку в оголошенні.`,
+    title,
+    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Умови та спосіб відгуку в оголошенні${identifier}.`,
     robots: isListedVacancy(v) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/vakansiya/${v.id}` },
   };
