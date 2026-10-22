@@ -464,7 +464,7 @@ footer.site a:hover{color:#fff;opacity:1}
 .vac-excerpt{font-size:14px;line-height:1.65;color:#637187;margin:0 0 22px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .vac-readable .apply{display:block;margin-top:auto;padding-top:8px}.vac-readable .date{display:block;font-size:12px;margin-bottom:13px}
 .vac-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.vac-actions>span{min-width:0}.vac-actions .btn{display:flex;justify-content:center;align-items:center;width:100%;min-height:44px;padding:10px 8px;font-size:14px;white-space:nowrap;border-radius:9px}
-.vac-actions .vac-details{background:#eaf1ff;color:#2568d6;box-shadow:none;border:1px solid transparent}.vac-actions .vac-telegram{background:#229ed3;color:white;box-shadow:none}
+.vac-readable .apply .vac-details{background:#eaf1ff;color:#2568d6;box-shadow:none;border:1px solid transparent}.vac-readable .apply .vac-telegram{background:#229ed3;color:white;box-shadow:none}
 .vac-readable.hot{padding-top:54px}
 @media(max-width:980px){.grid3:has(> .vac-readable),.grid2:has(> .vac-readable){grid-template-columns:1fr}}
 @media(max-width:520px){.vac-readable{padding:21px}.vac-readable h3{font-size:22px;margin-right:59px}.vac-readable .salary{font-size:26px}.vac-readable .salary-negotiable{font-size:16px}.vac-readable .vac-actions .btn{font-size:13px}.vac-readable.hot{padding-top:54px}}
