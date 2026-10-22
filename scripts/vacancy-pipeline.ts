@@ -1,3 +1,4 @@
+import { applyVerifiedSourceCorrections } from "../lib/vacancy-source-corrections";
 import { inferRequiredExperience } from "../lib/vacancy-experience";
 import { vacancyCategory } from "../lib/vacancy-category";
 import fs from "node:fs";
@@ -59,14 +60,26 @@ function stableId(value: string): number {
 }
 
 function salaryRange(record: SourceVacancy): [number, number] {
-  const values = (record.salarytxt ?? "")
-    .match(/\d{1,3}(?:[ \u00a0\u202f]\d{3})+|\d{4,6}/g)
-    ?.map((value) => Number(value.replace(/\s/g, "")))
-    .filter((value) => value >= 1_000 && value <= 500_000)
-    .slice(0, 2) ?? [];
+  // Some feeds supply a rounded numeric average (65) alongside the full
+  // advertised amount (65 000). Prefer explicit amounts in the source text.
+  const thousand = String.raw`(?:тис(?:яч[аіу]?)?\.?|тыс(?:яч[аиу]?)?\.?|k)(?=\s|грн|₴|$)`;
+  const decimal = String.raw`\d+(?:[.,]\d+)?`;
+  const text = cleanText(record.salarytxt ?? "")
+    .replace(new RegExp(`(${decimal})\\s*(–|—|−|-|до)\\s*(${decimal})\\s*${thousand}`, "gi"),
+      (_, lower: string, separator: string, upper: string) =>
+        `${Number(lower.replace(",", ".")) * 1_000}${separator}${Number(upper.replace(",", ".")) * 1_000}`)
+    .replace(new RegExp(`(${decimal})\\s*${thousand}`, "gi"),
+      (_, amount: string) => String(Number(amount.replace(",", ".")) * 1_000));
+  const explicitShortPeriod = /(?:за|на|\/)\s*(?:год(?:ину|ина|ини|ин)?|час|день|доба|добу|змін[ау])|(?:грн|₴)\s*(?:год|час|день|доба|добу|змін)/i.test(text);
+  const values = [...text.matchAll(/\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?:[.,]\d+)?|\d+(?:[.,]\d+)?/g)]
+    .filter(match => Number(match[0].replace(/\s/g, "")) > 100 || !/^\s*%/.test(text.slice((match.index ?? 0) + match[0].length)))
+    .map(match => Number(match[0].replace(/\s/g, "").replace(",", ".")))
+    .filter(value => value > 0 && value <= 500_000 && (value >= 1_000 || explicitShortPeriod))
+    .slice(0, 2);
   if (values.length === 2) return [Math.min(...values), Math.max(...values)];
-  const salary = Number(record.salary) || values[0] || 0;
-  return [salary, salary];
+  if (values.length === 1) return [values[0], values[0]];
+  const salary = Number(record.salary);
+  return Number.isFinite(salary) && salary > 0 ? [salary, salary] : [0, 0];
 }
 
 
@@ -82,7 +95,7 @@ export function normalizeRecord(record: SourceVacancy): Vacancy {
   const isPartTime = /неповн|частков/i.test(work);
   const hasExperience = inferRequiredExperience(description) ?? false;
 
-  return {
+  return applyVerifiedSourceCorrections({
     id: stableId(sourceKey),
     slug: `${record.source.replace(/\W+/g, "-")}-${record.vacid}`,
     title: record.vacname.trim(),
@@ -102,7 +115,7 @@ export function normalizeRecord(record: SourceVacancy): Vacancy {
     source: record.source,
     sourceUrl: record.vac_url,
     sourceId: record.vacid,
-  };
+  });
 }
 
 export function dedupeRecords(records: SourceVacancy[]): SourceVacancy[] {

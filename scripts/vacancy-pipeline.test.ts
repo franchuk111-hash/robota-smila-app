@@ -37,6 +37,32 @@ assert.equal(normalizeRecord({ ...sample, description: 'Досвід не обо
 assert.deepEqual(normalizeRecord({ ...sample, salary: 0, salarytxt: '20 000 25 000 грн' }).salary, [20_000, 25_000]);
 assert.deepEqual(normalizeRecord({ ...sample, salary: 0, salarytxt: '20 000–25 000 грн' }).salary, [20_000, 25_000]);
 
+// Source-like salary formats must not let a rounded numeric field override
+// a complete textual amount or silently invent a thousand multiplier.
+for (const [salarytxt, salary, expected] of [
+  ["65 000 грн", 65, [65_000, 65_000]],
+  ["65000 грн", 65, [65_000, 65_000]],
+  ["20\u00a0000–25\u202f000 грн", 0, [20_000, 25_000]],
+  ["від 20 до 25 тис. грн", 0, [20_000, 25_000]],
+  ["20–25 тис. грн", 0, [20_000, 25_000]],
+  ["25,5 тис. грн", 0, [25_500, 25_500]],
+  ["13\u00a0613,20 грн", 13613, [13613.2, 13613.2]],
+  ["25 тыс. грн", 0, [25_000, 25_000]],
+  ["25k грн", 0, [25_000, 25_000]],
+  ["100 грн/годину", 0, [100, 100]],
+  ["800–900 грн за зміну", 0, [800, 900]],
+  ["20% від продажів + 20 000 грн", 0, [20_000, 20_000]],
+  ["від 15000 до 25000 % від особистих продажів", 15000, [15_000, 25_000]],
+  ["від 19000 до 22000 1300 за день", 19000, [19_000, 22_000]],
+  ["від 20000 до 25000 20000 грн на період випробувального терміну", 20000, [20_000, 25_000]],
+  ["1000000 грн", 0, [0, 0]],
+  ["65 грн", 65, [65, 65]],
+  ["50–80 грн; 20% від фрахту", 65, [65, 65]],
+  ["За домовленістю", 0, [0, 0]],
+] as const) {
+  assert.deepEqual(normalizeRecord({ ...sample, salary, salarytxt }).salary, expected, salarytxt);
+}
+
 async function testDryRunRefresh() {
   const { runPipeline } = await import('./vacancy-pipeline');
   let writes = 0;

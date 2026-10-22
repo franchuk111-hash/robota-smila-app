@@ -1,5 +1,6 @@
 import { isListedVacancy } from "./vacancy-lifecycle";
 import { vacancyCategory } from "./vacancy-category";
+import { applyVerifiedSourceCorrections } from "./vacancy-source-corrections";
 import collectedVacancies from "@/data/collected-vacancies.json";
 import manualVacancies from "@/data/manual-vacancies.json";
 
@@ -12,6 +13,7 @@ export type Vacancy = {
   short: string; duties: string[]; req: string[]; offer: string[];
   hot?: boolean;
   paymentFrequency?: "daily" | "weekly" | "monthly";
+  salaryNote?: string;
   tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
   source?: string;
   sourceUrl?: string;
@@ -67,7 +69,7 @@ const SEED_VACANCIES: Vacancy[] = [
   { id: 1053, hot: true, slug: "mayster-universal", title: "Майстер-універсал", company: "V.G.BuildingTeam", salary: [0, 0], cat: "budivnyctvo", catName: "Будівництво", type: "FULL_TIME", typeName: "Повна зайнятість", schedule: "Зручний графік", district: "виїзні об'єкти", exp: true, date: "2026-07-07", short: "Потрібні майстри-універсали у бригаду V.G.BuildingTeam. Різнопланові будівельні роботи, постійні обсяги та своєчасна оплата.", duties: ["Різнопланові будівельні та оздоблювальні роботи", "Робота на різних етапах об'єкта", "Взаємодія в бригаді"], req: ["Досвід у кількох будівельних напрямах", "Бригади або майстри (мін. 2 особи)", "Універсальність та відповідальність"], offer: ["Оплата за широкий спектр виконаних робіт", "Гнучкий графік і розвозка на об'єкти", "Бонуси за універсальність і якість", "Різнопланові об'єкти — без простоїв", "Стабільні виплати"] },
 ];
 
-const COLLECTED_VACANCIES = (collectedVacancies as unknown as Vacancy[]).map((v) => ({ ...v, ...vacancyCategory(v.title, v.catName) }));
+const COLLECTED_VACANCIES = (collectedVacancies as unknown as Vacancy[]).map((v) => applyVerifiedSourceCorrections({ ...v, ...vacancyCategory(v.title, v.catName) }));
 
 // Зібрані з порталів вакансії (з живими посиланнями на Telegram-пости) йдуть
 // першими, решта демо-набір лишається, щоб уже проіндексовані сторінки не

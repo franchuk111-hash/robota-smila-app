@@ -82,8 +82,8 @@
       14500,
       14500
     ],
-    "cat": "other",
-    "catName": "Інше",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -120,8 +120,8 @@
       15200,
       15200
     ],
-    "cat": "other",
-    "catName": "Інше",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -331,8 +331,8 @@
       27500,
       27500
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -408,8 +408,8 @@
       22000,
       22000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -773,8 +773,8 @@
     "title": "Продавець ювелірних виробів (ТЦ \"Глобал\")",
     "company": "Столична Ювелірна Фабрика",
     "salary": [
-      0,
-      0
+      20000,
+      25000
     ],
     "cat": "prodavets",
     "catName": "Продавці / касири",
@@ -1029,7 +1029,7 @@
     "company": "Агро-Рось",
     "salary": [
       20000,
-      250002
+      25000
     ],
     "cat": "robitnyk",
     "catName": "Робітники / виробництво",
@@ -1553,8 +1553,8 @@
       0,
       0
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -1753,8 +1753,8 @@
       20000,
       20000
     ],
-    "cat": "robitnyk",
-    "catName": "Робітники / виробництво",
+    "cat": "budivnyctvo",
+    "catName": "Будівництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -2103,8 +2103,8 @@
       10000,
       10000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -2286,8 +2286,8 @@
       12000,
       12000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна, позмінна",
@@ -2324,8 +2324,8 @@
       9000,
       9000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -2361,8 +2361,8 @@
       0,
       0
     ],
-    "cat": "robitnyk",
-    "catName": "Робітники / виробництво",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -2408,8 +2408,8 @@
       32600,
       32600
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -2778,8 +2778,8 @@
       17840,
       18500
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість. Також готові взяти студента",
@@ -2976,8 +2976,8 @@
       14000,
       19000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість. Також готові взяти студента, людину з інвалідністю",
@@ -3101,8 +3101,8 @@
       0,
       0
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -3435,8 +3435,8 @@
       0,
       0
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -3555,8 +3555,8 @@
       20000,
       20000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "PART_TIME",
     "typeName": "Часткова зайнятість",
     "schedule": "повна зайнятість, неповна зайнятість. Також готові взяти студента",
@@ -3587,8 +3587,8 @@
       10800,
       10800
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -3816,8 +3816,8 @@
       20000,
       20000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -3926,8 +3926,8 @@
       15000,
       15000
     ],
-    "cat": "robitnyk",
-    "catName": "Робітники / виробництво",
+    "cat": "horeca",
+    "catName": "Кафе / ресторани",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна, позмінна",
@@ -4144,8 +4144,8 @@
       12000,
       12000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -4256,8 +4256,8 @@
       9000,
       9000
     ],
-    "cat": "budivnyctvo",
-    "catName": "Будівництво",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -4404,8 +4404,8 @@
       16000,
       16000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -4439,8 +4439,8 @@
     "title": "Водій категорії СЕ на зерновоз",
     "company": "Кузьменко В.І., ФОП",
     "salary": [
-      65,
-      65
+      0,
+      0
     ],
     "cat": "voditel",
     "catName": "Водії",
@@ -4946,8 +4946,8 @@
       0,
       0
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -5453,8 +5453,8 @@
       17000,
       17000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -5579,8 +5579,8 @@
       17000,
       17000
     ],
-    "cat": "other",
-    "catName": "Інше",
+    "cat": "budivnyctvo",
+    "catName": "Будівництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -5616,8 +5616,8 @@
       16000,
       16000
     ],
-    "cat": "budivnyctvo",
-    "catName": "Будівництво",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "невизначено",
@@ -5686,8 +5686,8 @@
       27000,
       27000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -5870,8 +5870,8 @@
       0,
       0
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "other",
+    "catName": "Інше",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -5915,8 +5915,8 @@
       18000,
       18000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -5989,8 +5989,8 @@
       27000,
       27000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна, позмінна",
@@ -6253,8 +6253,8 @@
       18000,
       18000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -6327,8 +6327,8 @@
       21000,
       25000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -6484,8 +6484,8 @@
       11057,
       11057
     ],
-    "cat": "robitnyk",
-    "catName": "Робітники / виробництво",
+    "cat": "horeca",
+    "catName": "Кафе / ресторани",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -6603,8 +6603,8 @@
       0,
       0
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -7466,8 +7466,8 @@
       22000,
       25000
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість. Також готові взяти людину з інвалідністю",
@@ -7509,8 +7509,8 @@
       0,
       0
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість. Також готові взяти студента, людину з інвалідністю",
@@ -7702,8 +7702,8 @@
       18000,
       18000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна",
@@ -7776,8 +7776,8 @@
       21772,
       21772
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна, позмінна",
@@ -8137,8 +8137,8 @@
       16000,
       24000
     ],
-    "cat": "budivnyctvo",
-    "catName": "Будівництво",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "5/2",
@@ -8697,8 +8697,8 @@
       16000,
       19000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "5/2",
@@ -9289,8 +9289,8 @@
     "title": "вчитель-дефектолог",
     "company": "СМІЛЯНСЬКИЙ ДИТЯЧИЙ БУДИНОК - ІНТЕРНАТ",
     "salary": [
-      13613,
-      13613
+      13613.2,
+      13613.2
     ],
     "cat": "other",
     "catName": "Інше",
@@ -9452,8 +9452,8 @@
       22000,
       22000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -9752,8 +9752,8 @@
       9000,
       9500
     ],
-    "cat": "voditel",
-    "catName": "Водії",
+    "cat": "other",
+    "catName": "Інше",
     "type": "PART_TIME",
     "typeName": "Часткова зайнятість",
     "schedule": "неповна зайнятість. Також готові взяти студента, людину з інвалідністю, пенсіонера",
@@ -9878,8 +9878,8 @@
     "title": "прибиральник службових приміщень",
     "company": "СМІЛЯНСЬКИЙ ПСИХОНЕВРОЛОГІЧНИЙ ІНТЕРНАТ",
     "salary": [
-      9542,
-      9542
+      9542.5,
+      9542.5
     ],
     "cat": "other",
     "catName": "Інше",
@@ -9989,8 +9989,8 @@
     "title": "Експерт-оцінювач у ломбард, продавець-консультант",
     "company": "Сейф, ломбард",
     "salary": [
-      25000,
-      40000
+      35000,
+      45000
     ],
     "cat": "prodavets",
     "catName": "Продавці / касири",
@@ -10032,8 +10032,8 @@
     "title": "Піцайоло",
     "company": "Ситенко Н. С., ФОП",
     "salary": [
-      18000,
-      220001
+      19000,
+      22000
     ],
     "cat": "horeca",
     "catName": "Кафе / ресторани",
@@ -10073,8 +10073,8 @@
       0,
       0
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "robitnyk",
+    "catName": "Робітники / виробництво",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "Повна",
@@ -10162,8 +10162,8 @@
     "title": "Продавець продовольчих товарів",
     "company": "Фенікс, магазин",
     "salary": [
-      14000,
-      19000
+      18000,
+      24000
     ],
     "cat": "prodavets",
     "catName": "Продавці / касири",
@@ -10276,11 +10276,11 @@
     "title": "Менеджер з продажу (партнерства)",
     "company": "Бульченко В. А., ФОП",
     "salary": [
-      35000,
-      35000
+      40000,
+      40000
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",
@@ -10366,8 +10366,8 @@
       0,
       0
     ],
-    "cat": "prodavets",
-    "catName": "Продавці / касири",
+    "cat": "office",
+    "catName": "Офіс / фінанси",
     "type": "FULL_TIME",
     "typeName": "Повна зайнятість",
     "schedule": "повна зайнятість",

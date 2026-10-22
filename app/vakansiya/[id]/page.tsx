@@ -161,6 +161,7 @@ export default async function VacancyPage({
               )}
             </div>
             <div className="salary">{salaryFmt(v.salary)}</div>
+            {v.salaryNote && <p>{v.salaryNote}</p>}
             <ShareButton standalone title={v.title} url={`/vakansiya/${v.id}`} />
             <div className="tags">
               <span className="tag">{v.typeName}</span>
