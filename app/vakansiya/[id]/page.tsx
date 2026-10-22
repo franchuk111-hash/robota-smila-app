@@ -11,7 +11,7 @@ import ApplyTelegram from "@/components/ApplyTelegram";
 import ShareButton from "@/components/ShareButton";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
-import { ALL_VACANCIES, getActiveVacancies, salaryFmt, dateFmt, vacancyTgLink, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
+import { ALL_VACANCIES, COMPANIES, getActiveVacancies, salaryFmt, dateFmt, vacancyTgLink, ageInDays, TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { KNOWN_COMPANY_URLS, vacancyFaq, faqLd } from "@/lib/seo";
 
 const metadataTitleBudget = 70 - Array.from(" | robota-smila").length;
@@ -79,6 +79,7 @@ export default async function VacancyPage({
 
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
+  const company = COMPANIES.find(c => c.name === v.company);
   const ld = {
     "@context": "https://schema.org/",
     "@type": "JobPosting",
@@ -149,12 +150,14 @@ export default async function VacancyPage({
           <article className="detail">
             <h1>{v.title}</h1>
             <div className="company" style={{ fontSize: 18 }}>
-              {companyUrl ? (
-                <a href={companyUrl} target="_blank" rel="noopener noreferrer">
-                  {v.company} ↗
-                </a>
-              ) : (
-                v.company
+              {company ? <Link href={`/kompaniya/${company.slug}`}>{v.company}</Link> : v.company}
+              {companyUrl && (
+                <>
+                  {" "}
+                  <a href={companyUrl} target="_blank" rel="noopener noreferrer" aria-label={`Сайт компанії ${v.company}`}>
+                    ↗
+                  </a>
+                </>
               )}
             </div>
             <div className="salary">{salaryFmt(v.salary)}</div>
