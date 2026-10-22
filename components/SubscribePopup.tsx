@@ -57,6 +57,8 @@ export default function SubscribePopup() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // The compact bar is sufficient on phones; do not interrupt vacancy browsing.
+    if (window.matchMedia("(max-width: 640px)").matches) return;
     try { if (sessionStorage.getItem(KEY)) return; } catch {}
 
     let fired = false;
