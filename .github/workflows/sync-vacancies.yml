@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: vacancy-sync
+  group: robota-smila-production
   cancel-in-progress: false
 
 permissions:
@@ -23,28 +23,45 @@ jobs:
       CF_DEPLOY_ENABLED: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # A manual run or a queued schedule must never deploy its old trigger SHA.
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
       - run: npm ci
+      - name: Check approved release features before changing data
+        run: |
+          node scripts/release-guard.mjs
+          cp data/collected-vacancies.json "$RUNNER_TEMP/vacancies-before.json"
       - name: Collect and publish new vacancies
         run: npm run vacancies:sync
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
           MAX_NEW_VACANCIES: "10"
+      - name: Register source pages for new Telegram vacancy links
+        run: node --import tsx scripts/update-telegram-source-pages.ts
+      - name: Reject vacancy loss or changed Telegram post references
+        run: node scripts/release-guard.mjs --baseline "$RUNNER_TEMP/vacancies-before.json"
       - name: Save Telegram message links for the website
         run: |
-          if git diff --quiet -- data/collected-vacancies.json; then exit 0; fi
+          if git diff --quiet -- data/collected-vacancies.json lib/telegram-source-pages.json; then exit 0; fi
           git config user.name "robota-smila-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/collected-vacancies.json
+          git add data/collected-vacancies.json lib/telegram-source-pages.json
           git commit -F - <<'MSG'
           Keep vacancy cards linked to published Telegram posts
 
           Telegram message IDs must be persisted so website cards can link
           directly to the published post for each vacancy.
+
+          Constraint: Preserve existing vacancies and Telegram post references
+          Confidence: high
+          Scope-risk: narrow
+          Tested: release guard before and after vacancy collection
           MSG
           git push
       - name: Deploy the site so the new vacancy dates go live
@@ -52,4 +69,13 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npm run deploy
+        run: |
+          npm run typecheck
+          node --import tsx --test scripts/release-guard.test.mjs scripts/outbound-links.test.ts scripts/telegram-click-analytics.test.ts scripts/auth-availability.test.ts
+          npx opennextjs-cloudflare build
+          node scripts/release-guard.mjs --built --baseline "$RUNNER_TEMP/vacancies-before.json"
+          # Fail closed if another release advanced the source during this build.
+          git fetch origin "${{ github.event.repository.default_branch }}"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          # Keep OAuth and other runtime variables configured outside the repository.
+          npx wrangler deploy --keep-vars
