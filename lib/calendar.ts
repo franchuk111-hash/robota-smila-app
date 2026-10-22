@@ -1,15 +1,16 @@
 // Виробничий календар України на 2026 рік
 export const YEAR = 2026;
 
-// Офіційні неробочі свята України 2026 (після реформи 2023 р.)
+// Святкові дати за ст. 73 КЗпП; позначення не означає автоматичного вихідного.
 export const HOLIDAYS: Record<string, string> = {
   "2026-01-01": "Новий рік",
   "2026-03-08": "Міжнародний жіночий день",
   "2026-04-12": "Великдень (Пасха)",
   "2026-05-01": "День праці",
-  "2026-05-09": "День перемоги над нацизмом у Другій світовій війні",
+  "2026-05-08": "День пам’яті та перемоги над нацизмом у Другій світовій війні 1939–1945 років",
   "2026-05-31": "Трійця",
   "2026-06-28": "День Конституції України",
+  "2026-07-15": "День Української Державності",
   "2026-08-24": "День Незалежності України",
   "2026-10-01": "День захисників і захисниць України",
   "2026-12-25": "Різдво Христове",
@@ -58,28 +59,23 @@ export function yearStats() {
   for (let m = 0; m < 12; m++) {
     for (const c of buildMonth(m)) {
       if (!c) continue;
-      if (c.weekend || c.holiday) off++;
+      if (c.weekend) off++;
       else work++;
     }
   }
   return { work, off, holidays: Object.keys(HOLIDAYS).length };
 }
 
-// Статистика одного місяця: робочі дні, вихідні/святкові, норми годин.
+// Базовий графік Пн–Пт по 8 годин, без святкових скорочень і перенесень.
 export function monthStats(month: number) {
   let work = 0;
   let off = 0;
   const holidays: { day: number; name: string; onWeekend: boolean }[] = [];
   for (const c of buildMonth(month)) {
     if (!c) continue;
-    if (c.weekend || c.holiday) {
-      off++;
-      if (c.holiday) {
-        holidays.push({ day: c.day, name: c.holiday, onWeekend: c.weekend });
-      }
-    } else {
-      work++;
-    }
+    if (c.weekend) off++;
+    else work++;
+    if (c.holiday) holidays.push({ day: c.day, name: c.holiday, onWeekend: c.weekend });
   }
   return { work, off, holidays, days: work + off, hours: work * HOURS_PER_DAY };
 }

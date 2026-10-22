@@ -11,14 +11,14 @@ const UPDATED = "2026-10-02";
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${BASE}/`, lastModified: UPDATED, changeFrequency: "daily", priority: 1 },
+    { url: `${BASE}/`, lastModified: "2026-10-22", changeFrequency: "daily", priority: 1 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/rabotodavtsyam`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/rezume`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/zarplatomir`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${BASE}/kalendar`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/kalendar`, lastModified: "2026-10-22", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/start-kariery`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/robota-bez-dosvidu`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/pidrobitok`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },

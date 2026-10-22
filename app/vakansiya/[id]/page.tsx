@@ -24,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const v = ALL_VACANCIES.find((x) => x.id === Number(id));
+  const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) return { title: "Вакансію не знайдено" };
   const salaryTitle =
     v.salary[0] === 0 && v.salary[1] === 0
@@ -44,7 +44,7 @@ export default async function VacancyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const v = ALL_VACANCIES.find((x) => x.id === Number(id));
+  const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) notFound();
 
   const similar = getActiveVacancies().filter((x) => x.cat === v.cat && x.id !== v.id).slice(0, 3);

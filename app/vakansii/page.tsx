@@ -20,6 +20,7 @@ export default async function VakansiiPage({
 }) {
   const VACANCIES = getActiveVacancies();
   const sp = await searchParams;
+  const hasFilters = Boolean(sp.q || sp.cat || sp.exp);
   const recent = [...VACANCIES]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 25);
@@ -27,7 +28,7 @@ export default async function VakansiiPage({
     <>
       <Header />
       <main>
-      <JsonLd data={itemListLd(recent)} />
+      {!hasFilters && <JsonLd data={itemListLd(recent)} />}
       <Catalog
         vacancies={VACANCIES}
         categories={CATEGORIES}
