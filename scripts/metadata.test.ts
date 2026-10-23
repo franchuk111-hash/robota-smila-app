@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { ALL_VACANCIES, COMPANIES } from '../lib/data';
+import { ALL_VACANCIES, COMPANIES, DUPLICATE_VACANCY_TARGETS } from '../lib/data';
 import { generateMetadata as vacancyMetadata } from '../app/vakansiya/[id]/page';
 import { generateMetadata as companyMetadata } from '../app/kompaniya/[slug]/page';
 
@@ -9,6 +9,12 @@ const siteSuffix = ' | robota-smila';
 test('vacancy metadata distinguishes every source record within the title budget', async () => {
   const titles = new Set<string>();
   for (const v of ALL_VACANCIES) {
+    const target = DUPLICATE_VACANCY_TARGETS.get(v.id);
+    if (target) {
+      await assert.rejects(vacancyMetadata({ params: Promise.resolve({ id: String(v.id) }) }),
+        (error: unknown) => (error as { digest?: string }).digest === `NEXT_REDIRECT;replace;/vakansiya/${target};308;`);
+      continue;
+    }
     const metadata = await vacancyMetadata({ params: Promise.resolve({ id: String(v.id) }) });
     const title = String(metadata.title);
     assert.ok(Array.from(title + siteSuffix).length <= 70, title);

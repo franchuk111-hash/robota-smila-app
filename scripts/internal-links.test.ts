@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { ReactElement } from 'react';
 import VacancyPage from '../app/vakansiya/[id]/page';
-import { ALL_VACANCIES, COMPANIES } from '../lib/data';
+import { ALL_VACANCIES, COMPANIES, DUPLICATE_VACANCY_TARGETS } from '../lib/data';
 import { KNOWN_COMPANY_URLS } from '../lib/seo';
 
 function elements(node: unknown): ReactElement<Record<string, unknown>>[] {
@@ -16,6 +16,12 @@ test('each vacancy links its employer name to the matching existing company prof
   const slugs = new Set(COMPANIES.map(c => c.slug));
   assert.equal(slugs.size, COMPANIES.length, 'company routes must be unique');
   for (const vacancy of ALL_VACANCIES) {
+    const target = DUPLICATE_VACANCY_TARGETS.get(vacancy.id);
+    if (target) {
+      await assert.rejects(VacancyPage({ params: Promise.resolve({ id: String(vacancy.id) }) }),
+        (error: unknown) => (error as { digest?: string }).digest === `NEXT_REDIRECT;replace;/vakansiya/${target};308;`);
+      continue;
+    }
     const tree = await VacancyPage({ params: Promise.resolve({ id: String(vacancy.id) }) });
     const company = COMPANIES.find(c => c.name === vacancy.company);
     assert.ok(company, `Missing company profile for vacancy ${vacancy.id}`);

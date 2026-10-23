@@ -1,5 +1,7 @@
 import { applyVerifiedSourceCorrections } from "../lib/vacancy-source-corrections";
 import { inferRequiredExperience } from "../lib/vacancy-experience";
+import { vacancyFingerprint } from "../lib/vacancy-deduplication";
+import { isListedVacancy } from "../lib/vacancy-lifecycle";
 import { vacancyCategory } from "../lib/vacancy-category";
 import fs from "node:fs";
 import path from "node:path";
@@ -51,7 +53,6 @@ export function cleanText(html: string): string {
     .trim();
 }
 
-const normalizeKey = (value: string) => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
 function stableId(value: string): number {
   let hash = 2166136261;
@@ -127,7 +128,7 @@ export function dedupeRecords(records: SourceVacancy[]): SourceVacancy[] {
 
   const crossSource = new Map<string, SourceVacancy>();
   for (const record of [...exact.values()].sort((a, b) => b.reg_date.localeCompare(a.reg_date))) {
-    const key = `${normalizeKey(record.vacname)}|${normalizeKey(record.companyname)}`;
+    const key = vacancyFingerprint(normalizeRecord(record)) ?? `${record.source}:${record.vacid}`;
     if (!crossSource.has(key)) crossSource.set(key, record);
   }
   return [...crossSource.values()];
@@ -270,10 +271,32 @@ export async function runPipeline(
   const collected = await operations.collect();
   const published = operations.loadPublished();
   const publishedKeys = new Set(published.map((v) => `${v.source}:${v.sourceId}`));
+  const publishedContent = new Map(published.filter(v => isListedVacancy(v))
+    .map(v => [vacancyFingerprint(v), v] as const).filter(([key]) => !!key));
+  let refreshedReposts = false;
   const maxNew = Math.max(1, Number(process.env.MAX_NEW_VACANCIES || 10));
   const candidates = collected
     .filter((record) => !publishedKeys.has(`${record.source}:${record.vacid}`))
     .sort((a, b) => b.reg_date.localeCompare(a.reg_date))
+    .filter((record) => {
+      const incoming = normalizeRecord(record);
+      const key = vacancyFingerprint(incoming);
+      if (!key) return true;
+      const existing = publishedContent.get(key);
+      if (existing) {
+        if (!dryRun && published.includes(existing) && incoming.date > existing.date) {
+          existing.repostSources = [...(existing.repostSources ?? []), {
+            source: incoming.source, sourceId: incoming.sourceId,
+            sourceUrl: incoming.sourceUrl, date: incoming.date,
+          }];
+          existing.date = incoming.date;
+          refreshedReposts = true;
+        }
+        return false;
+      }
+      publishedContent.set(key, incoming);
+      return true;
+    })
     .slice(0, maxNew);
 
   console.log(`Collected ${collected.length} unique vacancies; ${candidates.length} new candidates.`);
@@ -281,6 +304,8 @@ export async function runPipeline(
     for (const vacancy of candidates.map(normalizeRecord)) console.log(`${vacancy.source}: ${vacancy.title} — ${vacancy.company}`);
     return;
   }
+
+  if (refreshedReposts) operations.savePublished(published);
 
   for (const record of candidates) {
     const vacancy = normalizeRecord(record);

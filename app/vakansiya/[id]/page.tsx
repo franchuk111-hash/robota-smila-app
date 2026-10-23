@@ -2,7 +2,8 @@ import { experienceStatus, vacancyLocation, canPublishJobPosting } from "@/lib/v
 import { getOutboundHref, getVacancySourceHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import { isListedVacancy } from "@/lib/vacancy-lifecycle";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { DUPLICATE_VACANCY_TARGETS } from "@/lib/data";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -52,6 +53,8 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  const target = DUPLICATE_VACANCY_TARGETS.get(Number(id));
+  if (target) permanentRedirect(`/vakansiya/${target}`);
   const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) return { title: "Вакансію не знайдено" };
   const title = vacancyTitles.get(v.id)!;
@@ -70,6 +73,8 @@ export default async function VacancyPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const target = DUPLICATE_VACANCY_TARGETS.get(Number(id));
+  if (target) permanentRedirect(`/vakansiya/${target}`);
   const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) notFound();
 

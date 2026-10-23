@@ -1,4 +1,5 @@
 import { isListedVacancy } from "./vacancy-lifecycle";
+import { duplicateVacancyTargets } from "./vacancy-deduplication";
 import { vacancyCategory } from "./vacancy-category";
 import { applyVerifiedSourceCorrections } from "./vacancy-source-corrections";
 import collectedVacancies from "@/data/collected-vacancies.json";
@@ -18,6 +19,7 @@ export type Vacancy = {
   source?: string;
   sourceUrl?: string;
   sourceId?: string;
+  repostSources?: { source?: string; sourceId?: string; sourceUrl?: string; date: string }[];
   validThrough?: string; // Only a source-confirmed deadline, never an automatically extended date.
 };
 
@@ -81,7 +83,12 @@ export const ALL_VACANCIES: Vacancy[] = [
   ...SEED_VACANCIES.filter((v) => !collectedIds.has(v.id) && !(manualVacancies as Vacancy[]).some(manual => manual.id === v.id)),
 ];
 
-export const getActiveVacancies = (now = Date.now()): Vacancy[] => ALL_VACANCIES.filter((v) => isListedVacancy(v, now));
+export const DUPLICATE_VACANCY_TARGETS = duplicateVacancyTargets(ALL_VACANCIES);
+export const getActiveVacancies = (now = Date.now()): Vacancy[] => {
+  const active = ALL_VACANCIES.filter((v) => isListedVacancy(v, now));
+  const duplicates = duplicateVacancyTargets(active);
+  return active.filter(v => !duplicates.has(v.id));
+};
 // Snapshot for existing client utilities; server lists call getActiveVacancies per request.
 export const VACANCIES = getActiveVacancies();
 
