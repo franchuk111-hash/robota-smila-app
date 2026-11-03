@@ -1,4 +1,4 @@
-name: Sync vacancies to Telegram
+name: Refresh verified vacancy facts
 
 on:
   schedule:
@@ -29,19 +29,15 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - name: Check approved release features before changing data
         run: |
           node scripts/release-guard.mjs
           cp data/collected-vacancies.json "$RUNNER_TEMP/vacancies-before.json"
-      - name: Collect and publish new vacancies
-        run: npm run vacancies:sync
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          MAX_NEW_VACANCIES: "10"
+      - name: Refresh existing vacancy facts without Telegram messages
+        run: npm run vacancies:sync -- --facts-only
       - name: Register source pages for new Telegram vacancy links
         run: node --import tsx scripts/update-telegram-source-pages.ts
       - name: Reject vacancy loss or changed Telegram post references
