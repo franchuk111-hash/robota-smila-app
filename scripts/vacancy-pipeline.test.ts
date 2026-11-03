@@ -101,3 +101,34 @@ async function testDryRunRefresh() {
   console.log('vacancy-pipeline: dry-run refresh read-only; refresh preserves metadata and history');
 }
 testDryRunRefresh().catch(error => { console.error(error); process.exitCode = 1; });
+
+// Existing IDs previously bypassed freshness refresh entirely.
+async function testExistingSourceFacts() {
+  const { refreshPublishedFacts } = await import('./vacancy-pipeline');
+  const old = { ...vacancy, id: 77, slug: 'public-route', tgMsgId: 91, date: '2026-09-20', repostSources: [{ sourceId: 'earlier', date: '2026-09-19' }] };
+  const historical = { ...old, id: 78, sourceId: 'missing-from-current-source' };
+  const result = refreshPublishedFacts([old, historical], [{ ...sample, salarytxt: '30 000 грн' }]);
+  assert.deepEqual(result[0], { ...old, date: '2026-09-24', salary: [30_000, 30_000] });
+  assert.equal(result[1], historical);
+  assert.equal(refreshPublishedFacts([old], [{ ...sample, reg_date: '2026-09-01' }])[0], old);
+  assert.equal(old.date, '2026-09-20');
+  console.log('vacancy-pipeline: source fact refresh preserves identity, history and editorial fields');
+}
+testExistingSourceFacts().catch(error => { console.error(error); process.exitCode = 1; });
+assert.equal(dedupeRecords([{ ...sample, reg_date: '2026-10-02' }, { ...sample, reg_date: '2026-09-01' }])[0].reg_date, '2026-10-02', 'older duplicate page entries cannot overwrite freshest source facts');
+async function testFactsOnlySafety() {
+  const { runPipeline, refreshPublishedFacts } = await import('./vacancy-pipeline');
+  const existing = { ...vacancy, date: '2026-09-20', tgMsgId: 123 };
+  assert.equal(refreshPublishedFacts([existing], [{ ...sample, vacname: 'Інша посада' }])[0], existing);
+  assert.equal(refreshPublishedFacts([existing], [{ ...sample, description: 'Зовсім інші обов’язки працівника на новому місці роботи.' }])[0], existing);
+  let writes = 0;
+  await runPipeline({ factsOnly: true }, {
+    collect: async () => [sample, { ...sample, vacid: 'never-auto-publish' }],
+    loadPublished: () => [existing],
+    savePublished: records => { writes++; assert.equal(records.length, 1); assert.equal(records[0].date, '2026-09-24'); assert.equal(records[0].tgMsgId, 123); },
+    updateTelegram: async () => { throw Error('Forbidden Telegram update'); },
+    sendToTelegram: async () => { throw Error('Forbidden Telegram post'); },
+  });
+  assert.equal(writes, 1);
+}
+testFactsOnlySafety().catch(error => { console.error(error); process.exitCode = 1; });

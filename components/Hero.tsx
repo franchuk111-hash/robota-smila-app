@@ -21,7 +21,7 @@ export default function Hero({ vacancyCount, companyCount }: { vacancyCount: num
       >
         <div className="hero-copy">
           <motion.div className="hero-kicker" variants={item}>
-            <span className="live-dot" aria-hidden="true" /> Нові вакансії Сміли щодня
+            <span className="live-dot" aria-hidden="true" /> Вакансії Сміли в одному місці
           </motion.div>
           <motion.h1 variants={item}>
             Робота <span>у Смілі</span>

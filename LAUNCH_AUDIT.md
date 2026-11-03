@@ -1,0 +1,7 @@
+# Robota Smila audit — 2026-11-03
+
+Implemented sprint: conservative source facts refresh preserving268 historical records/Telegram references; existing-facts-only importer; consent withdrawal disable flag; bounded subscriber API; corrected unsupported editorial claims and salary methodology; genuine modification dates; patched supported Next/OpenNext dependencies; accessible salary selector label. Design CSS and phone/video assets preserved.
+
+Validation:47 tests pass, TypeScript pass, clean OpenNext build, source+built data-preservation release guards pass. Local Worker crawl333/333 sitemap pages,2209 internal hrefs,38resources,0failures/duplicate title or description. Telegram smoke2031placements,189activejobs,0failures. Mobile390/desktop1440 no horizontal overflow; video readyState4/playing; filter189→1; mobilemenu works; GA requests absent beforeconsent, measurement enabled afteraccept and disabled afterrevoke.
+
+Evidence, priority register, source dates, exact changed URLs/files, publication/rollback status and limitations are in reports/audit-20261103/RELEASE.md and linked lane reports. Do not infer rankings/traffic/conversions/CWV or GA4 receipt: connected analytics subscription expired. Full Google OAuth real-user completion remains unverified. Five advisory groups remain in build tooling; production dependency audit0.78 unmatched source IDs deferred for identity review; no mass pages or Telegram messages generated.

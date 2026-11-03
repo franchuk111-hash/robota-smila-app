@@ -7,6 +7,9 @@ const BASE = "https://robota-smila.com.ua";
 // Оновлювати разом із правкою контенту — Google використовує lastmod як сигнал
 // переобходу, тому дата має бути чесною, а не датою збірки.
 const UPDATED = "2026-10-02";
+const CONTENT_UPDATED = "2026-11-03";
+const MODIFIED_STATIC_PATHS = new Set(["/", "/blog", "/rezume", "/zarplatomir", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
+const MODIFIED_CATEGORIES = new Set(["prodavets", "robitnyk", "horeca", "office", "budivnyctvo", "other"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
@@ -27,8 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/robota-z-shchodennoyu-oplatoyu`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/aktsiya`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
   ];
+  for (const page of staticPages) {
+    if (MODIFIED_STATIC_PATHS.has(new URL(page.url).pathname)) page.lastModified = CONTENT_UPDATED;
+  }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
+    ...(MODIFIED_CATEGORIES.has(c.slug) ? { lastModified: CONTENT_UPDATED } : {}),
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
@@ -45,7 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
   const arts = ARTICLES.map((a) => ({
     url: `${BASE}/blog/${a.slug}`,
-    lastModified: a.date,
+    lastModified: a.dateModified ?? a.date,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));

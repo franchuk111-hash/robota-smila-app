@@ -12,11 +12,20 @@ export default function Analytics() {
 
   useEffect(() => {
     const check = () => {
-      try { setAllowed(localStorage.getItem(COOKIE_CONSENT_KEY) === "accepted"); } catch { setAllowed(false); }
+      let accepted = false;
+      try { accepted = localStorage.getItem(COOKIE_CONSENT_KEY) === "accepted"; } catch { /* Fail closed. */ }
+      // Unmounting Script does not unload an already-running Google tag.
+      // Disable its measurement too when consent is withdrawn, including in another tab.
+      (window as typeof window & Record<string, unknown>)[`ga-disable-${GA_ID}`] = !accepted;
+      setAllowed(accepted);
     };
     check();
     window.addEventListener(CONSENT_EVENT, check);
-    return () => window.removeEventListener(CONSENT_EVENT, check);
+    window.addEventListener("storage", check);
+    return () => {
+      window.removeEventListener(CONSENT_EVENT, check);
+      window.removeEventListener("storage", check);
+    };
   }, []);
 
   if (!allowed) return null;

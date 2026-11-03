@@ -123,7 +123,8 @@ export function dedupeRecords(records: SourceVacancy[]): SourceVacancy[] {
   const exact = new Map<string, SourceVacancy>();
   for (const record of records) {
     if (!SOURCES.has(record.source) || record.cityname !== "Сміла") continue;
-    exact.set(`${record.source}:${record.vacid}`, record);
+    const key = `${record.source}:${record.vacid}`;
+    if (!exact.has(key) || record.reg_date > exact.get(key)!.reg_date) exact.set(key, record);
   }
 
   const crossSource = new Map<string, SourceVacancy>();
@@ -191,9 +192,14 @@ async function fetchPage(page: number): Promise<ApiResponse> {
 async function collect(): Promise<SourceVacancy[]> {
   const first = await fetchPage(1);
   if (!first.status) throw new Error("DCZ API returned status=false");
-  const totalPages = Math.min(first.totalPages, 50);
+  if (!Number.isInteger(first.totalPages) || first.totalPages < 1 || first.totalPages > 50) throw new Error("Unexpected source pagination; refusing a partial import");
+  const totalPages = first.totalPages;
   const rest: SourceVacancy[] = [];
-  for (let page = 2; page <= totalPages; page++) rest.push(...(await fetchPage(page)).data);
+  for (let page = 2; page <= totalPages; page++) {
+    const result = await fetchPage(page);
+    if (!result.status || !Array.isArray(result.data)) throw new Error(`Invalid source page ${page}; no import saved`);
+    rest.push(...result.data);
+  }
   return dedupeRecords([...first.data, ...rest]);
 }
 
@@ -242,13 +248,36 @@ function savePublished(vacancies: Vacancy[]): void {
   fs.writeFileSync(DATA_FILE, `${JSON.stringify(vacancies, null, 2)}\n`);
 }
 
+// Refresh only source-backed freshness/pay facts; preserve editorial content,
+// public route identity, history, and Telegram association. Older snapshots cannot regress dates.
+export function refreshPublishedFacts(published: Vacancy[], records: SourceVacancy[]): Vacancy[] {
+  const current = new Map(dedupeRecords(records).map(record => [`${record.source}:${record.vacid}`, normalizeRecord(record)]));
+  return published.map(vacancy => {
+    const incoming = current.get(`${vacancy.source}:${vacancy.sourceId}`);
+    if (!incoming || incoming.date < vacancy.date) return vacancy;
+    // A reused source ID or changed job terms need explicit review before revival.
+    const canonicalText = (value: unknown) => JSON.stringify(value).normalize('NFKC').replace(/\s+/gu, ' ');
+    if (['title', 'company', 'schedule', 'short', 'duties'].some(key => canonicalText(incoming[key as keyof Vacancy]) !== canonicalText(vacancy[key as keyof Vacancy]))) return vacancy;
+    if (incoming.date === vacancy.date && JSON.stringify(incoming.salary) === JSON.stringify(vacancy.salary)) return vacancy;
+    return { ...vacancy, date: incoming.date, salary: incoming.salary };
+  });
+}
+
 export async function runPipeline(
-  { dryRun = false, refresh = false } = {},
+  { dryRun = false, refresh = false, factsOnly = false } = {},
   operations = { collect, loadPublished, savePublished, updateTelegram, sendToTelegram },
 ): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHANNEL_ID;
-  if (!dryRun && (!token || !chatId)) throw new Error("TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID are required");
+  if (!dryRun && !factsOnly && (!token || !chatId)) throw new Error("TELEGRAM_BOT_TOKEN and TELEGRAM_CHANNEL_ID are required");
+
+  if (factsOnly) {
+    const previous = operations.loadPublished();
+    const refreshed = refreshPublishedFacts(previous, await operations.collect());
+    if (!dryRun && refreshed.some((vacancy, index) => vacancy !== previous[index])) operations.savePublished(refreshed);
+    console.log(`Source facts: ${refreshed.filter((vacancy, index) => vacancy !== previous[index]).length} updated; no Telegram calls or new records.`);
+    return;
+  }
 
   if (refresh) {
     const current = new Map((await operations.collect()).map((record) => [`${record.source}:${record.vacid}`, record]));
@@ -269,7 +298,9 @@ export async function runPipeline(
   }
 
   const collected = await operations.collect();
-  const published = operations.loadPublished();
+  const previous = operations.loadPublished();
+  const published = dryRun ? previous : refreshPublishedFacts(previous, collected);
+  const refreshedFacts = published.some((vacancy, index) => vacancy !== previous[index]);
   const publishedKeys = new Set(published.map((v) => `${v.source}:${v.sourceId}`));
   const publishedContent = new Map(published.filter(v => isListedVacancy(v))
     .map(v => [vacancyFingerprint(v), v] as const).filter(([key]) => !!key));
@@ -305,7 +336,7 @@ export async function runPipeline(
     return;
   }
 
-  if (refreshedReposts) operations.savePublished(published);
+  if (refreshedReposts || refreshedFacts) operations.savePublished(published);
 
   for (const record of candidates) {
     const vacancy = normalizeRecord(record);
@@ -318,7 +349,7 @@ export async function runPipeline(
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  runPipeline({ dryRun: process.argv.includes("--dry-run"), refresh: process.argv.includes("--refresh") }).catch((error) => {
+  runPipeline({ dryRun: process.argv.includes("--dry-run"), refresh: process.argv.includes("--refresh"), factsOnly: process.argv.includes("--facts-only") }).catch((error) => {
     console.error(error instanceof Error ? error.message : error);
     process.exit(1);
   });

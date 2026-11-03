@@ -88,7 +88,7 @@ Google OAuth у поточному NextAuth потоці використову�
 
 Віджет використовує `data-auth-url` і callback `/uvijty/telegram`, без `data-onauth` та без `unsafe-eval`. Callback прибирає підписані query-поля з адреси до асинхронної обробки, не індексується, має `no-referrer`; сервер перевіряє HMAC і строк payload. Підписаний fixture у workerd підтвердив JWT-cookie, сесію, logout і відхилення зміненого payload.
 
-**Зовнішній блокер:** endpoint Telegram для `SmilaGobot` з origin `https://robota-smila.com.ua` повернув `Bot domain invalid`. Власник бота має виконати `/setdomain` → `SmilaGobot` → `robota-smila.com.ua` у BotFather. Повний вхід реального користувача не підтверджений. Google OAuth credentials у Worker відсутні; кнопка прихована.
+**Зовнішній блокер:** endpoint Telegram для `SmilaGobot` з origin `https://robota-smila.com.ua` повернув `Bot domain invalid`. Власник бота має виконати `/setdomain` → `SmilaGobot` → `robota-smila.com.ua` у BotFather. Повний вхід реального користувача не підтверджений. Перевірка production 2026-11-03: Google увімкнений у `/api/auth-options`, `/api/auth/providers` повертає callback `https://robota-smila.com.ua/api/auth/callback/google`. Повний вхід реального користувача не перевірений; наявність провайдера не доводить успішне завершення OAuth.
 
 Для rollback CSP повернути попередній заголовок з розділу 2 / `reports/live-headers-before.txt`.
 

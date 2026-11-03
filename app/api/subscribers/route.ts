@@ -22,10 +22,11 @@ export async function GET() {
 
   try {
     const res = await fetch(
-      `https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=${chatId}`
+      `https://api.telegram.org/bot${token}/getChatMemberCount?chat_id=${encodeURIComponent(chatId)}`,
+      { cache: "no-store", signal: AbortSignal.timeout(5000) }
     );
     const json = await res.json();
-    if (json.ok && typeof json.result === "number") {
+    if (res.ok && json?.ok === true && Number.isSafeInteger(json.result) && json.result >= 0) {
       cache = { count: json.result, ts: Date.now() };
       return NextResponse.json({ count: json.result }, {
         headers: { "Cache-Control": "public, max-age=300" },

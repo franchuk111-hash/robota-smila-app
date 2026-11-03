@@ -40,6 +40,7 @@ export default async function ArticlePage({
     headline: a.title,
     description: a.excerpt,
     datePublished: a.date,
+    dateModified: a.dateModified ?? a.date,
     inLanguage: "uk-UA",
     author: { "@type": "Organization", name: "robota-smila.com.ua" },
     publisher: { "@type": "Organization", name: "robota-smila.com.ua" },

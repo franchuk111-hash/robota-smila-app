@@ -17,10 +17,10 @@ export default function Zarplatomir() {
 
   return (
     <div className="zp">
-      <label style={{ fontWeight: 700, color: "var(--ink2)", display: "block", marginBottom: 8 }}>
+      <label htmlFor="salary-category" style={{ fontWeight: 700, color: "var(--ink2)", display: "block", marginBottom: 8 }}>
         Оберіть напрямок роботи:
       </label>
-      <select value={cat} onChange={(e) => setCat(e.target.value)}>
+      <select id="salary-category" value={cat} onChange={(e) => setCat(e.target.value)}>
         {CATEGORIES.map((c) => (
           <option key={c.slug} value={c.slug}>
             {c.ico} {c.name}

@@ -12,7 +12,7 @@ const source: SourceVacancy = {
 };
 
 test('verified reposts disappear from listings without deleting source records', () => {
-  const active = getActiveVacancies(Date.parse('2026-10-23T12:00:00Z'));
+  const active = getActiveVacancies(Date.parse('2026-11-03T12:00:00Z'));
   for (const [old, primary] of Object.entries(VERIFIED_DUPLICATES)) {
     assert.ok(ALL_VACANCIES.some(v => v.id === Number(old)));
     assert.ok(!active.some(v => v.id === Number(old)));
@@ -26,7 +26,7 @@ test('verified reposts disappear from listings without deleting source records',
 
 test('content identity ignores IDs/date but preserves different terms', () => {
   const a = normalizeRecord(source);
-  const b = { ...a, id: a.id + 1, sourceId: 'reposted', date: '2026-10-24' };
+  const b = { ...a, id: a.id + 1, sourceId: 'reposted', date: new Date(Date.parse(a.date) + 86400000).toISOString().slice(0, 10) };
   assert.equal(vacancyFingerprint(a), vacancyFingerprint(b));
   assert.equal(duplicateVacancyTargets([a, b]).get(a.id), b.id);
   for (const changed of [{ salary: [19000, 19000] as [number, number] }, { district: 'Інша адреса' },
