@@ -219,7 +219,9 @@ export const vacancyTgLink = (v: Vacancy) =>
 export const salaryFmt = (s: [number, number]) =>
   s[0] === 0 && s[1] === 0
     ? "Договірна"
-    : `${s[0].toLocaleString("uk-UA")} – ${s[1].toLocaleString("uk-UA")} ₴`;
+    : s[0] === s[1]
+      ? `${s[0].toLocaleString("uk-UA")} ₴`
+      : `${s[0].toLocaleString("uk-UA")} – ${s[1].toLocaleString("uk-UA")} ₴`;
 
 export const dateFmt = (d: string) => {
   const dt = new Date(d);
