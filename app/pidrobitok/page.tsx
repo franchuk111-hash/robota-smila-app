@@ -10,6 +10,7 @@ export function generateMetadata(): Metadata {
   return {
   title: `Підробіток у Смілі — ${vacancyCountLabel(count)}: часткова зайнятість`,
   description: seo.description,
+  robots: count === 0 ? { index: false, follow: true } : undefined,
   alternates: { canonical: `/${seo.slug}` },
   };
 }

@@ -13,6 +13,7 @@ export default function LandingPage({ seo }: { seo: LandingSeo }) {
   const list = VACANCIES.filter(seo.filter).sort(
     (a, b) => +new Date(b.date) - +new Date(a.date)
   );
+  const related = list.length === 0 ? [...VACANCIES].sort((a, b) => +new Date(b.date) - +new Date(a.date)).slice(0, 6) : [];
   const faqs = LANDING_FAQ[seo.slug] ?? [];
 
   return (
@@ -34,6 +35,18 @@ export default function LandingPage({ seo }: { seo: LandingSeo }) {
         <h1 className="page-h1">{seo.h1}</h1>
         <p className="sub">Знайдено вакансій: {list.length}</p>
 
+        {list.length === 0 && (
+          <p className="sub" data-nosnippet>
+            Наразі немає оголошень, що відповідають цій добірці. Умови та періодичність виплат уточнюйте у роботодавця.
+          </p>
+        )}
+        {related.length > 0 && (
+          <section aria-label="Інші актуальні вакансії">
+            <h2 className="title">Інші актуальні вакансії у Смілі</h2>
+            <p className="sub">Це інші пропозиції з каталогу; вони не обов’язково відповідають умовам цієї добірки.</p>
+            <div className="grid3">{related.map(v => <VacCard key={v.id} v={v} />)}</div>
+          </section>
+        )}
         <div className="grid3">
           {list.map((v) => (
             <VacCard key={v.id} v={v} />

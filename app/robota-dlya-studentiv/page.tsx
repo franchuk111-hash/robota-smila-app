@@ -10,6 +10,7 @@ export function generateMetadata(): Metadata {
   return {
   title: landingTitle(seo.h1, count),
   description: seo.description,
+  robots: count === 0 ? { index: false, follow: true } : undefined,
   alternates: { canonical: `/${seo.slug}` },
   };
 }

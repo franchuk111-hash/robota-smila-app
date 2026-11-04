@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import { createElement, type ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Reveal from '../components/Reveal';
-import JsonLd from '../components/JsonLd';
+import Catalog from '../components/Catalog';
 import CatalogPage from '../app/vakansii/page';
 import VacancyPage, { generateMetadata } from '../app/vakansiya/[id]/page';
 import { ALL_VACANCIES } from '../lib/data';
@@ -14,17 +14,18 @@ test('Reveal server markup keeps content visible before JavaScript', () => {
   assert.doesNotMatch(html, /opacity:\s*0(?:[;" ]|$)|visibility:\s*hidden|display:\s*none/);
 });
 
-function hasItemList(node: unknown): boolean {
-  if (Array.isArray(node)) return node.some(hasItemList);
-  if (!node || typeof node !== 'object' || !('props' in node)) return false;
-  const element = node as ReactElement<{ children?: unknown; data?: { '@type'?: string } }>;
-  return (element.type === JsonLd && element.props.data?.['@type'] === 'ItemList') || hasItemList(element.props.children);
+function catalogItemList(node: unknown): { '@type'?: string; itemListElement?: unknown[] } | undefined {
+  if (Array.isArray(node)) return node.map(catalogItemList).find(Boolean);
+  if (!node || typeof node !== 'object' || !('props' in node)) return undefined;
+  const element = node as ReactElement<{ children?: unknown; itemList?: { '@type'?: string; itemListElement?: unknown[] } }>;
+  return element.type === Catalog ? element.props.itemList : catalogItemList(element.props.children);
 }
 
-test('catalog only publishes its default ItemList without active URL filters', async () => {
-  assert.equal(hasItemList(await CatalogPage({ searchParams: Promise.resolve({}) })), true);
-  for (const filter of [{ q: 'водій' }, { cat: 'transport' }, { exp: '1' }]) {
-    assert.equal(hasItemList(await CatalogPage({ searchParams: Promise.resolve(filter) })), false);
+test('catalogue receives a bounded default list for reactive client-side schema visibility', async () => {
+  for (const filter of [{}, { q: 'водій' }, { cat: 'transport' }, { type: 'SHIFT' }, { exp: '1' }]) {
+    const list = catalogItemList(await CatalogPage({ searchParams: Promise.resolve(filter) }));
+    assert.equal(list?.['@type'], 'ItemList');
+    assert.ok(list?.itemListElement?.length && list.itemListElement.length <= 25);
   }
 });
 

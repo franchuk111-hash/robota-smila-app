@@ -1,7 +1,10 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { readCatalogFilters, writeCatalogFilters } from "@/lib/catalog-filters";
 import { motion, AnimatePresence } from "motion/react";
 import VacCard from "./VacCard";
+import JsonLd from "./JsonLd";
 import { matchesVacancyQuery } from "@/lib/vacancy-search";
 import { experienceStatus } from "@/lib/vacancy-facts";
 import { Vacancy, Category } from "@/lib/data";
@@ -25,23 +28,25 @@ const labelVariants = {
 export default function Catalog({
   vacancies,
   categories,
-  initialQ = "",
-  initialCat = "",
-  initialExp = false,
+  itemList,
 }: {
   vacancies: Vacancy[];
   categories: Category[];
-  initialQ?: string;
-  initialCat?: string;
-  initialExp?: boolean;
+  itemList: unknown;
 }) {
-  const [cats, setCats] = useState<Set<string>>(
-    new Set(initialCat ? [initialCat] : [])
+  const searchParams = useSearchParams();
+  const { cats, types, exp, query } = readCatalogFilters(
+    new URLSearchParams(searchParams.toString()), categories.map((category) => category.slug)
   );
-  const [types, setTypes] = useState<Set<string>>(new Set());
-  const [exp, setExp] = useState(initialExp);
-  const [query, setQuery] = useState(initialQ);
-  useEffect(() => setQuery(initialQ), [initialQ]);
+  const updateFilter = (key: "q" | "cat" | "type" | "exp", values: string[]) => {
+    const params = writeCatalogFilters(new URLSearchParams(window.location.search), key, values);
+    const suffix = params.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${suffix ? `?${suffix}` : ""}${window.location.hash}`);
+  };
+  const setQuery = (value: string) => updateFilter("q", [value]);
+  const setCats = (values: Set<string>) => updateFilter("cat", [...values]);
+  const setTypes = (values: Set<string>) => updateFilter("type", [...values]);
+  const setExp = (value: boolean) => updateFilter("exp", value ? ["1"] : []);
   const q = query.trim().toLowerCase();
 
   const items = useMemo(() => {
@@ -64,11 +69,12 @@ export default function Catalog({
 
   const heading =
     cats.size === 1
-      ? categories.find((c) => cats.has(c.slug))?.name + " — робота у Смілі"
+      ? `${categories.find((c) => cats.has(c.slug))?.name} — робота у Смілі`
       : "Вакансії у Смілі";
 
   return (
     <div className="container">
+      {!query.trim() && !cats.size && !types.size && !exp && <JsonLd data={itemList} />}
       <nav className="crumbs">
         <a href="/">Головна</a> › Вакансії
       </nav>
@@ -163,7 +169,7 @@ export default function Catalog({
           </motion.div>
         </aside>
 
-        <main>
+        <section aria-label="Результати пошуку">
           <div className="count">
             Знайдено вакансій: {items.length}
             {q ? ` за запитом «${q}»` : ""}
@@ -190,7 +196,7 @@ export default function Catalog({
               За вашим запитом вакансій не знайдено. Спробуйте змінити фільтри.
             </div>
           )}
-        </main>
+        </section>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { salaryStatistics } from "@/lib/vacancy-facts";
-import { VACANCIES, CATEGORIES } from "@/lib/data";
+import { VACANCIES, CATEGORIES, salaryFmt } from "@/lib/data";
 
 export default function Zarplatomir() {
   const [cat, setCat] = useState(CATEGORIES[0].slug);
@@ -33,8 +33,14 @@ export default function Zarplatomir() {
           <div className="lbl">Середня зарплата у вибірці</div>
           <div className="big">{f(stat.mid)} ₴</div>
           <div className="lbl" style={{ marginTop: 6 }}>
-            діапазон {f(stat.avgMin)} – {f(stat.avgMax)} ₴ · за {stat.count} вакансіями
+            {stat.avgMin === stat.avgMax ? "Середня зазначена сума" : "Середні межі зазначеної оплати"}: {salaryFmt([stat.avgMin, stat.avgMax])}
+            <br />Оголошень із зазначеною оплатою: {stat.count}
           </div>
+          {stat.count < 5 && (
+            <p className="lbl" data-nosnippet style={{ marginTop: 12 }}>
+              Мала вибірка: {stat.count} оголошення. Одна пропозиція може суттєво змінити показник; порівняйте умови у вакансіях.
+            </p>
+          )}
           <Link
             href={`/vakansii/${cat}`}
             className="btn"

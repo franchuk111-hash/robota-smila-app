@@ -1,3 +1,4 @@
+import { LANDINGS } from "@/lib/seo";
 import type { MetadataRoute } from "next";
 import { getActiveVacancies, COMPANIES, ARTICLES, CATEGORIES } from "@/lib/data";
 
@@ -33,6 +34,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   for (const page of staticPages) {
     if (MODIFIED_STATIC_PATHS.has(new URL(page.url).pathname)) page.lastModified = CONTENT_UPDATED;
   }
+  // Empty editorial selections remain available, but do not compete in the index.
+  const indexableStaticPages = staticPages.filter(page => {
+    const landing = LANDINGS.find(item => `/${item.slug}` === new URL(page.url).pathname);
+    return !landing || VACANCIES.some(landing.filter);
+  });
+  for (const page of indexableStaticPages) {
+    if (["/zarplatomir", ...LANDINGS.map(item => `/${item.slug}`)].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-04";
+  }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
     ...(MODIFIED_CATEGORIES.has(c.slug) ? { lastModified: CONTENT_UPDATED } : {}),
@@ -56,7 +65,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
-  return [...staticPages, ...cats, ...vacs, ...comps, ...arts];
+  return [...indexableStaticPages, ...cats, ...vacs, ...comps, ...arts];
 }
 
 export const dynamic = "force-dynamic";
