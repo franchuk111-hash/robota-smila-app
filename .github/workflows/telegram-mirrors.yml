@@ -1,0 +1,44 @@
+name: Mirror one approved vacancy to configured Telegram channels
+on:
+  workflow_dispatch:
+    inputs:
+      vacancy_id:
+        description: Existing approved vacancy ID with a confirmed group post
+        required: true
+        default: "1898377602"
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: robota-smila-production
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Configure durable per-channel delivery checkpoints
+        run: |
+          git config user.name "robota-smila-bot"
+          git config user.email "actions@users.noreply.github.com"
+      - name: Copy only the approved post; never resend the original group message
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          VACANCY_ID: ${{ inputs.vacancy_id }}
+        run: node --import tsx scripts/mirror-telegram-vacancy.ts "$VACANCY_ID"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telegram-mirror-receipts
+          path: |
+            reports/telegram-mirrors.json
+            data/telegram-mirror-posts.json
+          retention-days: 30
