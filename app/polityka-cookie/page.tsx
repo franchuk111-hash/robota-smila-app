@@ -27,7 +27,7 @@ export default function CookiePolicyPage() {
         </nav>
         <article className="legal">
           <h1 className="page-h1">Політика використання файлів cookie</h1>
-          <p className="legal-upd">Останнє оновлення: 7 липня 2026 року</p>
+          <p className="legal-upd">Останнє оновлення: 4 листопада 2026 року</p>
 
           <p>
             Ця Політика пояснює, що таке файли cookie, які з них використовує сайт{" "}
@@ -55,7 +55,7 @@ export default function CookiePolicyPage() {
                 <td>Необхідні</td>
                 <td>
                   Забезпечують базову роботу сайту та запам’ятовують ваш вибір щодо
-                  cookie.
+                  cookie. Сесійні cookie підтримують авторизацію після входу.
                 </td>
                 <td>Не потребують згоди</td>
               </tr>
@@ -73,8 +73,14 @@ export default function CookiePolicyPage() {
           <div className="legal-note">
             Аналітичні cookie (Google Analytics) вмикаються <b>лише після того</b>, як ви
             натиснете «Прийняти всі» в банері cookie. Якщо ви обрали «Тільки необхідні»,
-            скрипти аналітики не завантажуються.
+            скрипти Google Analytics не завантажуються.
           </div>
+
+          <p>
+            Cloudflare Web Analytics окремо вимірює перегляди й технічні показники
+            завантаження сторінок. Цей скрипт додається інфраструктурою Cloudflare;
+            вибір у банері керує Google Analytics, а не його автоматичною вставкою.
+          </p>
 
           <h2>3. Google Analytics</h2>
           <p>
