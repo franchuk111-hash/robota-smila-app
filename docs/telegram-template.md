@@ -20,7 +20,7 @@ Rollback: revert the template integration commit(s), run the existing checked we
 
 The original destination is the supergroup `@robota_smila_ua`, pinned to `-1002930665491`. Keep its post IDs and all website `/go/` links unchanged.
 
-`config/telegram-destinations.json` is the sole allowlist for additional channels. Bot API verified posting rights for `@smila_vakansii`, `@vakansii_smila`, `@smila_job`. `@robota_smila` remains disabled until bot `@SmilaGobot` has a confirmed channel posting right. `@smila_vacansii` is a second supergroup, repeated in the submitted list, and is excluded because additional channels were requested.
+`config/telegram-destinations.json` is the sole allowlist for additional channels. Bot API verified posting rights for `@smila_vakansii`, `@vakansii_smila`, `@smila_job`, and `@robota_smila` (the latter rechecked on 2026-11-04 after the administrator granted posting rights). `@smila_vacansii` is a second supergroup, repeated in the submitted list, and is excluded because additional channels were requested.
 
 After a new primary post is saved, the importer and approved manual sender copy it using `copyMessage`. Never create another primary post just to populate a channel. Existing channel copies are skipped on rerun. A later edit of a source post does not automatically edit its earlier copies.
 

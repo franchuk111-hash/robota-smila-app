@@ -19,10 +19,9 @@
     },
     {
       "username": "robota_smila",
-      "enabled": false,
+      "enabled": true,
       "chatId": -1002620744576,
-      "verifiedAt": "2026-11-04T11:13:17.407Z",
-      "disabledReason": "Bot publication rights are not confirmed; add @SmilaGobot as channel administrator with permission to post"
+      "verifiedAt": "2026-11-04T11:41:12.455Z"
     },
     {
       "username": "smila_job",
