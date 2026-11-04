@@ -77,9 +77,9 @@ export default function CookiePolicyPage() {
           </div>
 
           <p>
-            Cloudflare Web Analytics окремо вимірює перегляди й технічні показники
-            завантаження сторінок. Цей скрипт додається інфраструктурою Cloudflare;
-            вибір у банері керує Google Analytics, а не його автоматичною вставкою.
+            Автоматичне додавання Cloudflare Web Analytics вимкнено. На Сайті
+            не встановлено його аналітичний скрипт; Cloudflare забезпечує хостинг
+            і захист Сайту.
           </p>
 
           <h2>3. Google Analytics</h2>
