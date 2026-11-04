@@ -1,12 +1,40 @@
 {
-  "primary": { "username": "robota_smila_ua", "expectedType": "supergroup" },
+  "primary": {
+    "username": "robota_smila_ua",
+    "expectedType": "supergroup",
+    "chatId": -1002930665491
+  },
   "mirrors": [
-    { "username": "smila_vakansii", "enabled": false },
-    { "username": "vakansii_smila", "enabled": false },
-    { "username": "robota_smila", "enabled": false },
-    { "username": "smila_job", "enabled": false }
+    {
+      "username": "smila_vakansii",
+      "enabled": true,
+      "chatId": -1002945383854,
+      "verifiedAt": "2026-11-04T11:13:17.407Z"
+    },
+    {
+      "username": "vakansii_smila",
+      "enabled": true,
+      "chatId": -1003058494885,
+      "verifiedAt": "2026-11-04T11:13:17.407Z"
+    },
+    {
+      "username": "robota_smila",
+      "enabled": false,
+      "chatId": -1002620744576,
+      "verifiedAt": "2026-11-04T11:13:17.407Z",
+      "disabledReason": "Bot publication rights are not confirmed; add @SmilaGobot as channel administrator with permission to post"
+    },
+    {
+      "username": "smila_job",
+      "enabled": true,
+      "chatId": -1002967213414,
+      "verifiedAt": "2026-11-04T11:13:17.407Z"
+    }
   ],
   "excluded": [
-    { "username": "smila_vacansii", "reason": "Public page identifies another group; only additional channels were requested" }
+    {
+      "username": "smila_vacansii",
+      "reason": "Public page identifies another group; only additional channels were requested"
+    }
   ]
 }

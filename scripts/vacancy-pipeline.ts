@@ -1,3 +1,5 @@
+import { mirrorVacancy } from '../lib/telegram-mirrors';
+import telegramDestinations from '../config/telegram-destinations.json';
 import { sendVacancyPhoto } from '../lib/telegram-vacancy';
 import { applyVerifiedSourceCorrections } from "../lib/vacancy-source-corrections";
 import { inferRequiredExperience } from "../lib/vacancy-experience";
@@ -205,6 +207,8 @@ async function collect(): Promise<SourceVacancy[]> {
 }
 
 async function sendToTelegram(vacancy: Vacancy, token: string, chatId: string): Promise<number> {
+  const primary = telegramDestinations.primary;
+  if (![String(primary.chatId), `@${primary.username}`, primary.username].includes(chatId)) throw new Error('Primary Telegram destination does not match the preserved group');
   return sendVacancyPhoto(vacancy, token, chatId);
 }
 
@@ -333,6 +337,10 @@ export async function runPipeline(
     vacancy.tgPostFormat = 'photo';
     published.unshift(vacancy);
     operations.savePublished(published);
+    if (operations.sendToTelegram === sendToTelegram) {
+      const mirrored = await mirrorVacancy(vacancy, token!, {persistGit:process.env.TELEGRAM_MIRROR_PERSIST_GIT === '1'});
+      if (mirrored.some(row => !['disabled', 'published', 'already-published'].includes(row.status))) throw new Error(`Primary post saved; reconcile mirrors for vacancy ${vacancy.id} using the single-vacancy workflow`);
+    }
     console.log(`Published ${vacancy.source}:${vacancy.sourceId} as Telegram message ${vacancy.tgMsgId}`);
     await new Promise((resolve) => setTimeout(resolve, 1_100));
   }

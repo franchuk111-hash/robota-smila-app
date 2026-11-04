@@ -1,3 +1,4 @@
+import { mirrorVacancy } from '../lib/telegram-mirrors.ts';
 import { readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { sendVacancyPhoto, vacancyPhotoCaption } from '../lib/telegram-vacancy.ts';
@@ -12,6 +13,10 @@ const v = matches[0];
 const url = `https://robota-smila.com.ua/vakansiya/${v.id}`;
 const refreshCover = process.argv.includes('--refresh-cover');
 if (v.tgMsgId && !refreshCover && !process.argv.includes('--preview')) {
+  if (process.env.TELEGRAM_BOT_TOKEN) {
+    const results = await mirrorVacancy(v, process.env.TELEGRAM_BOT_TOKEN, {persistGit:process.env.TELEGRAM_MIRROR_PERSIST_GIT === '1'});
+    if (results.some(row => !['disabled', 'published', 'already-published'].includes(row.status))) throw new Error('Primary already published; reconcile channel mirror receipts before retrying');
+  }
   console.log(`Already published: https://t.me/robota_smila_ua/${v.tgMsgId}`);
   process.exit(0);
 }
@@ -35,3 +40,6 @@ v.tgMsgId = messageId;
 v.tgPostFormat = 'photo';
 await writeFile(file, JSON.stringify(records, null, 2) + '\n');
 console.log(`Published: https://t.me/robota_smila_ua/${messageId}`);
+
+const mirrors = await mirrorVacancy(v, process.env.TELEGRAM_BOT_TOKEN, {persistGit:process.env.TELEGRAM_MIRROR_PERSIST_GIT === '1'});
+if (mirrors.some(row => !['disabled', 'published', 'already-published'].includes(row.status))) throw new Error('Primary publication saved; reconcile channel mirror receipts before retrying');
