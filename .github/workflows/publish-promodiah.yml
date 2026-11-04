@@ -1,0 +1,43 @@
+name: Publish approved Promodiah vacancy to Telegram
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: robota-smila-production
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Send only the approved vacancy after checking its live page
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node scripts/publish-promodiah.mjs
+      - name: Preserve Telegram receipt even if saving the post reference fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: promodiah-publication-receipt
+          path: |
+            telegram-promodiah-receipt.json
+            data/manual-vacancies.json
+          retention-days: 30
+      - name: Persist the direct post link and trigger the usual checked website release
+        run: |
+          if git diff --quiet -- data/manual-vacancies.json; then exit 0; fi
+          git config user.name "robota-smila-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/manual-vacancies.json
+          git commit -m "Let applicants reach the employer-approved Telegram post" -m "Constraint: Preserve the exact Telegram message reference
+          Confidence: high
+          Scope-risk: narrow
+          Tested: Telegram API confirmed publication and the live vacancy matched"
+          git push
