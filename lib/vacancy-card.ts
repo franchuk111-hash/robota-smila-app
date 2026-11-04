@@ -1,137 +1,44 @@
-import { experienceLabel } from "./vacancy-facts";
-// Генерує SVG карточку вакансії для Telegram
-import { Vacancy } from "./data";
+import type { Vacancy } from './data';
+import { salaryFmt } from './data';
 
-export function generateVacancyCardSVG(v: Vacancy): string {
-  const width = 1080;
-  const height = 1080;
-  const padding = 40;
-
-  // Кольори за категоріями
-  const categoryColors: Record<string, string> = {
-    prodavets: "#EC4899",
-    voditel: "#F59E0B",
-    robitnyk: "#8B5CF6",
-    horeca: "#EF4444",
-    ohorona: "#3B82F6",
-    budivnyctvo: "#14B8A6",
-    office: "#6366F1",
-    other: "#6B7280",
-  };
-
-  const bgColor = categoryColors[v.cat] || "#6B7280";
-  const dateStr = new Date(v.date).toLocaleDateString("uk-UA", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
-  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-    <!-- Background with gradient -->
-    <defs>
-      <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:${bgColor};stop-opacity:1" />
-        <stop offset="100%" style="stop-color:${adjustBrightness(bgColor, -20)};stop-opacity:1" />
-      </linearGradient>
-      <linearGradient id="topGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.15" />
-        <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
-      </linearGradient>
-    </defs>
-
-    <!-- Main background -->
-    <rect width="${width}" height="${height}" fill="url(#grad)"/>
-    <rect width="${width}" height="${height}" fill="url(#topGrad)"/>
-
-    <!-- Hot badge -->
-    ${
-      v.hot
-        ? `
-      <circle cx="${width - 80}" cy="80" r="50" fill="#FF4444" opacity="0.9"/>
-      <text x="${width - 80}" y="95" font-size="48" font-weight="bold" fill="#FFF" text-anchor="middle">🔥</text>
-    `
-        : ""
+export const CARD_WIDTH = 1200;
+export const CARD_HEIGHT = 480;
+const xml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+const width = (s: string, size: number) => [...s].reduce((n, c) => n + (/\s/u.test(c) ? .3 : /[ІіЇїIil1.,'’]/u.test(c) ? .32 : /[ШЩЮМW@]/u.test(c) ? .94 : .65), 0) * size;
+function wrap(s: string, size: number, max: number): string[] {
+  const lines: string[] = [];
+  let line = '';
+  for (const char of s.replace(/\s+/gu, ' ').trim()) {
+    if (width(line + char, size) > max && line) {
+      const space = line.lastIndexOf(' ');
+      if (space > 0) { lines.push(line.slice(0, space)); line = line.slice(space + 1); }
+      else { lines.push(line); line = ''; }
     }
-
-    <!-- Company logo circle -->
-    <circle cx="${padding + 60}" cy="${padding + 60}" r="50" fill="rgba(255,255,255,0.2)"/>
-    <text x="${padding + 60}" y="${padding + 80}" font-size="60" text-anchor="middle">${getEmoji(v.cat)}</text>
-
-    <!-- Title -->
-    <text x="${padding + 150}" y="${padding + 50}" font-size="42" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">
-      ${escapeXML(v.title)}
-    </text>
-
-    <!-- Company name -->
-    <text x="${padding + 150}" y="${padding + 95}" font-size="26" fill="rgba(255,255,255,0.85)" font-family="Arial, sans-serif">
-      ${escapeXML(v.company)}
-    </text>
-
-    <!-- Divider line -->
-    <line x1="${padding}" y1="220" x2="${width - padding}" y2="220" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-
-    <!-- Salary section -->
-    <text x="${padding}" y="310" font-size="32" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">💰 Зарплата</text>
-    <text x="${padding}" y="360" font-size="40" font-weight="bold" fill="#FFF" font-family="Arial, sans-serif">
-      ${v.salary[0] === 0 && v.salary[1] === 0 ? "Договірна" : `${v.salary[0].toLocaleString("uk-UA")} – ${v.salary[1].toLocaleString("uk-UA")} ₴`}
-    </text>
-
-    <!-- Details grid -->
-    <text x="${padding}" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">📍 ${escapeXML(v.district)}</text>
-    <text x="${width / 2}" y="470" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">🕐 ${escapeXML(v.schedule)}</text>
-
-    <text x="${padding}" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">${experienceLabel(v)}</text>
-    <text x="${width / 2}" y="540" font-size="28" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif">${escapeXML(v.typeName)}</text>
-
-    <!-- Divider line 2 -->
-    <line x1="${padding}" y1="620" x2="${width - padding}" y2="620" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-
-    <!-- CTA Button -->
-    <rect x="${padding}" y="680" width="${width - padding * 2}" height="100" rx="20" fill="#FFF" opacity="0.95"/>
-    <text x="${width / 2}" y="750" font-size="40" font-weight="bold" fill="${bgColor}" text-anchor="middle" font-family="Arial, sans-serif">
-      Відгукнутися на вакансію
-    </text>
-
-    <!-- Footer -->
-    <text x="${width / 2}" y="${height - 40}" font-size="24" fill="rgba(255,255,255,0.6)" text-anchor="middle" font-family="Arial, sans-serif">
-      robota-smila.com.ua · Вакансія ${v.id}
-    </text>
-  </svg>`;
+    line += char;
+  }
+  if (line.trim()) lines.push(line.trim());
+  return lines;
+}
+function fit(text: string, maxWidth: number, maxHeight: number, start: number) {
+  for (let size = start; size >= 10; size -= 2) {
+    const lines = wrap(text, size, maxWidth);
+    if (lines.length * size * 1.15 <= maxHeight) return {size, lines};
+  }
+  throw new Error('Vacancy text is too long for a readable cover; review before publishing');
+}
+function textBlock(text: string, y: number, maxWidth: number, maxHeight: number, fontSize: number, fill: string, weight: number) {
+  const {size, lines} = fit(text, maxWidth, maxHeight, fontSize);
+  return `<text x="56" y="${y}" font-family="Arial,DejaVu Sans,sans-serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${lines.map((line, i) => `<tspan x="56" dy="${i ? size * 1.15 : 0}">${xml(line)}</tspan>`).join('')}</text>`;
 }
 
-function getEmoji(category: string): string {
-  const emojis: Record<string, string> = {
-    prodavets: "🛒",
-    voditel: "🚚",
-    robitnyk: "🏭",
-    horeca: "🍽️",
-    ohorona: "🛡️",
-    budivnyctvo: "🏗️",
-    office: "💼",
-    other: "✨",
-  };
-  return emojis[category] || "💼";
+// One deterministic template: source facts remain text, never generated by an image model.
+export function generateVacancyCardSVG(v: Vacancy): string {
+  const sewing = /швач|шве[яй]/iu.test(v.title);
+  const icon = sewing ? `<g transform="translate(1060 286) scale(.72) rotate(12)"><ellipse cy="-64" rx="64" ry="20" fill="#dce9fc"/><rect x="-54" y="-64" width="108" height="133" rx="9" fill="#387df6"/>${Array.from({length:12}, (_,i) => `<path d="M-52 ${-52+i*10} Q0 ${-35+i*10} 52 ${-52+i*10}" stroke="#1e5ed7" stroke-width="3" fill="none"/>`).join('')}<ellipse cy="69" rx="67" ry="21" fill="#e9eff8"/><ellipse cy="-64" rx="64" ry="20" fill="#eef3fb"/><ellipse cy="-64" rx="22" ry="8" fill="#9fb6d6"/></g><path d="M1060 340 C1010 412 965 310 925 365 S870 390 840 370" fill="none" stroke="#387df6" stroke-width="4"/>` : `<g transform="translate(1040 300) scale(.72) rotate(-12)"><rect x="-66" y="-55" width="142" height="108" rx="20" fill="#387df6"/><path d="M-26-55v-18q0-18 18-18h22q18 0 18 18v18M-66-10q70 45 142 0" fill="none" stroke="#dce9fc" stroke-width="10"/></g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480"><rect width="1200" height="480" fill="#fff"/><path d="M965 0H1200V145Q1004 124 965 0" fill="#e8f1ff"/><path d="M0 425Q145 416 223 480H0" fill="#e8f1ff"/><text x="56" y="65" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" font-weight="700" fill="#182642">Робота <tspan fill="#387df6">Сміла</tspan></text>${textBlock(v.title, 173, 1060, 102, 82, '#182642', 700)}${textBlock(salaryFmt(v.salary), 302, 840, 58, 54, '#2468ed', 700)}${textBlock(v.company, 369, 800, 62, 32, '#182642', 400)}${icon}<rect x="733" y="425" width="411" height="37" rx="18" fill="#182642"/><text x="938" y="451" text-anchor="middle" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" font-weight="700" fill="#fff">robota-smila.com.ua</text></svg>`;
 }
 
-function adjustBrightness(color: string, percent: number): string {
-  const num = parseInt(color.replace("#", ""), 16);
-  const amt = Math.round(2.55 * percent);
-  const R = (num >> 16) + amt;
-  const G = (num >> 8 & 0x00FF) + amt;
-  const B = (num & 0x0000FF) + amt;
-  return "#" + (
-    0x1000000 +
-    (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-    (B < 255 ? B < 1 ? 0 : B : 255)
-  ).toString(16).slice(1);
-}
-
-function escapeXML(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+export async function renderVacancyCardPNG(v: Vacancy): Promise<Buffer> {
+  const sharp = (await import('sharp')).default;
+  return sharp(Buffer.from(generateVacancyCardSVG(v))).png().toBuffer();
 }

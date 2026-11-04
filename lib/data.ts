@@ -15,6 +15,7 @@ export type Vacancy = {
   hot?: boolean;
   paymentFrequency?: "daily" | "weekly" | "monthly";
   salaryNote?: string;
+  tgPostFormat?: 'photo';
   tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
   source?: string;
   sourceUrl?: string;

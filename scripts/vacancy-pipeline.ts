@@ -1,3 +1,4 @@
+import { sendVacancyPhoto } from '../lib/telegram-vacancy';
 import { applyVerifiedSourceCorrections } from "../lib/vacancy-source-corrections";
 import { inferRequiredExperience } from "../lib/vacancy-experience";
 import { vacancyFingerprint } from "../lib/vacancy-deduplication";
@@ -204,23 +205,11 @@ async function collect(): Promise<SourceVacancy[]> {
 }
 
 async function sendToTelegram(vacancy: Vacancy, token: string, chatId: string): Promise<number> {
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: formatTelegramVacancy(vacancy),
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
-    signal: AbortSignal.timeout(20_000),
-  });
-  const result = await response.json() as { ok: boolean; description?: string; result?: { message_id: number } };
-  if (!response.ok || !result.ok || !result.result) throw new Error(result.description || `Telegram API ${response.status}`);
-  return result.result.message_id;
+  return sendVacancyPhoto(vacancy, token, chatId);
 }
 
 async function updateTelegram(vacancy: Vacancy, token: string, chatId: string): Promise<void> {
+  if (vacancy.tgPostFormat === 'photo') { await sendVacancyPhoto(vacancy, token, chatId, {messageId:vacancy.tgMsgId}); return; }
   const response = await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -341,6 +330,7 @@ export async function runPipeline(
   for (const record of candidates) {
     const vacancy = normalizeRecord(record);
     vacancy.tgMsgId = await operations.sendToTelegram(vacancy, token!, chatId!);
+    vacancy.tgPostFormat = 'photo';
     published.unshift(vacancy);
     operations.savePublished(published);
     console.log(`Published ${vacancy.source}:${vacancy.sourceId} as Telegram message ${vacancy.tgMsgId}`);
