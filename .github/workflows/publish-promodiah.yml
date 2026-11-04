@@ -23,9 +23,14 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
+      - name: Configure durable per-channel checkpoints
+        run: |
+          git config user.name "robota-smila-bot"
+          git config user.email "actions@users.noreply.github.com"
       - name: Send only the approved vacancy after checking its live page
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_MIRROR_PERSIST_GIT: "1"
           REFRESH_COVER: ${{ inputs.refresh_cover }}
         run: |
           args=()
@@ -39,6 +44,7 @@ jobs:
           path: |
             telegram-promodiah-receipt.json
             data/manual-vacancies.json
+            data/telegram-mirror-posts.json
           retention-days: 30
       - name: Persist the direct post link and trigger the usual checked website release
         run: |
