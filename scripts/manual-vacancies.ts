@@ -3,7 +3,7 @@ import path from 'node:path';
 import { ALL_VACANCIES, CATEGORIES, type Vacancy } from '../lib/data';
 
 type Input = Omit<Vacancy, 'id' | 'catName' | 'typeName' | 'slug' | 'date'> & { slug?: string; date?: string };
-const names = { FULL_TIME: 'Повна зайнятість', PART_TIME: 'Часткова зайнятість', SHIFT: 'Змінний графік' };
+const names = { FULL_TIME: 'Повна зайнятість', PART_TIME: 'Часткова зайнятість', SHIFT: 'Змінний графік', OTHER: 'Зайнятість: уточнюйте' };
 const letters: Record<string, string> = { а:'a',б:'b',в:'v',г:'h',ґ:'g',д:'d',е:'e',є:'ye',ж:'zh',з:'z',и:'y',і:'i',ї:'yi',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'kh',ц:'ts',ч:'ch',ш:'sh',щ:'shch',ь:'',ю:'yu',я:'ya' };
 const slugify = (value: string) => [...value.toLowerCase()].map(c => letters[c] ?? c).join('').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 

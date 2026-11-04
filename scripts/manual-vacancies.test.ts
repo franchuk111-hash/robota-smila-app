@@ -13,3 +13,5 @@ assert.equal(inferRequiredExperience('Досвід не потрібен'), fals
 assert.equal(inferRequiredExperience('Досвід роботи від 2 років'), true);
 assert.equal(inferRequiredExperience('Робота у магазині'), undefined);
 console.log('manual-vacancies: validation, duplicate prevention, JSON roundtrip and experience inference passed');
+
+assert.equal(prepareManualVacancies([{ ...input, type: 'OTHER' }], [], now)[0].typeName, 'Зайнятість: уточнюйте');

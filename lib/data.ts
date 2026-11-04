@@ -9,7 +9,7 @@ import manualVacancies from "@/data/manual-vacancies.json";
 export type Vacancy = {
   id: number; slug: string; title: string; company: string;
   salary: [number, number]; cat: string; catName: string;
-  type: "FULL_TIME" | "PART_TIME" | "SHIFT"; typeName: string;
+  type: "FULL_TIME" | "PART_TIME" | "SHIFT" | "OTHER"; typeName: string;
   schedule: string; district: string; exp: boolean; date: string;
   short: string; duties: string[]; req: string[]; offer: string[];
   hot?: boolean;
