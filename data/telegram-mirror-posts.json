@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "posts": {
+    "1898377602:-1002945383854": {
+      "vacancyId": 1898377602,
+      "chatId": -1002945383854,
+      "sourceChatId": -1002930665491,
+      "sourceMessageId": 1411,
+      "status": "pending",
+      "updatedAt": "2026-11-04T11:25:10.273Z"
+    }
+  }
+}
