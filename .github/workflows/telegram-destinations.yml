@@ -1,0 +1,24 @@
+name: Inspect approved Telegram destinations
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read chat types, linked chats and existing bot permissions only
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: node scripts/check-telegram-destinations.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: telegram-destinations
+          path: reports/telegram-destinations.json
+          retention-days: 30
