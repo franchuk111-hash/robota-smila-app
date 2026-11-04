@@ -1,0 +1,12 @@
+{
+  "primary": { "username": "robota_smila_ua", "expectedType": "supergroup" },
+  "mirrors": [
+    { "username": "smila_vakansii", "enabled": false },
+    { "username": "vakansii_smila", "enabled": false },
+    { "username": "robota_smila", "enabled": false },
+    { "username": "smila_job", "enabled": false }
+  ],
+  "excluded": [
+    { "username": "smila_vacansii", "reason": "Public page identifies another group; only additional channels were requested" }
+  ]
+}
