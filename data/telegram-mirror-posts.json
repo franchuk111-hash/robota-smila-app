@@ -33,8 +33,9 @@
       "chatId": -1002620744576,
       "sourceChatId": -1002930665491,
       "sourceMessageId": 1411,
-      "status": "pending",
-      "updatedAt": "2026-11-04T11:44:17.026Z"
+      "status": "published",
+      "updatedAt": "2026-11-04T11:44:18.350Z",
+      "messageId": 11
     }
   }
 }
