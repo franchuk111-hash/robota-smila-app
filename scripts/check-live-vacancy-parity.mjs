@@ -8,11 +8,17 @@ import { getActiveVacancies } from '../lib/data.ts';
   const flight = [...html.matchAll(/<script>self\.__next_f\.push\((\[.*?\])\)<\/script>/gs)]
     .map(match => JSON.parse(match[1])).filter(item => item[0] === 1).map(item => item[1]).join('');
   const payloads = [];
+  // React Flight can inline the client element inside a parent model row.
+  const collect = (value) => {
+    if (!value || typeof value !== 'object') return;
+    if (!Array.isArray(value) && Array.isArray(value.vacancies)) payloads.push(value.vacancies);
+    for (const child of Object.values(value)) collect(child);
+  };
   for (const line of flight.split('\n')) {
     if (!/^[\da-f]+:\[/.test(line)) continue;
     try {
       const item = JSON.parse(line.slice(line.indexOf(':') + 1));
-      if (Array.isArray(item?.[3]?.vacancies)) payloads.push(item[3].vacancies);
+      collect(item);
     } catch {}
   }
   assert.equal(payloads.length, 1, 'Complete live catalog payload is required');

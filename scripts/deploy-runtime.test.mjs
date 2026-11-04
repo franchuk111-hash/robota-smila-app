@@ -24,9 +24,10 @@ test('CI postdeploy check rejects stale data and missing catalog payloads', asyn
     .replace("import { writeFileSync } from 'node:fs';", "const { writeFileSync } = require('node:fs');")
     .replace("import { getActiveVacancies } from '../lib/data.ts';", "const { getActiveVacancies } = require('../lib/data.ts');");
   const expected = [{ id: 1, date: '2026-11-03', salary: [22000, 26000], tgMsgId: 123 }];
-  const execute = async (rows) => {
+  const execute = async (rows, nested = false) => {
     const state = { exitCode: 0, evidence: null };
-    const flight = rows === null ? '' : `1:${JSON.stringify(['$', 'Catalog', null, { vacancies: rows }])}\n`;
+    const element = ['$', 'Catalog', null, { vacancies: rows }];
+    const flight = rows === null ? '' : `1:${JSON.stringify(nested ? [['$', 'Header', null, {}], ['$', 'main', null, { children: element }]] : element)}\n`;
     const html = `<script>self.__next_f.push(${JSON.stringify([1, flight])})</script>`;
     await runInNewContext(source, {
       require: name => name === 'node:assert/strict' ? assert : name === 'node:fs'
@@ -39,6 +40,10 @@ test('CI postdeploy check rejects stale data and missing catalog payloads', asyn
     });
     return state;
   };
+  const nestedGood = await execute(expected, true);
+  assert.equal(nestedGood.exitCode, 0);
+  assert.equal(nestedGood.evidence.activeVacancies, 1);
+  assert.equal((await execute([{ ...expected[0], date: '2000-01-01' }], true)).exitCode, 1);
   const good = await execute(expected);
   assert.equal(good.exitCode, 0);
   assert.equal(good.evidence.pass, true);
