@@ -29,3 +29,12 @@ Single-vacancy mirror workflow: `telegram-mirrors.yml`, input an existing vacanc
 The importer reads `TELEGRAM_MIRROR_PERSIST_GIT=1` for durable CI checkpoints. Ordinary local commands save the ledger atomically on disk; commit it alongside vacancy data. Scheduled facts-only refresh still makes no Telegram calls. Audit-only workflow `telegram-destinations.yml` can recheck existing bot permissions without publishing or granting access.
 
 API source checked 2026-11-04: https://core.telegram.org/bots/api#copymessage.
+
+
+## Automatic approved manual vacancy cycle
+
+`npm run add-vacancy -- input.json` and the batch CLI mark new reviewed manual vacancies with `telegramPublish: true`. Set it to `false` for website-only placement. Historical records without this explicit flag are never bulk-published. The public employer form continues to send a private moderation request; it does not automatically approve user-submitted advertisements.
+
+The serialized `sync-vacancies.yml` workflow first deploys and verifies the website. It then checks each queued active manual page against its canonical, title, employer, description and formatted pay before sending. A primary `pending` receipt is pushed to Git before exactly one `sendPhoto`; its confirmed ID is durably saved before copying the compact cover/caption to all four configured channels. Existing IDs are reused. An ambiguous primary delivery stops the queue until an operator reconciles the receipt; neither timeout nor a failed Git push causes an automatic Telegram resend. If post references changed, the same workflow builds and deploys a second checked release so website buttons reach the confirmed group post.
+
+Primary receipts: `data/telegram-primary-posts.json`; per-channel receipts: `data/telegram-mirror-posts.json`. Never delete these to retry a workflow. Source refresh remains facts-only and does not approve/import a new source backlog. New content must first be reviewed and saved as a manual vacancy. Repeated runs keep the same five message IDs; changes to already sent content require separate editorial reconciliation.

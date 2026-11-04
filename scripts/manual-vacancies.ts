@@ -29,7 +29,8 @@ export function prepareManualVacancies(values: unknown, existing: Vacancy[], now
     const date = v.date ?? now.toISOString().slice(0, 10);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date || Date.parse(date) > now.getTime()) throw new Error('Некоректна дата публікації');
     if (v.validThrough && (!Number.isFinite(Date.parse(v.validThrough)) || Date.parse(v.validThrough) <= Date.parse(date))) throw new Error('Некоректний термін дії');
-    result.push({ ...v, id: id++, slug, date, catName: category.name, typeName: names[v.type] });
+    if (v.telegramPublish !== undefined && typeof v.telegramPublish !== 'boolean') throw new Error('telegramPublish має бути true/false');
+    result.push({ ...v, telegramPublish: v.telegramPublish !== false, id: id++, slug, date, catName: category.name, typeName: names[v.type] });
   }
   return result.slice(existing.length);
 }

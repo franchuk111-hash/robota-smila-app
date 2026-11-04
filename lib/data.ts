@@ -15,6 +15,7 @@ export type Vacancy = {
   hot?: boolean;
   paymentFrequency?: "daily" | "weekly" | "monthly";
   salaryNote?: string;
+  telegramPublish?: boolean; // Explicitly approved manual publication queue; historical records are not backfilled.
   tgPostFormat?: 'photo';
   tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
   source?: string;

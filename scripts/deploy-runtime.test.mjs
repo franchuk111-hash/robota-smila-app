@@ -17,8 +17,12 @@ test('CI runtime satisfies the locked deployment CLI minimum', async () => {
 test('CI postdeploy check rejects stale data and missing catalog payloads', async () => {
   const { runInNewContext } = await import('node:vm');
   const workflow = await readFile(new URL('../.github/workflows/sync-vacancies.yml', import.meta.url), 'utf8');
-  const source = /node --import tsx <<'JS'\n([\s\S]*?)\n          JS/.exec(workflow)?.[1].replace(/^          /gm, '');
-  assert.ok(source, 'Workflow must contain the executable live data parity check');
+  assert.equal((workflow.match(/node --import tsx scripts\/check-live-vacancy-parity.mjs/g) || []).length, 2, 'Both site deployments must verify live data parity');
+  const moduleSource = await readFile(new URL('./check-live-vacancy-parity.mjs', import.meta.url), 'utf8');
+  const source = moduleSource
+    .replace("import assert from 'node:assert/strict';", "const assert = require('node:assert/strict');")
+    .replace("import { writeFileSync } from 'node:fs';", "const { writeFileSync } = require('node:fs');")
+    .replace("import { getActiveVacancies } from '../lib/data.ts';", "const { getActiveVacancies } = require('../lib/data.ts');");
   const expected = [{ id: 1, date: '2026-11-03', salary: [22000, 26000], tgMsgId: 123 }];
   const execute = async (rows) => {
     const state = { exitCode: 0, evidence: null };

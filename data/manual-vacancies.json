@@ -39,6 +39,7 @@
     "catName": "Робітники / виробництво",
     "typeName": "Зайнятість: уточнюйте",
     "tgMsgId": 1411,
-    "tgPostFormat": "photo"
+    "tgPostFormat": "photo",
+    "telegramPublish": true
   }
 ]

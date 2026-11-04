@@ -22,7 +22,7 @@ export type MirrorResult = {
 };
 type Options = { config?: MirrorConfig; stateFile?: string; fetcher?: typeof fetch; persistGit?: boolean };
 
-function gitCheckpoint(file: string, status: string): void {
+export function gitCheckpoint(file: string, status: string): void {
   const relative = path.relative(process.cwd(), path.resolve(file));
   if (!relative.startsWith(`data${path.sep}`) || relative.split(path.sep).includes('..')) throw new Error('Invalid ledger path for Git persistence');
   const run = (args: string[]) => execFileSync('git', args, { stdio: 'ignore' });

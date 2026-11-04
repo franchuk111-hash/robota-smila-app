@@ -15,3 +15,6 @@ assert.equal(inferRequiredExperience('Робота у магазині'), undefi
 console.log('manual-vacancies: validation, duplicate prevention, JSON roundtrip and experience inference passed');
 
 assert.equal(prepareManualVacancies([{ ...input, type: 'OTHER' }], [], now)[0].typeName, 'Зайнятість: уточнюйте');
+
+assert.equal(records[0].telegramPublish, true);
+assert.equal(prepareManualVacancies([{...input,telegramPublish:false}],[],now)[0].telegramPublish,false);
