@@ -1,6 +1,7 @@
 "use client";
 import { experienceLabel, experienceStatus, vacancyLocation } from "@/lib/vacancy-facts";
 import Link from "next/link";
+import { cardEmployment } from "@/lib/vacancy-card-copy";
 import { motion } from "motion/react";
 import { Vacancy, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
@@ -18,7 +19,6 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const },
       };
 
-  const schedule = v.type === "FULL_TIME" ? v.schedule.replace(/^повна(?: зайнятість)?(?:,\s*|$)/iu, "").trim() : v.schedule;
 
   const handleApply = () => {
     trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
@@ -55,7 +55,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       <div className="vac-conditions">
         <div><span aria-hidden="true">⌖</span>{vacancyLocation(v)}</div>
-        <div><span aria-hidden="true">◷</span>{[v.typeName, schedule].filter((value, index, all) => value && all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index).join(" · ")}</div>
+        <div><span aria-hidden="true">◷</span>{cardEmployment(v)}</div>
         {experienceStatus(v) !== "unknown" && <div><span aria-hidden="true">✓</span>{experienceLabel(v)}</div>}
       </div>
       {v.short && <p className="vac-excerpt">{v.short}</p>}
