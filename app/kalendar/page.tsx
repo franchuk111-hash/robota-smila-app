@@ -9,7 +9,6 @@ import {
   YEAR,
   MONTH_NAMES,
   MONTH_SLUGS,
-  MONTH_GENITIVE,
   WEEKDAYS,
   HOLIDAYS,
   buildMonth,
@@ -25,11 +24,11 @@ const november = monthStats(10);
 const december = monthStats(11);
 
 export const metadata: Metadata = {
-  title: `Виробничий календар ${YEAR} — ${stats.work} робочих днів, ${stats.holidays} свят`,
-  description: `Виробничий календар України на ${YEAR} рік: ${stats.work} робочих днів, ${stats.off} вихідних за графіком 5/2, ${stats.holidays} святкових дат та години за базовим графіком по місяцях. Жовтень ${YEAR} — ${workDaysLabel(october.work)}, ${october.hours} годин.`,
+  title: `Робочі дні ${YEAR} — виробничий календар по місяцях`,
+  description: `Робочі дні та години ${YEAR} за графіком 5/2: листопад — ${november.work} день, ${november.hours} год; грудень — ${december.work} дні, ${december.hours} год. Таблиця по місяцях без святкових перенесень.`,
   alternates: { canonical: "/kalendar" },
   openGraph: {
-    title: `Виробничий календар ${YEAR}: ${stats.work} робочих днів, ${stats.holidays} свят`,
+    title: `Робочі дні ${YEAR} — виробничий календар по місяцях`,
     description: `Робочі, вихідні та святкові дні України на ${YEAR} рік за базовим графіком Пн–Пт по 8 годин.`,
     url: "https://robota-smila.com.ua/kalendar",
     type: "article",
@@ -37,6 +36,15 @@ export const metadata: Metadata = {
 };
 
 const FAQ = [
+  {
+    q: `Скільки робочих днів у листопаді ${YEAR}?`,
+    a: `У листопаді ${YEAR} року ${workDaysLabel(november.work)}, ${november.off} вихідних та ${november.hours} годин за базовим графіком Пн–Пт по 8 годин, без автоматичних святкових вихідних і перенесень. Фактичні години уточнюйте за графіком роботодавця.`,
+  },
+  {
+    q: `Скільки робочих днів у грудні ${YEAR}?`,
+    a: `У грудні ${YEAR} року ${workDaysLabel(december.work)}, ${december.off} вихідних та ${december.hours} години за базовим графіком Пн–Пт по 8 годин, без автоматичних святкових вихідних і перенесень. 25 грудня включено до робочих днів цього розрахунку; святкова позначка не змінює базового графіка. Фактичні години уточнюйте у роботодавця.`,
+  },
+
   {
     q: `Скільки робочих днів у ${YEAR} році в Україні?`,
     a: `За базовим графіком Пн–Пт по 8 годин у ${YEAR} році ${stats.work} робочих днів і ${stats.off} вихідних. Окремо позначено ${stats.holidays} святкових дат. При 40-годинному робочому тижні розрахунок становить ${stats.work * HOURS_PER_DAY} годин.`,
@@ -80,6 +88,20 @@ export default function CalendarPage() {
           Робочі, вихідні та святкові дні в Україні на {YEAR} рік і розрахунок робочого часу
           по місяцях. Базовий графік: понеділок–п’ятниця по 8 годин, без автоматичних святкових вихідних і перенесень.
         </p>
+
+        <section className="cal-summary" aria-labelledby={`robochi-dni-po-misyatsyah-${YEAR}`}>
+          <h2 id={`robochi-dni-po-misyatsyah-${YEAR}`}>Робочі дні та години по місяцях {YEAR} року</h2>
+          <p id="calendar-basis">Базовий графік: Пн–Пт по 8 годин, без автоматичних святкових вихідних і перенесень. Це не індивідуальна норма підприємства — фактичний графік уточнюйте у роботодавця.</p>
+          <p><a href={`#lystopad-${YEAR}`}>Листопад: {workDaysLabel(november.work)}, {november.hours} год</a>{" · "}<a href={`#hruden-${YEAR}`}>Грудень: {workDaysLabel(december.work)}, {december.hours} год</a></p>
+          <table aria-describedby="calendar-basis">
+            <caption>Кількість робочих днів, вихідних і годин за графіком 5/2</caption>
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Робочі дні</th><th scope="col">Вихідні</th><th scope="col">Години</th></tr></thead>
+            <tbody>{MONTH_NAMES.map((name, m) => {
+              const ms = monthStats(m);
+              return <tr key={m}><th scope="row"><a href={`#${MONTH_SLUGS[m]}-${YEAR}`}>{name}</a></th><td>{ms.work}</td><td>{ms.off}</td><td>{ms.hours}</td></tr>;
+            })}</tbody>
+          </table>
+        </section>
 
         <div className="cal-stats">
           <div className="cal-stat">
@@ -172,26 +194,6 @@ export default function CalendarPage() {
             У грудні {YEAR} року {workDaysLabel(december.work)} та {december.off} вихідних за графіком 5/2. Єдине державне свято місяця — 25 грудня, Різдво Христове (п'ятниця),
             у базовому графіку ця п’ятниця врахована як робоча. За базовим графіком — {december.hours} годин.
           </p>
-
-          <h2 id={`robochi-dni-po-misyatsyah-${YEAR}`}>
-            Скільки робочих днів у кожному місяці {YEAR} року
-          </h2>
-          <ul>
-            {MONTH_NAMES.map((name, m) => {
-              const ms = monthStats(m);
-              const holiday = ms.holidays.length
-                ? ` — свято: ${ms.holidays
-                    .map((h) => `${h.day} ${MONTH_GENITIVE[m]}`)
-                    .join(", ")}`
-                : "";
-              return (
-                <li key={m}>
-                  <b>{name}</b> — {workDaysLabel(ms.work)}, {ms.hours} годин
-                  {holiday}
-                </li>
-              );
-            })}
-          </ul>
 
           <h2 id={`yak-rahuyemo-${YEAR}`}>Як ми рахуємо робочі дні та години</h2>
           <p>

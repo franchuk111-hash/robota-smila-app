@@ -43,7 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     if (["/zarplatomir", ...LANDINGS.map(item => `/${item.slug}`)].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-04";
   }
   for (const page of indexableStaticPages) {
-    if (["/zarplatomir", "/vakansii"].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-05";
+    if (["/zarplatomir", "/vakansii", "/kalendar"].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-05";
   }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
