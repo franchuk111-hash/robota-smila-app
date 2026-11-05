@@ -7,7 +7,7 @@ import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
 import { getActiveVacancies, CATEGORIES } from "@/lib/data";
-import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq, categoryTitle } from "@/lib/seo";
+import { CATEGORY_SEO, itemListLd, faqLd, categoryFaq, categoryTitle, vacancyNoun } from "@/lib/seo";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ cat: c.slug }));
@@ -135,7 +135,7 @@ export default async function CategoryPage({
                   <span>
                     <span className="n">{c.name}</span>
                     <br />
-                    <span className="c">{n} вакансій</span>
+                    <span className="c">{n} {vacancyNoun(n)}</span>
                   </span>
                 </Link>
               );

@@ -10,7 +10,6 @@ const BASE = "https://robota-smila.com.ua";
 const UPDATED = "2026-10-02";
 const CONTENT_UPDATED = "2026-11-03";
 const MODIFIED_STATIC_PATHS = new Set(["/", "/blog", "/rezume", "/zarplatomir", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
-const MODIFIED_CATEGORIES = new Set(["prodavets", "robitnyk", "horeca", "office", "budivnyctvo", "other"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
@@ -47,9 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
-    ...(["voditel", "ohorona"].includes(c.slug)
-      ? { lastModified: "2026-11-05" }
-      : MODIFIED_CATEGORIES.has(c.slug) ? { lastModified: CONTENT_UPDATED } : {}),
+    lastModified: "2026-11-05",
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
