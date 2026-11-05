@@ -88,15 +88,24 @@ export default function Catalog({
         {query && <button type="button" className="btn" onClick={() => setQuery("")}>Очистити</button>}
       </form>
 
+      <details className="faq-item">
+        <summary>Вакансії за професією</summary>
+        <nav className="seo-links" aria-label="Категорії вакансій">
+          {categories.filter(c => vacancies.some(v => v.cat === c.slug)).map(c => (
+            <a key={c.slug} href={`/vakansii/${c.slug}`}>{c.name}</a>
+          ))}
+        </nav>
+      </details>
+
       <div className="layout">
         <aside className="filters">
-          <motion.h3 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+          <motion.h3 initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
             Фільтри
           </motion.h3>
           <motion.div
             className="fgroup"
             custom={0}
-            initial="hidden"
+            initial={false}
             animate="show"
             variants={filterGroupVariants}
           >
@@ -105,7 +114,7 @@ export default function Catalog({
               <motion.label
                 key={c.slug}
                 custom={i}
-                initial="hidden"
+                initial={false}
                 animate="show"
                 variants={labelVariants}
               >
@@ -121,7 +130,7 @@ export default function Catalog({
           <motion.div
             className="fgroup"
             custom={1}
-            initial="hidden"
+            initial={false}
             animate="show"
             variants={filterGroupVariants}
           >
@@ -134,7 +143,7 @@ export default function Catalog({
               <motion.label
                 key={val}
                 custom={i}
-                initial="hidden"
+                initial={false}
                 animate="show"
                 variants={labelVariants}
               >
@@ -150,7 +159,7 @@ export default function Catalog({
           <motion.div
             className="fgroup"
             custom={2}
-            initial="hidden"
+            initial={false}
             animate="show"
             variants={filterGroupVariants}
           >
@@ -166,7 +175,7 @@ export default function Catalog({
 
             <motion.label
               custom={0}
-              initial="hidden"
+              initial={false}
               animate="show"
               variants={labelVariants}
             >
@@ -192,7 +201,7 @@ export default function Catalog({
                   <motion.div
                     key={v.id}
                     layout
-                    initial={{ opacity: 0, scale: 0.92 }}
+                    initial={false}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.92 }}
                     transition={{ duration: 0.24, ease: "easeOut" }}

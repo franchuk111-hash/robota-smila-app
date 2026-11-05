@@ -37,3 +37,42 @@ test('vacancy canonical IDs resolve while numeric URL aliases return 404', async
     assert.equal((await generateMetadata({ params: Promise.resolve({ id: alias }) })).alternates, undefined);
   }
 });
+
+// Supply the same public routing contexts used by Next when rendering client components on the server.
+import { SearchParamsContext, PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
+import VacCard from '../components/VacCard';
+import { CATEGORIES, getActiveVacancies } from '../lib/data';
+
+function catalogueMarkup(vacancies = getActiveVacancies(), query = '') {
+  return renderToStaticMarkup(createElement(PathnameContext.Provider, { value: '/vakansii' },
+    createElement(SearchParamsContext.Provider, { value: new URLSearchParams(query) },
+      createElement(Catalog, { vacancies, categories: CATEGORIES, itemList: {} }))));
+}
+
+test('catalogue exposes native links to populated category pages without replacing filters', () => {
+  const vacancies = getActiveVacancies();
+  const html = catalogueMarkup(vacancies);
+  for (const category of CATEGORIES) {
+    if (vacancies.some(v => v.cat === category.slug)) assert.ok(html.includes(`href="/vakansii/${category.slug}"`), category.slug);
+  }
+  assert.match(html, /<details/);
+  assert.match(html, /type="checkbox"/);
+  const onlyDrivers = vacancies.filter(v => v.cat === 'voditel');
+  assert.ok(onlyDrivers.length);
+  const sparse = catalogueMarkup(onlyDrivers);
+  assert.ok(sparse.includes('href="/vakansii/voditel"'));
+  assert.ok(!sparse.includes('href="/vakansii/ohorona"'));
+});
+
+test('catalogue cards and filters are visible in server HTML before JavaScript', () => {
+  const html = catalogueMarkup(getActiveVacancies().slice(0, 2));
+  assert.match(html, /<article/);
+  assert.doesNotMatch(html, /opacity:\s*0(?:[;" ]|$)|visibility:\s*hidden|display:\s*none/);
+});
+
+test('shared vacancy card remains visible before its scroll animation runs', () => {
+  const html = renderToStaticMarkup(createElement(PathnameContext.Provider, { value: '/vakansii/voditel' },
+    createElement(VacCard, { v: getActiveVacancies()[0] })));
+  assert.match(html, /<article/);
+  assert.doesNotMatch(html, /opacity:\s*0(?:[;" ]|$)|visibility:\s*hidden|display:\s*none/);
+});
