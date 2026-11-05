@@ -30,3 +30,18 @@ export function salaryStatistics(list: Vacancy[]) {
   const avgMax = Math.round(paid.reduce((sum, v) => sum + v.salary[1], 0) / paid.length);
   return { count: paid.length, avgMin, avgMax, mid: Math.round((avgMin + avgMax) / 2) };
 }
+
+// Only an explicit positive statement in the source; never infer legal eligibility.
+export function mentionsBooking(v: Vacancy): boolean {
+  return [v.short, ...v.duties, ...v.req, ...v.offer].some(part =>
+    part.split(/[.!?;\n]/u).some(sentence =>
+      /(?:можливість|наявність|надаємо|забезпечуємо|пропонуємо)\s+бронювання/iu.test(sentence) &&
+      !/(?:не\s+(?:надаємо|забезпечуємо|пропонуємо)|без\s+бронювання|немає|відсутн|неможлив|не\s+передбач|не\s+надається|недоступн|бронювання\s*:\s*ні(?:\s|$)|бронювання\s+(?:квитків|готел|номерів|місць))/iu.test(sentence)
+    )
+  );
+}
+
+// A lower bound, rather than an advertised upper limit, meets a salary threshold.
+export function meetsSalaryMinimum(v: Vacancy, minimum: number): boolean {
+  return minimum <= 0 || (v.salary[0] > 0 && v.salary[0] >= minimum);
+}

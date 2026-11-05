@@ -1,12 +1,12 @@
 "use client";
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { readCatalogFilters, writeCatalogFilters } from "@/lib/catalog-filters";
+import { readCatalogFilters, writeCatalogFilters, type CatalogFilterKey } from "@/lib/catalog-filters";
 import { motion, AnimatePresence } from "motion/react";
 import VacCard from "./VacCard";
 import JsonLd from "./JsonLd";
 import { matchesVacancyQuery } from "@/lib/vacancy-search";
-import { experienceStatus } from "@/lib/vacancy-facts";
+import { experienceStatus, mentionsBooking, meetsSalaryMinimum } from "@/lib/vacancy-facts";
 import { Vacancy, Category } from "@/lib/data";
 
 const filterGroupVariants = {
@@ -35,10 +35,10 @@ export default function Catalog({
   itemList: unknown;
 }) {
   const searchParams = useSearchParams();
-  const { cats, types, exp, query } = readCatalogFilters(
+  const { cats, types, exp, query, minSalary, booking } = readCatalogFilters(
     new URLSearchParams(searchParams.toString()), categories.map((category) => category.slug)
   );
-  const updateFilter = (key: "q" | "cat" | "type" | "exp", values: string[]) => {
+  const updateFilter = (key: CatalogFilterKey, values: string[]) => {
     const params = writeCatalogFilters(new URLSearchParams(window.location.search), key, values);
     const suffix = params.toString();
     window.history.replaceState(null, "", `${window.location.pathname}${suffix ? `?${suffix}` : ""}${window.location.hash}`);
@@ -53,13 +53,15 @@ export default function Catalog({
     let list = vacancies.slice();
     if (cats.size) list = list.filter((v) => cats.has(v.cat));
     if (types.size) list = list.filter((v) => types.has(v.type));
+    if (booking) list = list.filter(mentionsBooking);
+    if (minSalary) list = list.filter(v => meetsSalaryMinimum(v, minSalary));
     if (exp) list = list.filter((v) => experienceStatus(v) === "not-required");
     if (q)
       list = list.filter((v) =>
         matchesVacancyQuery(v, q)
       );
     return list.sort((a, b) => +new Date(b.date) - +new Date(a.date));
-  }, [vacancies, cats, types, exp, q]);
+  }, [vacancies, cats, types, exp, q, minSalary, booking]);
 
   const toggle = (set: Set<string>, val: string, fn: (s: Set<string>) => void) => {
     const next = new Set(set);
@@ -74,7 +76,7 @@ export default function Catalog({
 
   return (
     <div className="container">
-      {!query.trim() && !cats.size && !types.size && !exp && <JsonLd data={itemList} />}
+      {!query.trim() && !cats.size && !types.size && !exp && !minSalary && !booking && <JsonLd data={itemList} />}
       <nav className="crumbs">
         <a href="/">Головна</a> › Вакансії
       </nav>
@@ -153,6 +155,15 @@ export default function Catalog({
             variants={filterGroupVariants}
           >
             <div className="lbl">Умови</div>
+            <label htmlFor="minimum-salary">Зазначена оплата від, ₴</label>
+            <select id="minimum-salary" value={minSalary} onChange={e => updateFilter("min_salary", e.target.value === "0" ? [] : [e.target.value])}>
+              {[0, 10000, 15000, 20000, 25000, 30000].map(value => <option key={value} value={value}>{value ? value.toLocaleString("uk-UA") : "Будь-яка"}</option>)}
+              {minSalary > 0 && ![10000, 15000, 20000, 25000, 30000].includes(minSalary) && <option value={minSalary}>{minSalary.toLocaleString("uk-UA")}</option>}
+            </select>
+            <p className="filter-help">За нижньою межею в оголошенні. Період оплати та суму після податків уточнюйте у джерелі.</p>
+            <label><input type="checkbox" checked={booking} onChange={e => updateFilter("booking", e.target.checked ? ["1"] : [])} />Згадано можливість бронювання</label>
+            {booking && <p className="filter-help">Це текст роботодавця, а не гарантія бронювання. Перевірте умови в оригіналі вакансії.</p>}
+
             <motion.label
               custom={0}
               initial="hidden"
@@ -170,7 +181,7 @@ export default function Catalog({
         </aside>
 
         <section aria-label="Результати пошуку">
-          <div className="count">
+          <div className="count" role="status" aria-live="polite">
             Знайдено вакансій: {items.length}
             {q ? ` за запитом «${q}»` : ""}
           </div>

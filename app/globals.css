@@ -481,3 +481,13 @@ footer.site a:hover{color:#fff;opacity:1}
   .subbar-close{width:44px;height:44px;background:transparent}
   body:has(.subbar){padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 }
+
+/* Growth tools reuse the existing card, input and focus treatment. */
+.zp + .zp{margin-top:28px}
+.zp input[type="number"],.filters select{width:100%;max-width:100%;height:52px;border:1px solid var(--border-strong);border-radius:12px;padding:0 12px;font:inherit;background:#fff;margin:8px 0 18px;box-sizing:border-box}
+.zp input[type="number"]:focus-visible,.filters select:focus-visible{outline:3px solid rgba(59,130,246,.3);outline-offset:2px}
+.zp .result .big{font-size:clamp(22px,5vw,40px);overflow-wrap:anywhere}
+
+.filters .filter-help{font-size:13px;line-height:1.5;color:var(--muted);margin:0 0 12px}
+
+@media(min-width:901px){.filters{max-height:calc(100dvh - 110px);overflow-y:auto;box-sizing:border-box}}

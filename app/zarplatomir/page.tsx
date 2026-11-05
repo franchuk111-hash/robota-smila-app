@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
+import PayrollCalculator from "@/components/PayrollCalculator";
 import Zarplatomir from "@/components/Zarplatomir";
 
 export const metadata: Metadata = {
-  title: "Зарплатомір Сміли — оплата у вакансіях сайту",
+  title: "Зарплатомір Сміли — зарплати та калькулятор на руки",
   description:
-    "Порівняйте зазначену оплату за категоріями вакансій сайту. Обмежена вибірка оголошень, кількість пропозицій та пояснення розрахунку.",
+    "Порівняйте зазначену оплату за категоріями вакансій сайту. Обмежена вибірка оголошень і калькулятор зарплати на руки: ПДФО 18%, військовий збір 5%.",
   alternates: { canonical: "/zarplatomir" },
 };
 
@@ -28,6 +29,7 @@ export default function ZarplatomirPage() {
           Орієнтир за оплатою в оголошеннях сайту, а не статистика всього міста
         </p>
         <Zarplatomir />
+        <PayrollCalculator />
 
         <section className="seo-text">
           <h2>Як ми рахуємо показники вибірки</h2>
