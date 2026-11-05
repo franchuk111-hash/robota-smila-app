@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { ALL_VACANCIES, getActiveVacancies } from '../lib/data';
 import { duplicateVacancyTargets, vacancyFingerprint, VERIFIED_DUPLICATES } from '../lib/vacancy-deduplication';
+import { isListedVacancy } from '../lib/vacancy-lifecycle';
 import { dedupeRecords, normalizeRecord, runPipeline, type SourceVacancy } from './vacancy-pipeline';
 
 const source: SourceVacancy = {
@@ -12,15 +13,26 @@ const source: SourceVacancy = {
 };
 
 test('verified reposts disappear from listings without deleting source records', () => {
-  const active = getActiveVacancies(Date.parse('2026-11-03T12:00:00Z'));
+  // Source refreshes may move dates beyond yesterday's snapshot. Identity is
+  // independent of lifecycle; expiry boundaries have separate fixture tests.
+  const duplicates = duplicateVacancyTargets(ALL_VACANCIES);
   for (const [old, primary] of Object.entries(VERIFIED_DUPLICATES)) {
     assert.ok(ALL_VACANCIES.some(v => v.id === Number(old)));
-    assert.ok(!active.some(v => v.id === Number(old)));
-    assert.ok(active.some(v => v.id === primary));
+    const record = ALL_VACANCIES.find(v => v.id === primary)!;
+    assert.ok(record, String(primary));
+    assert.equal(duplicates.get(Number(old)), primary);
+    const now = Date.parse(record.date) + 12 * 3600000;
+    if (isListedVacancy(record, now)) {
+      const active = getActiveVacancies(now);
+      assert.ok(!active.some(v => v.id === Number(old)));
+      assert.ok(active.some(v => v.id === primary));
+    }
   }
-  // Different specialties and unresolved salary differences must survive.
+  // Different specialties and unresolved salary differences must survive
+  // deduplication even when they have not been published yet or have expired.
   for (const id of [1080891185, 1657189048, 1220850666, 1418616328, 1272355178]) {
-    assert.ok(active.some(v => v.id === id), String(id));
+    assert.ok(ALL_VACANCIES.some(v => v.id === id), String(id));
+    assert.ok(!duplicates.has(id), String(id));
   }
 });
 
