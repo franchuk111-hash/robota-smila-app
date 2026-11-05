@@ -40,7 +40,7 @@ test('resume example is explicitly fictional and cannot expose usable sample con
   assert.equal(get('/blog/serednya-zarplata-smila-2026')?.lastModified, '2026-11-03');
   assert.equal(get('/blog/robota-bez-dosvidu-smila')?.lastModified, '2026-06-20');
   assert.equal(get('/kalendar')?.lastModified, '2026-11-05');
-  assert.equal(get('/vakansii/voditel')?.lastModified, undefined);
+  assert.equal(get('/vakansii/voditel')?.lastModified, '2026-11-05');
 });
 
 test('salary tool copy discloses sample limitations without invented pay bands', () => {

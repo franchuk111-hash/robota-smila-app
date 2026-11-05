@@ -46,7 +46,7 @@ export default async function CategoryPage({
     (a, b) => +new Date(b.date) - +new Date(a.date)
   );
   const others = CATEGORIES.filter((c) => c.slug !== cat);
-  const faqs = categoryFaq(category.name, list);
+  const faqs = categoryFaq(category.name, list, cat);
 
   return (
     <>

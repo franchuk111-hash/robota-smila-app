@@ -4,7 +4,7 @@ import { CATEGORY_SEO } from '../lib/seo';
 
 for (const [slug, h1] of [
   ['voditel', 'Робота водієм у Смілі'],
-  ['ohorona', 'Робота охоронцем у Смілі'],
+  ['ohorona', 'Робота охоронцем і сторожем у Смілі'],
 ] as const) {
   test(`${slug} copy preserves its topic and explains how to compare actual offers`, () => {
     const seo = CATEGORY_SEO[slug];

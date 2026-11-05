@@ -47,7 +47,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
-    ...(MODIFIED_CATEGORIES.has(c.slug) ? { lastModified: CONTENT_UPDATED } : {}),
+    ...(["voditel", "ohorona"].includes(c.slug)
+      ? { lastModified: "2026-11-05" }
+      : MODIFIED_CATEGORIES.has(c.slug) ? { lastModified: CONTENT_UPDATED } : {}),
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
