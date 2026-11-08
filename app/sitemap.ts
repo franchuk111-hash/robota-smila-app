@@ -31,10 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/aktsiya`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
   ];
   for (const page of staticPages) {
-    const path = new URL(page.url).pathname;
-    if (MODIFIED_STATIC_PATHS.has(path)) {
-      page.lastModified = path === "/pidrobitok" ? "2026-11-08" : CONTENT_UPDATED;
-    }
+    if (MODIFIED_STATIC_PATHS.has(new URL(page.url).pathname)) page.lastModified = CONTENT_UPDATED;
   }
   // Empty editorial selections remain available, but do not compete in the index.
   const indexableStaticPages = staticPages.filter(page => {
@@ -42,7 +39,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return !landing || VACANCIES.some(landing.filter);
   });
   for (const page of indexableStaticPages) {
-    if (["/zarplatomir", ...LANDINGS.map(item => `/${item.slug}`)].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-04";
+    const path = new URL(page.url).pathname;
+    if (["/zarplatomir", ...LANDINGS.map(item => `/${item.slug}`)].includes(path)) {
+      page.lastModified = path === "/pidrobitok" ? "2026-11-08" : "2026-11-04";
+    }
   }
   for (const page of indexableStaticPages) {
     if (["/zarplatomir", "/vakansii", "/kalendar"].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-05";
