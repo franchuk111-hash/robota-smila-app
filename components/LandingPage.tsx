@@ -58,6 +58,12 @@ export default function LandingPage({ seo }: { seo: LandingSeo }) {
           {seo.text.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
+          {seo.slug === "pidrobitok" && (
+            <p>
+              Потрібні щоденні виплати? Перевірте наявність{" "}
+              <Link href="/robota-z-shchodennoyu-oplatoyu">вакансій із щоденною оплатою у Смілі</Link>.
+            </p>
+          )}
         </div>
 
         {faqs.length > 0 && (
