@@ -9,12 +9,12 @@ const BASE = "https://robota-smila.com.ua";
 // переобходу, тому дата має бути чесною, а не датою збірки.
 const UPDATED = "2026-10-02";
 const CONTENT_UPDATED = "2026-11-03";
-const MODIFIED_STATIC_PATHS = new Set(["/", "/blog", "/rezume", "/zarplatomir", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
+const MODIFIED_STATIC_PATHS = new Set(["/blog", "/rezume", "/zarplatomir", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${BASE}/`, lastModified: "2026-10-22", changeFrequency: "daily", priority: 1 },
+    { url: `${BASE}/`, lastModified: "2026-11-09", changeFrequency: "daily", priority: 1 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
