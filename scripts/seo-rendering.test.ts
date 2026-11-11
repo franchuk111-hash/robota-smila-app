@@ -6,6 +6,8 @@ import Reveal from '../components/Reveal';
 import Catalog from '../components/Catalog';
 import CatalogPage from '../app/vakansii/page';
 import VacancyPage, { generateMetadata } from '../app/vakansiya/[id]/page';
+import JsonLd from '../components/JsonLd';
+import { canPublishJobPosting } from '../lib/vacancy-facts';
 import { ALL_VACANCIES } from '../lib/data';
 
 test('Reveal server markup keeps content visible before JavaScript', () => {
@@ -35,6 +37,28 @@ test('vacancy canonical IDs resolve while numeric URL aliases return 404', async
   for (const alias of [`0${id}`, `${id}.0`, `+${id}`, `${id}e0`]) {
     await assert.rejects(() => VacancyPage({ params: Promise.resolve({ id: alias }) }), /NEXT_HTTP_ERROR_FALLBACK;404/);
     assert.equal((await generateMetadata({ params: Promise.resolve({ id: alias }) })).alternates, undefined);
+  }
+});
+
+test('JobPosting omits unverified base pay while retaining the listing', async () => {
+  const now = Date.parse('2026-11-11T12:00:00Z');
+  const vacancy = getActiveVacancies(now).find(v => canPublishJobPosting(v) && v.salary[0] > 0);
+  assert.ok(vacancy);
+  const realNow = Date.now;
+  try {
+    Date.now = () => now;
+    const page = await VacancyPage({ params: Promise.resolve({ id: String(vacancy.id) }) });
+    function jobPosting(node: unknown): Record<string, unknown> | undefined {
+      if (Array.isArray(node)) return node.map(jobPosting).find(Boolean);
+      if (!node || typeof node !== 'object' || !('props' in node)) return undefined;
+      const { type, props } = node as ReactElement<{ children?: unknown; data?: Record<string, unknown> }>;
+      return type === JsonLd && props.data?.['@type'] === 'JobPosting' ? props.data : jobPosting(props.children);
+    }
+    const schema = jobPosting(page);
+    assert.equal(schema?.title, vacancy.title);
+    assert.ok(schema && !Object.hasOwn(schema, 'baseSalary'));
+  } finally {
+    Date.now = realNow;
   }
 });
 

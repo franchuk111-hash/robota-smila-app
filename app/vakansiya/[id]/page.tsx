@@ -21,10 +21,18 @@ function fitMetadata(value: string, budget: number) {
   return chars.length > budget ? `${chars.slice(0, budget - 1).join("").trimEnd()}…` : value.trim();
 }
 
+function vacancyTitleLocation(v: (typeof ALL_VACANCIES)[number]) {
+  const location = vacancyLocation(v);
+  if (location.startsWith("Сміла")) return " — Сміла";
+  if (location === "Канівський район") return " — Канівський район";
+  return "";
+}
+
 function vacancyMetadataTitle(v: (typeof ALL_VACANCIES)[number]) {
   const peers = ALL_VACANCIES.filter(x => x.title.trim() === v.title.trim());
   const sameCompany = peers.filter(x => x.company === v.company).length > 1;
-  const suffix = sameCompany ? ` — Сміла №${v.id}` : " — Сміла";
+  const location = vacancyTitleLocation(v);
+  const suffix = sameCompany ? `${location} №${v.id}` : location;
   const role = fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length);
   if (peers.length === 1 || sameCompany) return `${role}${suffix}`;
   const remaining = metadataTitleBudget - Array.from(role + suffix + " · ").length;
@@ -38,7 +46,7 @@ const vacancyTitles = new Map(ALL_VACANCIES.map(v => [v.id, vacancyMetadataTitle
 const repeatedTitles = new Set([...vacancyTitles.values()].filter((title, index, values) => values.indexOf(title) !== index));
 for (const v of ALL_VACANCIES) {
   if (repeatedTitles.has(vacancyTitles.get(v.id)!)) {
-    const suffix = ` — Сміла №${v.id}`;
+    const suffix = `${vacancyTitleLocation(v)} №${v.id}`;
     vacancyTitles.set(v.id, `${fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length)}${suffix}`);
   }
 }
@@ -59,9 +67,11 @@ export async function generateMetadata({
   if (!v) return { title: "Вакансію не знайдено" };
   const title = vacancyTitles.get(v.id)!;
   const identifier = title.includes(`№${v.id}`) ? ` №${v.id}` : "";
+  const location = vacancyTitleLocation(v);
+  const locationText = location === " — Сміла" ? " у Смілі" : location ? " у Канівському районі" : "";
   return {
     title,
-    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Умови та спосіб відгуку в оголошенні${identifier}.`,
+    description: `${v.company} шукає ${v.title.toLowerCase()}${locationText}. ${v.typeName}, ${v.schedule}. Місце роботи й спосіб відгуку уточнюйте в оголошенні${identifier}.`,
     robots: isListedVacancy(v) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/vakansiya/${v.id}` },
   };
@@ -82,7 +92,6 @@ export default async function VacancyPage({
   const faqs = vacancyFaq(v);
   const stale = !isListedVacancy(v);
 
-  const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
   const company = COMPANIES.find(c => c.name === v.company);
   const ld = {
@@ -118,19 +127,7 @@ export default async function VacancyPage({
         addressCountry: "UA",
       },
     },
-    // baseSalary додаємо лише коли є конкретні цифри (для «Договірна» — пропускаємо)
-    ...(hasSalary && {
-      baseSalary: {
-        "@type": "MonetaryAmount",
-        currency: "UAH",
-        value: {
-          "@type": "QuantitativeValue",
-          minValue: v.salary[0],
-          maxValue: v.salary[1],
-          unitText: "MONTH",
-        },
-      },
-    }),
+    // The catalog stores amounts without a verified base-pay period.
   };
 
   return (
