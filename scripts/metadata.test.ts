@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { vacancyLocation } from '../lib/vacancy-facts';
 import { ALL_VACANCIES, COMPANIES, DUPLICATE_VACANCY_TARGETS } from '../lib/data';
 import { generateMetadata as vacancyMetadata } from '../app/vakansiya/[id]/page';
 import { generateMetadata as companyMetadata } from '../app/kompaniya/[slug]/page';
@@ -19,9 +20,15 @@ test('vacancy metadata distinguishes every source record within the title budget
     const title = String(metadata.title);
     assert.ok(Array.from(title + siteSuffix).length <= 70, title);
     const peers = ALL_VACANCIES.filter(x => x.title.trim() === v.title.trim());
-    if (peers.length === 1 && Array.from(v.title.trim() + ' — Сміла' + siteSuffix).length <= 70) {
-      assert.equal(title, `${v.title.trim()} — Сміла`);
+    const workplace = vacancyLocation(v);
+    const locationSuffix = workplace.startsWith('Сміла') ? ' — Сміла' : workplace === 'Канівський район' ? ' — Канівський район' : '';
+    if (peers.length === 1 && Array.from(v.title.trim() + locationSuffix + siteSuffix).length <= 70) {
+      assert.equal(title, v.title.trim() + locationSuffix);
       assert.ok(!String(metadata.description).includes(`№${v.id}`));
+    }
+    if (!locationSuffix) {
+      assert.doesNotMatch(title, / — Сміла(?: №\d+)?$/u);
+      assert.ok(!String(metadata.description).startsWith(`${v.company} шукає ${v.title.toLowerCase()} у Смілі.`));
     }
     assert.ok(!titles.has(title), title);
     titles.add(title);

@@ -331,16 +331,19 @@ export const LANDING_FAQ: Record<string, { q: string; a: string }[]> = {
 export function vacancyFaq(v: Vacancy): { q: string; a: string }[] {
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const fmt = (n: number) => n.toLocaleString("uk-UA");
+  const salary = v.salary[0] === v.salary[1] ? fmt(v.salary[0]) : `${fmt(v.salary[0])}–${fmt(v.salary[1])}`;
+  const location = vacancyLocation(v);
+  const workplace = location.startsWith("Місце роботи:") ? "Місце роботи уточнюйте в оголошенні." : `Місце роботи: ${location}. Точну адресу уточнюйте в оголошенні.`;
   return [
     {
-      q: `Скільки платить «${v.company}» на позиції «${v.title}» у Смілі?`,
+      q: `Яку оплату вказано для вакансії «${v.title}»?`,
       a: hasSalary
-        ? `Вакансія «${v.title}» (${v.company}) пропонує оплату ${fmt(v.salary[0])}–${fmt(v.salary[1])} грн. Точна сума залежить від досвіду та результатів.`
-        : `Оплата за вакансією «${v.title}» договірна — обговорюється з роботодавцем «${v.company}» індивідуально.`,
+        ? `В оголошенні вказано ${salary} грн. За який період нараховують цю суму та чи включає вона доплати, перевірте в джерелі.`
+        : `В оголошенні немає суми. Уточніть оплату у роботодавця.`,
     },
     {
       q: `Який графік роботи на вакансії «${v.title}»?`,
-      a: `Графік: ${v.schedule}, ${v.typeName.toLowerCase()}. Місце роботи: ${vacancyLocation(v)}. Точну адресу уточнюйте в оголошенні.`,
+      a: `Графік: ${v.schedule}, ${v.typeName.toLowerCase()}. ${workplace}`,
     },
     {
       q: `Чи потрібен досвід для «${v.title}»?`,
