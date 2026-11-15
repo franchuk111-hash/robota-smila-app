@@ -45,6 +45,11 @@ export default async function CategoryPage({
   const list = VACANCIES.filter((v) => v.cat === cat).sort(
     (a, b) => +new Date(b.date) - +new Date(a.date)
   );
+  const withLicenseCategory = cat === "voditel"
+    ? list.filter((v) =>
+        /(?:^|[\s(])кат(?:егорі[їя]|\.)[\s:«"„]*[ABCDАВСД](?:[1ЕE]|1[ЕE])?(?![\p{L}\p{N}])/iu.test(v.title)
+      )
+    : [];
   const others = CATEGORIES.filter((c) => c.slug !== cat);
   const faqs = categoryFaq(category.name, list, cat);
 
@@ -88,6 +93,17 @@ export default async function CategoryPage({
             Відкрити з фільтрами →
           </Link>
         </p>
+
+        {withLicenseCategory.length > 0 && (
+          <section className="seo-text">
+            <h2>Вакансії водія за категорією посвідчення</h2>
+            <div className="seo-links">
+              {withLicenseCategory.map((v) => (
+                <Link key={v.id} href={`/vakansiya/${v.id}`}>{v.title}</Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="seo-text">
           <h2>{seo.h1}: що варто знати</h2>

@@ -49,7 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,
-    lastModified: "2026-11-05",
+    lastModified: c.slug === "voditel" ? "2026-11-15" : "2026-11-05",
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));
