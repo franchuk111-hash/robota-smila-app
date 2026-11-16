@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${BASE}/rabotodavtsyam`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${BASE}/rabotodavtsyam`, lastModified: "2026-11-16", changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/rezume`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/zarplatomir`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/kalendar`, lastModified: "2026-10-22", changeFrequency: "monthly", priority: 0.6 },
