@@ -1,57 +1,60 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { salaryStatistics } from "@/lib/vacancy-facts";
-import { VACANCIES, CATEGORIES, salaryFmt } from "@/lib/data";
+import { CATEGORIES, salaryFmt, type Vacancy } from "@/lib/data";
 
-export default function Zarplatomir() {
-  const [cat, setCat] = useState(CATEGORIES[0].slug);
+const MAX_VISIBLE_OFFERS = 5;
 
-  const stat = useMemo(() => {
-    const list = VACANCIES.filter((v) => v.cat === cat);
-    if (!list.length) return null;
-    return salaryStatistics(list);
-  }, [cat]);
+type SalaryOffer = Pick<Vacancy, "id" | "title" | "company" | "cat" | "salary">;
 
-  const f = (n: number) => n.toLocaleString("uk-UA");
+export default function Zarplatomir({ vacancies }: { vacancies: SalaryOffer[] }) {
+  const [category, setCategory] = useState(CATEGORIES[0]);
+  const offers = vacancies.filter((v) => v.cat === category.slug);
+  const visibleOffers = offers.slice(0, MAX_VISIBLE_OFFERS);
 
   return (
     <div className="zp">
       <label htmlFor="salary-category" style={{ fontWeight: 700, color: "var(--ink2)", display: "block", marginBottom: 8 }}>
         Оберіть напрямок роботи:
       </label>
-      <select id="salary-category" value={cat} onChange={(e) => setCat(e.target.value)}>
-        {CATEGORIES.map((c) => (
-          <option key={c.slug} value={c.slug}>
-            {c.ico} {c.name}
+      <select id="salary-category" value={category.slug} onChange={(event) => {
+        const next = CATEGORIES.find((item) => item.slug === event.target.value);
+        if (next) setCategory(next);
+      }}>
+        {CATEGORIES.map((item) => (
+          <option key={item.slug} value={item.slug}>
+            {item.ico} {item.name}
           </option>
         ))}
       </select>
 
-      {stat ? (
-        <div className="result">
-          <div className="lbl">Середня зарплата у вибірці</div>
-          <div className="big">{f(stat.mid)} ₴</div>
-          <div className="lbl" style={{ marginTop: 6 }}>
-            {stat.avgMin === stat.avgMax ? "Середня зазначена сума" : "Середні межі зазначеної оплати"}: {salaryFmt([stat.avgMin, stat.avgMax])}
-            <br />Оголошень із зазначеною оплатою: {stat.count}
-          </div>
-          {stat.count < 5 && (
-            <p className="lbl" data-nosnippet style={{ marginTop: 12 }}>
-              Мала вибірка: {stat.count} оголошення. Одна пропозиція може суттєво змінити показник; порівняйте умови у вакансіях.
+      <div className="result" style={{ textAlign: "left" }}>
+        <h2 style={{ margin: "0 0 8px", fontSize: 20 }}>{category.name}</h2>
+        {visibleOffers.length ? (
+          <>
+            <p className="lbl" style={{ margin: 0 }}>
+              Показано {visibleOffers.length} із {offers.length} оголошень із зазначеною оплатою.
+              Період оплати, базову ставку й доплати уточнюйте в оголошенні або в роботодавця.
             </p>
-          )}
-          <Link
-            href={`/vakansii/${cat}`}
-            className="btn"
-            style={{ marginTop: 18 }}
-          >
-            Перейти до вакансій →
-          </Link>
-        </div>
-      ) : (
-        <div className="result">Немає вакансій із зазначеною зарплатою за цим напрямком</div>
-      )}
+            <ul style={{ margin: "12px 0 0", paddingInlineStart: 20, overflowWrap: "anywhere" }}>
+              {visibleOffers.map((vacancy) => (
+                <li key={vacancy.id} style={{ marginBlock: 8 }}>
+                  <Link href={`/vakansiya/${vacancy.id}`} style={{ textDecoration: "underline" }}>
+                    {vacancy.title}
+                  </Link>
+                  <br />
+                  <span className="lbl">{vacancy.company} · </span><strong>{salaryFmt(vacancy.salary)}</strong>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="lbl" style={{ margin: 0 }}>Немає вакансій із зазначеною оплатою за цим напрямком.</p>
+        )}
+        <Link href={`/vakansii/${category.slug}`} className="btn" style={{ marginTop: 18 }}>
+          Усі вакансії напряму →
+        </Link>
+      </div>
     </div>
   );
 }

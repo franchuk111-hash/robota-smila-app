@@ -127,7 +127,7 @@ export default function Home() {
               <Link href="/zarplatomir" className="service">
                 <div className="s-ico">💰</div>
                 <h3>Зарплатомір</h3>
-                <p>Дізнайтесь середню зарплату у Смілі за вашою професією.</p>
+                <p>Перегляньте суми оплати в актуальних вакансіях Сміли.</p>
               </Link>
               <Link href="/kalendar" className="service">
                 <div className="s-ico">📅</div>

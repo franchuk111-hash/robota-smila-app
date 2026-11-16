@@ -82,7 +82,6 @@ export default async function VacancyPage({
   const faqs = vacancyFaq(v);
   const stale = !isListedVacancy(v);
 
-  const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
   const company = COMPANIES.find(c => c.name === v.company);
   const ld = {
@@ -118,19 +117,7 @@ export default async function VacancyPage({
         addressCountry: "UA",
       },
     },
-    // baseSalary додаємо лише коли є конкретні цифри (для «Договірна» — пропускаємо)
-    ...(hasSalary && {
-      baseSalary: {
-        "@type": "MonetaryAmount",
-        currency: "UAH",
-        value: {
-          "@type": "QuantitativeValue",
-          minValue: v.salary[0],
-          maxValue: v.salary[1],
-          unitText: "MONTH",
-        },
-      },
-    }),
+    // Advertised amounts do not establish a base rate or its pay period.
   };
 
   return (

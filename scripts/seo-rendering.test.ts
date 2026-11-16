@@ -6,7 +6,11 @@ import Reveal from '../components/Reveal';
 import Catalog from '../components/Catalog';
 import CatalogPage from '../app/vakansii/page';
 import VacancyPage, { generateMetadata } from '../app/vakansiya/[id]/page';
-import { ALL_VACANCIES } from '../lib/data';
+import JsonLd from '../components/JsonLd';
+import Zarplatomir from '../components/Zarplatomir';
+import ZarplatomirPage from '../app/zarplatomir/page';
+import { canPublishJobPosting } from '../lib/vacancy-facts';
+import { ALL_VACANCIES, CATEGORIES, getActiveVacancies, salaryFmt } from '../lib/data';
 
 test('Reveal server markup keeps content visible before JavaScript', () => {
   const html = renderToStaticMarkup(createElement(Reveal, { children: 'Visible vacancy' }));
@@ -38,10 +42,68 @@ test('vacancy canonical IDs resolve while numeric URL aliases return 404', async
   }
 });
 
+function jobPosting(node: unknown): Record<string, unknown> | undefined {
+  if (Array.isArray(node)) return node.map(jobPosting).find(Boolean);
+  if (!node || typeof node !== 'object' || !('props' in node)) return undefined;
+  const { type, props } = node as ReactElement<{ children?: unknown; data?: Record<string, unknown> }>;
+  return type === JsonLd && props.data?.['@type'] === 'JobPosting' ? props.data : jobPosting(props.children);
+}
+
+test('JobPosting keeps the job identity and location without inferring a base salary', async (t) => {
+  const now = Date.parse('2026-11-16T12:00:00Z');
+  t.mock.method(Date, 'now', () => now);
+  const vacancy = getActiveVacancies(now).find(v => canPublishJobPosting(v) && v.salary[0] > 0);
+  assert.ok(vacancy);
+  const page = await VacancyPage({ params: Promise.resolve({ id: String(vacancy.id) }) });
+  const schema = jobPosting(page);
+  assert.ok(schema);
+  assert.equal(schema.title, vacancy.title);
+  assert.equal(schema.datePosted, vacancy.date);
+  assert.equal(schema.url, `https://robota-smila.com.ua/vakansiya/${vacancy.id}`);
+  assert.deepEqual(schema.identifier, { '@type': 'PropertyValue', name: vacancy.company, value: String(vacancy.id) });
+  assert.equal((schema.hiringOrganization as { name: string }).name, vacancy.company);
+  assert.equal((schema.jobLocation as { address: { addressLocality: string } }).address.addressLocality, 'Сміла');
+  assert.ok(!Object.hasOwn(schema, 'baseSalary'));
+});
+
+function salaryTool(node: unknown): ReactElement | undefined {
+  if (Array.isArray(node)) return node.map(salaryTool).find(Boolean);
+  if (!node || typeof node !== 'object' || !('props' in node)) return undefined;
+  const element = node as ReactElement<{ children?: unknown }>;
+  return element.type === Zarplatomir ? element : salaryTool(element.props.children);
+}
+
+test('salary tool renders linked individual active offers in server HTML', (t) => {
+  const now = Date.parse('2026-11-16T12:00:00Z');
+  t.mock.method(Date, 'now', () => now);
+  const category = CATEGORIES[0];
+  const paid = getActiveVacancies(now).filter(v => v.cat === category.slug && v.salary[1] > 0);
+  assert.ok(paid.length, 'expected paid vacancies in the default category at the fixture date');
+  const visible = paid.slice(0, 5);
+  const component = salaryTool(ZarplatomirPage());
+  assert.ok(component);
+  const html = renderToStaticMarkup(component);
+  assert.match(html, new RegExp(`Показано ${visible.length} із ${paid.length} оголошень`));
+  assert.match(html, /Період оплати, базову ставку й доплати/);
+  assert.doesNotMatch(html, /Середня зарплата у вибірці/);
+  const entries = [...html.matchAll(/<li[^>]*>[\s\S]*?<\/li>/g)].map(match => match[0]);
+  assert.equal(entries.length, visible.length);
+  for (const [i, vacancy] of visible.entries()) {
+    assert.ok(entries[i].includes(`href="/vakansiya/${vacancy.id}"`));
+    assert.ok(entries[i].includes(salaryFmt(vacancy.salary)));
+  }
+});
+
+test('salary tool retains a category link when it has no priced offers', () => {
+  const html = renderToStaticMarkup(createElement(Zarplatomir, { vacancies: [] }));
+  assert.match(html, /Немає вакансій із зазначеною оплатою/);
+  assert.doesNotMatch(html, /href="\/vakansiya\//);
+  assert.ok(html.includes(`href="/vakansii/${CATEGORIES[0].slug}"`));
+});
+
 // Supply the same public routing contexts used by Next when rendering client components on the server.
 import { SearchParamsContext, PathnameContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
 import VacCard from '../components/VacCard';
-import { CATEGORIES, getActiveVacancies } from '../lib/data';
 
 function catalogueMarkup(vacancies = getActiveVacancies(), query = '') {
   return renderToStaticMarkup(createElement(PathnameContext.Provider, { value: '/vakansii' },

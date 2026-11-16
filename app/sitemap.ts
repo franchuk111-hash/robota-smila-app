@@ -9,19 +9,19 @@ const BASE = "https://robota-smila.com.ua";
 // переобходу, тому дата має бути чесною, а не датою збірки.
 const UPDATED = "2026-10-02";
 const CONTENT_UPDATED = "2026-11-03";
-const MODIFIED_STATIC_PATHS = new Set(["/blog", "/rezume", "/zarplatomir", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
+const MODIFIED_STATIC_PATHS = new Set(["/blog", "/rezume", "/robota-bez-dosvidu", "/pidrobitok", "/robota-dlya-studentiv", "/terminovi-vakansii", "/robota-z-shchodennoyu-oplatoyu"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${BASE}/`, lastModified: "2026-11-09", changeFrequency: "daily", priority: 1 },
+    { url: `${BASE}/`, lastModified: "2026-11-16", changeFrequency: "daily", priority: 1 },
     { url: `${BASE}/pro-proiekt`, lastModified: "2026-11-16", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/rabotodavtsyam`, lastModified: "2026-11-16", changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/rezume`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE}/zarplatomir`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${BASE}/zarplatomir`, lastModified: "2026-11-16", changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/kalendar`, lastModified: "2026-10-22", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/start-kariery`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/robota-bez-dosvidu`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },
@@ -41,12 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
   for (const page of indexableStaticPages) {
     const path = new URL(page.url).pathname;
-    if (["/zarplatomir", ...LANDINGS.map(item => `/${item.slug}`)].includes(path)) {
+    if (LANDINGS.some(item => `/${item.slug}` === path)) {
       page.lastModified = path === "/pidrobitok" ? "2026-11-08" : "2026-11-04";
     }
   }
   for (const page of indexableStaticPages) {
-    if (["/zarplatomir", "/vakansii", "/kalendar"].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-05";
+    if (["/vakansii", "/kalendar"].includes(new URL(page.url).pathname)) page.lastModified = "2026-11-05";
   }
   const cats = CATEGORIES.filter((c) => VACANCIES.some((v) => v.cat === c.slug)).map((c) => ({
     url: `${BASE}/vakansii/${c.slug}`,

@@ -36,6 +36,10 @@ test('resume example is explicitly fictional and cannot expose usable sample con
  test('sitemap refreshes only edited content and preserves untouched dates', async () => {
   const sitemap = (await import('../app/sitemap')).default();
   const get = (path: string) => sitemap.find(p => p.url === `https://robota-smila.com.ua${path}`);
+  assert.equal(get('/')?.lastModified, '2026-11-16');
+  assert.equal(get('/pro-proiekt')?.lastModified, '2026-11-16');
+  assert.equal(get('/zarplatomir')?.lastModified, '2026-11-16');
+  assert.equal(get('/blog/yak-projty-spivbesidu')?.lastModified, '2026-11-16');
   assert.equal(get('/blog')?.lastModified, '2026-11-03');
   assert.equal(get('/blog/serednya-zarplata-smila-2026')?.lastModified, '2026-11-03');
   assert.equal(get('/blog/robota-bez-dosvidu-smila')?.lastModified, '2026-06-20');
@@ -47,7 +51,7 @@ test('resume example is explicitly fictional and cannot expose usable sample con
 test('salary tool copy discloses sample limitations without invented pay bands', () => {
   const html = readFileSync('app/zarplatomir/page.tsx','utf8');
   assert.match(html, /не представляє весь ринок/);
-  assert.match(html, /середні нижню та верхню/);
+  assert.match(html, /Суми наведено окремо для кожної вакансії/);
   assert.match(html, /годину, зміну, місяць/);
   assert.doesNotMatch(html, /15 000|35 000|живу картину ринку|оплачуються вище/);
 });
