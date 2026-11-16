@@ -61,6 +61,7 @@ export default function Footer() {
           </div>
           <div>
             <h4>Інформація</h4>
+            <Link href="/pro-proiekt">Про проєкт</Link>
             <Link href="/aktsiya">🎁 Розіграш для підписників</Link>
             <Link href="/blog">Блог</Link>
             <a

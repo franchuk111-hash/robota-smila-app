@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${BASE}/`, lastModified: "2026-11-09", changeFrequency: "daily", priority: 1 },
+    { url: `${BASE}/pro-proiekt`, lastModified: "2026-11-16", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.6 },
