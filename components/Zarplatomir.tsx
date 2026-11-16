@@ -32,24 +32,24 @@ export default function Zarplatomir({ vacancies }: { vacancies: SalaryOffer[] })
         <h2 style={{ margin: "0 0 8px", fontSize: 20 }}>{category.name}</h2>
         {visibleOffers.length ? (
           <>
-            <p className="lbl" style={{ margin: 0 }}>
+            <p className="lbl" style={{ margin: 0, color: "var(--ink)" }}>
               Показано {visibleOffers.length} із {offers.length} оголошень із зазначеною оплатою.
               Період оплати, базову ставку й доплати уточнюйте в оголошенні або в роботодавця.
             </p>
             <ul style={{ margin: "12px 0 0", paddingInlineStart: 20, overflowWrap: "anywhere" }}>
               {visibleOffers.map((vacancy) => (
                 <li key={vacancy.id} style={{ marginBlock: 8 }}>
-                  <Link href={`/vakansiya/${vacancy.id}`} style={{ textDecoration: "underline" }}>
+                  <Link href={`/vakansiya/${vacancy.id}`} style={{ textDecoration: "underline", color: "var(--ink)" }}>
                     {vacancy.title}
                   </Link>
                   <br />
-                  <span className="lbl">{vacancy.company} · </span><strong>{salaryFmt(vacancy.salary)}</strong>
+                  <span className="lbl" style={{ color: "var(--ink)" }}>{vacancy.company} · </span><strong>{salaryFmt(vacancy.salary)}</strong>
                 </li>
               ))}
             </ul>
           </>
         ) : (
-          <p className="lbl" style={{ margin: 0 }}>Немає вакансій із зазначеною оплатою за цим напрямком.</p>
+          <p className="lbl" style={{ margin: 0, color: "var(--ink)" }}>Немає вакансій із зазначеною оплатою за цим напрямком.</p>
         )}
         <Link href={`/vakansii/${category.slug}`} className="btn" style={{ marginTop: 18 }}>
           Усі вакансії напряму →
