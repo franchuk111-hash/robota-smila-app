@@ -23,3 +23,18 @@ test("changing and clearing filters preserves unrelated attribution", () => {
   assert.equal(params.get("utm_source"), "telegram");
   assert.equal(writeCatalogFilters(params, "cat", []).has("cat"), false);
 });
+
+test("removing one active condition preserves other conditions and attribution", () => {
+  const params = new URLSearchParams("cat=transport&cat=sales&type=SHIFT&exp=1&booking=1&min_salary=20000&q=водій&utm_source=telegram");
+  const remainingCategories = writeCatalogFilters(params, "cat", ["sales"]);
+  assert.deepEqual(remainingCategories.getAll("cat"), ["sales"]);
+  for (const key of ["type", "exp", "booking", "min_salary", "q", "utm_source"]) {
+    assert.equal(remainingCategories.get(key), params.get(key));
+  }
+  for (const key of ["type", "exp", "booking", "min_salary"] as const) {
+    const next = writeCatalogFilters(params, key, []);
+    assert.equal(next.has(key), false);
+    assert.deepEqual(next.getAll("cat"), ["transport", "sales"]);
+    assert.equal(next.get("utm_source"), "telegram");
+  }
+});

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { readCatalogFilters, writeCatalogFilters, type CatalogFilterKey } from "@/lib/catalog-filters";
 import { motion, AnimatePresence } from "motion/react";
@@ -35,6 +35,9 @@ export default function Catalog({
   itemList: unknown;
 }) {
   const searchParams = useSearchParams();
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const filterPanelId = useId();
+  const filterToggleRef = useRef<HTMLButtonElement>(null);
   const { cats, types, exp, query, minSalary, booking } = readCatalogFilters(
     new URLSearchParams(searchParams.toString()), categories.map((category) => category.slug)
   );
@@ -69,6 +72,14 @@ export default function Catalog({
     fn(next);
   };
 
+  const activeFilters = [
+    ...categories.filter(c => cats.has(c.slug)).map(c => ({ label: c.name, remove: () => setCats(new Set([...cats].filter(slug => slug !== c.slug))) })),
+    ...[["FULL_TIME", "Повна"], ["PART_TIME", "Часткова"], ["SHIFT", "Змінна"]].filter(([value]) => types.has(value)).map(([value, label]) => ({ label, remove: () => setTypes(new Set([...types].filter(type => type !== value))) })),
+    ...(exp ? [{ label: "Без досвіду", remove: () => setExp(false) }] : []),
+    ...(minSalary ? [{ label: `Від ${minSalary.toLocaleString("uk-UA")} ₴`, remove: () => updateFilter("min_salary", []) }] : []),
+    ...(booking ? [{ label: "Згадано можливість бронювання", remove: () => updateFilter("booking", []) }] : []),
+  ];
+
   const heading =
     cats.size === 1
       ? `${categories.find((c) => cats.has(c.slug))?.name} — робота у Смілі`
@@ -99,6 +110,11 @@ export default function Catalog({
 
       <div className="layout">
         <aside className="filters">
+          <button type="button" className="filter-toggle" ref={filterToggleRef} aria-expanded={filtersOpen} aria-controls={filterPanelId} onClick={() => setFiltersOpen(open => !open)}>
+            <span>Фільтри{activeFilters.length ? ` (${activeFilters.length})` : ""}</span>
+            <span aria-hidden="true">{filtersOpen ? "−" : "+"}</span>
+          </button>
+          <div id={filterPanelId} className={`filter-panel${filtersOpen ? " is-open" : ""}`}>
           <motion.h3 initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
             Фільтри
           </motion.h3>
@@ -187,9 +203,14 @@ export default function Catalog({
               Без досвіду
             </motion.label>
           </motion.div>
+          <button type="button" className="btn filter-apply" onClick={() => { setFiltersOpen(false); filterToggleRef.current?.focus(); }}>Показати вакансії: {items.length}</button>
+          </div>
         </aside>
 
         <section aria-label="Результати пошуку">
+          {activeFilters.length > 0 && <div className="active-filters" role="group" aria-label="Вибрані фільтри">
+            {activeFilters.map(filter => <button type="button" key={filter.label} onClick={() => { filter.remove(); filterToggleRef.current?.focus(); }} aria-label={`Прибрати фільтр: ${filter.label}`}>{filter.label} <span aria-hidden="true">×</span></button>)}
+          </div>}
           <div className="count" role="status" aria-live="polite">
             Знайдено вакансій: {items.length}
             {q ? ` за запитом «${q}»` : ""}
