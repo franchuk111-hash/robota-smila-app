@@ -14,7 +14,7 @@ const MODIFIED_STATIC_PATHS = new Set(["/blog", "/rezume", "/robota-bez-dosvidu"
 export default function sitemap(): MetadataRoute.Sitemap {
   const VACANCIES = getActiveVacancies();
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${BASE}/`, lastModified: "2026-11-16", changeFrequency: "daily", priority: 1 },
+    { url: `${BASE}/`, lastModified: "2026-11-19", changeFrequency: "daily", priority: 1 },
     { url: `${BASE}/pro-proiekt`, lastModified: "2026-11-16", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/vakansii`, changeFrequency: "hourly", priority: 0.9 },
     { url: `${BASE}/kompanii`, lastModified: UPDATED, changeFrequency: "weekly", priority: 0.7 },

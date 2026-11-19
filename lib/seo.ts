@@ -377,7 +377,6 @@ export const organizationLd = {
   },
   areaServed: [
     { "@type": "City", name: "Сміла" },
-    { "@type": "AdministrativeArea", name: "Смілянський район" },
   ],
   sameAs: [
     "https://t.me/robota_smila_ua",

@@ -30,6 +30,8 @@ test('home website identity links to its real publisher without duplicate WebSit
   assert.equal(sites[0].name, SITE_NAME);
   assert.equal(sites[0].url, 'https://robota-smila.com.ua/');
   assert.deepEqual(sites[0].publisher, { '@id': organizationLd['@id'] });
+  const publisher = schemas.find(s => s['@type'] === 'Organization' && s['@id'] === organizationLd['@id']);
+  assert.deepEqual(publisher?.areaServed, [{ '@type': 'City', name: 'Сміла' }]);
 });
 
 test('only changing homepage vacancy cards are excluded from snippet extraction', () => {

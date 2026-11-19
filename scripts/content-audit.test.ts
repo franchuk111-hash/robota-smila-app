@@ -36,7 +36,7 @@ test('resume example is explicitly fictional and cannot expose usable sample con
  test('sitemap refreshes only edited content and preserves untouched dates', async () => {
   const sitemap = (await import('../app/sitemap')).default();
   const get = (path: string) => sitemap.find(p => p.url === `https://robota-smila.com.ua${path}`);
-  assert.equal(get('/')?.lastModified, '2026-11-16');
+  assert.equal(get('/')?.lastModified, '2026-11-19');
   assert.equal(get('/pro-proiekt')?.lastModified, '2026-11-16');
   assert.equal(get('/zarplatomir')?.lastModified, '2026-11-16');
   assert.equal(get('/blog/yak-projty-spivbesidu')?.lastModified, '2026-11-16');
