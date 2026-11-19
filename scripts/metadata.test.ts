@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { ALL_VACANCIES, COMPANIES, DUPLICATE_VACANCY_TARGETS } from '../lib/data';
+import { workplace } from '../lib/vacancy-facts';
 import { generateMetadata as vacancyMetadata } from '../app/vakansiya/[id]/page';
 import { generateMetadata as companyMetadata } from '../app/kompaniya/[slug]/page';
 
@@ -19,8 +20,10 @@ test('vacancy metadata distinguishes every source record within the title budget
     const title = String(metadata.title);
     assert.ok(Array.from(title + siteSuffix).length <= 70, title);
     const peers = ALL_VACANCIES.filter(x => x.title.trim() === v.title.trim());
-    if (peers.length === 1 && Array.from(v.title.trim() + ' — Сміла' + siteSuffix).length <= 70) {
-      assert.equal(title, `${v.title.trim()} — Сміла`);
+    const location = workplace(v);
+    const expected = v.title.trim() + (location ? ` — ${location}` : '');
+    if (peers.length === 1 && Array.from(expected + siteSuffix).length <= 70) {
+      assert.equal(title, expected);
       assert.ok(!String(metadata.description).includes(`№${v.id}`));
     }
     assert.ok(!titles.has(title), title);
@@ -39,5 +42,13 @@ test('company titles remain distinct and concise without changing canonical URLs
     assert.ok(!titles.has(title), title);
     titles.add(title);
     assert.equal(metadata.alternates?.canonical, `/kompaniya/${c.slug}`);
+  }
+});
+
+test('search description uses the actual workplace and leaves unconfirmed geography open', async () => {
+  for (const [id, expected] of [[1811853370, 'Черкаси'], [1274503011, undefined]] as const) {
+    const metadata = await vacancyMetadata({ params: Promise.resolve({ id: String(id) }) });
+    assert.doesNotMatch(String(metadata.title) + metadata.description, /Сміл[аі]/u);
+    if (expected && ALL_VACANCIES.find(v => v.id === id)?.date === '2026-11-17') assert.ok(String(metadata.description).includes(expected) && String(metadata.title).includes(expected));
   }
 });

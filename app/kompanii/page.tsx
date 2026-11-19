@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
+import { commonWorkplace } from "@/lib/company-workplace";
 import { getActiveCompanies, getActiveVacancies } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Компанії Сміли — роботодавці та їхні вакансії",
+  title: "Каталог роботодавців та їхніх вакансій — Робота Сміла",
   description:
-    "Каталог роботодавців Сміли: магазини, виробництва, транспортні та будівельні компанії. Дізнайтесь про компанію та переглядайте її актуальні вакансії.",
+    "Роботодавці в каталозі «Робота Сміла»: магазини, виробництва, транспортні та будівельні компанії. Дізнайтесь про компанію та переглядайте її актуальні вакансії.",
   alternates: { canonical: "/kompanii" },
 };
 
@@ -24,11 +25,13 @@ export default function KompaniiPage() {
         <nav className="crumbs">
           <Link href="/">Головна</Link> › Компанії
         </nav>
-        <h1 className="page-h1">Компанії Сміли</h1>
+        <h1 className="page-h1">Каталог роботодавців</h1>
         <p className="sub">Роботодавці з поточної добірки оголошень</p>
         <div className="grid3">
           {getActiveCompanies().map((c) => {
-            const n = VACANCIES.filter((v) => v.company === c.name).length;
+            const list = VACANCIES.filter((v) => v.company === c.name);
+            const n = list.length;
+            const location = commonWorkplace(list);
             return (
               <article className="vac" key={c.slug}>
                 <div className="company" style={{ fontSize: 19, marginBottom: 10 }}>
@@ -52,7 +55,7 @@ export default function KompaniiPage() {
                 </div>
                 <div className="locs">
                   {c.industry}
-                  <span className="dot">·</span>{c.district}
+                  {location && <><span className="dot">·</span>Місце роботи: {location}</>}
                 </div>
                 <p style={{ color: "var(--muted)", margin: "12px 0 16px" }}>{c.about}</p>
                 <Link href={`/kompaniya/${c.slug}`} className="btn ghost">
@@ -63,11 +66,8 @@ export default function KompaniiPage() {
           })}
         </div>
         <section className="seo-text">
-          <h2>Роботодавці Сміли: як ми збираємо каталог</h2>
-          <p>У каталозі зібрані компанії, які реально працюють у Смілі та районі й розміщують вакансії на нашому сайті: продуктові магазини, транспортні та будівельні підприємства, харчове виробництво, охоронні фірми, заклади харчування й аграрні компанії.</p>
-          <p>Кожна картка містить короткий опис діяльності, галузь і район міста. Це допомагає зрозуміти, чим займається роботодавець, ще до відгуку на вакансію.</p>
-          <h2>У яких сферах працюють компанії міста</h2>
-          <ul><li>роздрібна торгівля — мережі продуктових магазинів;</li><li>логістика та перевезення — вантажні компанії Черкаської області;</li><li>харчове виробництво — кондитерське та інше виробництво;</li><li>будівництво — компанії повного циклу з об’єктами у місті та районі;</li><li>безпека й охорона, ресторанний бізнес, сільське господарство.</li></ul>
+          <h2>Як ми збираємо каталог роботодавців</h2>
+          <p>До каталогу потрапляють компанії з відкритими вакансіями у добірці «Робота Сміла». Компанія може шукати працівників у кількох містах. Перевіряйте місце роботи в конкретному оголошенні.</p>
           <h2>Як знайти роботу через каталог</h2>
           <p>Оберіть компанію, яка вас цікавить, відкрийте її сторінку та перегляньте актуальні вакансії. Якщо потрібної позиції немає, загляньте в каталог вакансій за категоріями або підпишіться на наш Telegram-канал, щоб не пропустити нові пропозиції.</p>
         </section>

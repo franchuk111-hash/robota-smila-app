@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VacCard from "@/components/VacCard";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
+import { commonWorkplace } from "@/lib/company-workplace";
 import { COMPANIES, getActiveVacancies } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -20,7 +21,9 @@ export async function generateMetadata({
   const { slug } = await params;
   const c = COMPANIES.find((x) => x.slug === slug);
   if (!c) return { title: "Компанію не знайдено" };
-  const suffix = " — вакансії у Смілі";
+  const list = VACANCIES.filter(v => v.company === c.name);
+  const location = commonWorkplace(list);
+  const suffix = location ? ` — вакансії · ${location}` : " — вакансії";
   const nameBudget = 65 - Array.from(" | robota-smila").length - Array.from(suffix).length;
   // Abbreviate the legal form before truncating, retaining the distinctive name.
   const conciseName = c.name.trim()
@@ -32,8 +35,8 @@ export async function generateMetadata({
     : conciseName;
   return {
     title: `${titleName}${suffix}`,
-    description: `${c.name}: ${c.about} Актуальні вакансії у Смілі.`,
-    robots: VACANCIES.some(v => v.company === c.name) ? undefined : { index: false, follow: true },
+    description: location ? `${c.about} Місце роботи за поточними вакансіями: ${location}.` : c.about,
+    robots: list.length ? undefined : { index: false, follow: true },
     alternates: { canonical: `/kompaniya/${c.slug}` },
   };
 }
@@ -49,6 +52,7 @@ export default async function CompanyPage({
   if (!c) notFound();
   const list = VACANCIES.filter((v) => v.company === c.name);
 
+  const location = commonWorkplace(list);
   const ld = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -95,7 +99,7 @@ export default async function CompanyPage({
           </div>
           <div className="locs" style={{ fontSize: 16 }}>
             {c.industry}
-            <span className="dot">·</span>{c.district}
+            {location && <><span className="dot">·</span>Місце роботи: {location}</>}
           </div>
           <p style={{ fontSize: 18, marginTop: 14 }}>{c.about}</p>
         </div>

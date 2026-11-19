@@ -1,4 +1,4 @@
-import { experienceStatus, vacancyLocation, canPublishJobPosting } from "@/lib/vacancy-facts";
+import { experienceStatus, vacancyLocation, workplace, canPublishJobPosting } from "@/lib/vacancy-facts";
 import { getOutboundHref, getVacancySourceHref, OUTBOUND_REL } from "@/lib/outbound-links";
 import { isListedVacancy } from "@/lib/vacancy-lifecycle";
 import Link from "next/link";
@@ -21,10 +21,15 @@ function fitMetadata(value: string, budget: number) {
   return chars.length > budget ? `${chars.slice(0, budget - 1).join("").trimEnd()}…` : value.trim();
 }
 
+function locationSuffix(v: (typeof ALL_VACANCIES)[number]) {
+  const location = workplace(v);
+  return location ? ` — ${location}` : "";
+}
+
 function vacancyMetadataTitle(v: (typeof ALL_VACANCIES)[number]) {
   const peers = ALL_VACANCIES.filter(x => x.title.trim() === v.title.trim());
   const sameCompany = peers.filter(x => x.company === v.company).length > 1;
-  const suffix = sameCompany ? ` — Сміла №${v.id}` : " — Сміла";
+  const suffix = locationSuffix(v) + (sameCompany ? ` №${v.id}` : "");
   const role = fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length);
   if (peers.length === 1 || sameCompany) return `${role}${suffix}`;
   const remaining = metadataTitleBudget - Array.from(role + suffix + " · ").length;
@@ -38,7 +43,7 @@ const vacancyTitles = new Map(ALL_VACANCIES.map(v => [v.id, vacancyMetadataTitle
 const repeatedTitles = new Set([...vacancyTitles.values()].filter((title, index, values) => values.indexOf(title) !== index));
 for (const v of ALL_VACANCIES) {
   if (repeatedTitles.has(vacancyTitles.get(v.id)!)) {
-    const suffix = ` — Сміла №${v.id}`;
+    const suffix = `${locationSuffix(v)} №${v.id}`;
     vacancyTitles.set(v.id, `${fitMetadata(v.title, metadataTitleBudget - Array.from(suffix).length)}${suffix}`);
   }
 }
@@ -58,10 +63,11 @@ export async function generateMetadata({
   const v = ALL_VACANCIES.find((x) => String(x.id) === id);
   if (!v) return { title: "Вакансію не знайдено" };
   const title = vacancyTitles.get(v.id)!;
+  const location = workplace(v);
   const identifier = title.includes(`№${v.id}`) ? ` №${v.id}` : "";
   return {
     title,
-    description: `${v.company} шукає ${v.title.toLowerCase()} у Смілі. ${v.typeName}, ${v.schedule}. Умови та спосіб відгуку в оголошенні${identifier}.`,
+    description: `${v.company} шукає ${v.title.toLowerCase()}. ${location ? `Місце роботи — ${location}. ` : ""}${v.typeName}, ${v.schedule}. Умови та спосіб відгуку в оголошенні${identifier}.`,
     robots: isListedVacancy(v) ? undefined : { index: false, follow: true },
     alternates: { canonical: `/vakansiya/${v.id}` },
   };
@@ -112,7 +118,7 @@ export default async function VacancyPage({
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Сміла",
+        addressLocality: workplace(v),
         addressRegion: "Черкаська область",
         addressCountry: "UA",
       },
@@ -210,7 +216,7 @@ export default async function VacancyPage({
         </section>
 
         <div style={{ margin: "30px 0" }}>
-          <h2 className="title">Схожі вакансії у Смілі</h2>
+          <h2 className="title">Схожі вакансії</h2>
           <div className="grid3">
             {similar.map((s) => (
               <VacCard key={s.id} v={s} />

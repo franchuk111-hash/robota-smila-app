@@ -1,4 +1,4 @@
-import { experienceStatus, vacancyLocation } from "./vacancy-facts";
+import { experienceStatus, workplace } from "./vacancy-facts";
 // SEO-контент для категорійних і посадкових сторінок
 import { Vacancy, TELEGRAM_CHANNEL_URL } from "./data";
 
@@ -329,18 +329,19 @@ export const LANDING_FAQ: Record<string, { q: string; a: string }[]> = {
 
 // Унікальний FAQ під конкретну вакансію (з її ж даних).
 export function vacancyFaq(v: Vacancy): { q: string; a: string }[] {
+  const location = workplace(v);
   const hasSalary = !(v.salary[0] === 0 && v.salary[1] === 0);
   const fmt = (n: number) => n.toLocaleString("uk-UA");
   return [
     {
-      q: `Скільки платить «${v.company}» на позиції «${v.title}» у Смілі?`,
+      q: `Скільки платить «${v.company}» на позиції «${v.title}»?`,
       a: hasSalary
         ? `Вакансія «${v.title}» (${v.company}) пропонує оплату ${fmt(v.salary[0])}–${fmt(v.salary[1])} грн. Точна сума залежить від досвіду та результатів.`
         : `Оплата за вакансією «${v.title}» договірна — обговорюється з роботодавцем «${v.company}» індивідуально.`,
     },
     {
       q: `Який графік роботи на вакансії «${v.title}»?`,
-      a: `Графік: ${v.schedule}, ${v.typeName.toLowerCase()}. Місце роботи: ${vacancyLocation(v)}. Точну адресу уточнюйте в оголошенні.`,
+      a: `Графік: ${v.schedule}, ${v.typeName.toLowerCase()}. ${location ? `Місце роботи: ${location}. Точну адресу уточнюйте в оголошенні.` : "Місце роботи уточнюйте в оголошенні."}`,
     },
     {
       q: `Чи потрібен досвід для «${v.title}»?`,

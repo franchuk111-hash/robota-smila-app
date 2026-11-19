@@ -9,7 +9,7 @@ import VacancyPage, { generateMetadata } from '../app/vakansiya/[id]/page';
 import JsonLd from '../components/JsonLd';
 import Zarplatomir from '../components/Zarplatomir';
 import ZarplatomirPage from '../app/zarplatomir/page';
-import { canPublishJobPosting } from '../lib/vacancy-facts';
+import { canPublishJobPosting, workplace } from '../lib/vacancy-facts';
 import { ALL_VACANCIES, CATEGORIES, getActiveVacancies, salaryFmt } from '../lib/data';
 
 test('Reveal server markup keeps content visible before JavaScript', () => {
@@ -62,7 +62,7 @@ test('JobPosting keeps the job identity and location without inferring a base sa
   assert.equal(schema.url, `https://robota-smila.com.ua/vakansiya/${vacancy.id}`);
   assert.deepEqual(schema.identifier, { '@type': 'PropertyValue', name: vacancy.company, value: String(vacancy.id) });
   assert.equal((schema.hiringOrganization as { name: string }).name, vacancy.company);
-  assert.equal((schema.jobLocation as { address: { addressLocality: string } }).address.addressLocality, 'Сміла');
+  assert.equal((schema.jobLocation as { address: { addressLocality: string } }).address.addressLocality, workplace(vacancy));
   assert.ok(!Object.hasOwn(schema, 'baseSalary'));
 });
 

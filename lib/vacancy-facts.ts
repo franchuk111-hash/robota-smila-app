@@ -11,16 +11,35 @@ export function experienceLabel(v: Vacancy): string {
   return status === 'required' ? 'Потрібен досвід' : status === 'not-required' ? 'Без обов’язкового досвіду' : 'Досвід: уточнюйте в оголошенні';
 }
 
-// A portal's search city does not establish the actual workplace.
+// Work.ua search results may include nearby cities. These workplaces were checked
+// against the original listings on 2026-11-19; use a checked field only for the listed role, employer and publication date.
+type Workplace = 'Сміла' | 'Черкаси' | 'Балаклея' | 'Канівський район';
+const checkedWorkplaces = new Map<string, [title: string, company: string, date: string, workplace: Workplace]>([
+  ['https://www.work.ua/jobs/7260322/', ['Охоронник', 'Вересень плюс, ТОВ', '2026-11-17', 'Черкаси']],
+  ['https://www.work.ua/jobs/6086982/', ['Бухгалтер з заробітної плати', 'Агро-Рось', '2026-11-13', 'Балаклея']],
+  ['https://www.work.ua/jobs/8591071/', ['Продавець-консультант', 'COMFY', '2026-11-16', 'Сміла']],
+  ['https://www.work.ua/jobs/6539155/', ['Лікар УЗД', 'Максімед Плюс, ПП', '2026-11-08', 'Сміла']],
+]);
+
+export function workplace(v: Vacancy): Workplace | undefined {
+  if (!v.sourceUrl) return;
+  const text = [v.short, ...v.duties, ...v.req, ...v.offer].join(' ');
+  if (/Місце знаходження\s*:\s*Черкаська обл\.,\s*Смілянський р-н,\s*с[.\s]+Балаклея(?![\p{L}-])/iu.test(text)) return 'Балаклея';
+  if (/Робота проводиться на будівельній площадці у Канівському районі/iu.test(text)) return 'Канівський район';
+  if (v.source === 'dcz' && /Смілянська міська ТГ,\s*Сміла(?![\p{L}-])/iu.test(text)) return 'Сміла';
+  if (/(?:Локація|Місце роботи)\s*:\s*(?:м\.\s*)?Сміла(?![\p{L}-])/iu.test(text)) return 'Сміла';
+  const verified = checkedWorkplaces.get(v.sourceUrl);
+  if (verified && verified[0] === v.title && verified[1] === v.company && verified[2] === v.date &&
+      !/(?:Локація|Місце роботи|Місце знаходження)\s*:/iu.test(text)) return verified[3];
+}
+
 export function vacancyLocation(v: Vacancy): string {
-  const text = [v.short, ...v.duties].join(' ');
-  if (/Канівськ/i.test(text)) return 'Канівський район';
-  if (/(?:м[. ]+Сміла|у\s+Смілі|в\s+Смілі|міст[ао]\s+Сміла|ТГ,\s*Сміла)/iu.test(text)) return v.district && v.district !== 'Сміла' ? `Сміла, ${v.district}` : 'Сміла';
-  return 'Місце роботи: уточнюйте в оголошенні';
+  return workplace(v) ?? 'Місце роботи: уточнюйте в оголошенні';
 }
 
 export function canPublishJobPosting(v: Vacancy): boolean {
-  return Boolean(v.sourceUrl) && /^(?:Сміла)(?:,|$)/u.test(vacancyLocation(v));
+  const locality = workplace(v);
+  return Boolean(locality && locality !== 'Канівський район');
 }
 
 export function salaryStatistics(list: Vacancy[]) {
