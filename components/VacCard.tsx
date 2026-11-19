@@ -3,7 +3,7 @@ import { experienceLabel, experienceStatus, vacancyLocation } from "@/lib/vacanc
 import Link from "next/link";
 import { cardEmployment } from "@/lib/vacancy-card-copy";
 import { motion } from "motion/react";
-import { Vacancy, salaryFmt, dateFmt, vacancyTgLink } from "@/lib/data";
+import { Vacancy, salaryFmt, dateFmt, vacancyTgLink, TELEGRAM_CHANNEL_URL } from "@/lib/data";
 import { trackEvent, GA4_EVENTS } from "@/lib/ga4";
 import FavButton from "./FavButton";
 import ShareButton from "./ShareButton";
@@ -20,6 +20,7 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       };
 
 
+  const telegramHref = vacancyTgLink(v);
   const handleApply = () => {
     trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, {
       source: "vacancy_card",
@@ -63,8 +64,8 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
         <span className="date">{dateFmt(v.date)}</span>
         <div className="vac-actions">
         <Link className="btn vac-details" href={`/vakansiya/${v.id}`}>Детальніше</Link>
-        <SpringLink className="btn vac-telegram" href={vacancyTgLink(v)} onClick={handleApply} external>
-          {v.tgMsgId ? "Telegram ↗" : "Канал Telegram ↗"}
+        <SpringLink className="btn vac-telegram" href={telegramHref} onClick={handleApply} external>
+          {telegramHref === TELEGRAM_CHANNEL_URL ? "Канал Telegram ↗" : "Пост у Telegram ↗"}
         </SpringLink>
         </div>
       </div>

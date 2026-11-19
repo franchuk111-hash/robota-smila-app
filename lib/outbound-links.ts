@@ -1,7 +1,7 @@
 import telegramSourcePages from "./telegram-source-pages.json";
 /** Public navigation destinations only; never accept a redirect URL from a request. */
 export const OUTBOUND_DESTINATIONS = {
-  "telegram-channel": "https://t.me/robota_smila_ua",
+  "telegram-channel": "https://t.me/robota_smila",
   "telegram-admin": "https://t.me/Smila_admin",
   tiktok: "https://www.tiktok.com/@robota_smila",
   youtube: "https://www.youtube.com/@Robota-smila",
@@ -20,9 +20,11 @@ export function getOutboundDestination(id: string): string | undefined {
   if (Object.hasOwn(OUTBOUND_DESTINATIONS, id)) {
     return OUTBOUND_DESTINATIONS[id as keyof typeof OUTBOUND_DESTINATIONS];
   }
-  // Post identifiers can only construct a URL on our own public Telegram channel.
+  // Saved legacy routes use primary-group IDs; channel posts have their own namespace.
+  const channelPost = /^telegram-post-channel-([1-9]\d{0,14})$/.exec(id);
+  if (channelPost) return `${OUTBOUND_DESTINATIONS["telegram-channel"]}/${channelPost[1]}`;
   const post = /^telegram-post-([1-9]\d{0,14})$/.exec(id);
-  return post ? `${OUTBOUND_DESTINATIONS["telegram-channel"]}/${post[1]}` : undefined;
+  return post ? `https://t.me/robota_smila_ua/${post[1]}` : undefined;
 }
 
 export const TELEGRAM_PROJECT = "robota-smila";
@@ -54,6 +56,8 @@ export function getOutboundHref(href: string, source = "/"): string {
   if (entry) return isTelegramDestination(entry[1])
     ? `/go/${entry[0]}/?s=${encodeURIComponent(normalizeSource(source))}`
     : `/go/${entry[0]}`;
+  const channelPost = /^https:\/\/t\.me\/robota_smila\/([1-9]\d{0,14})\/?$/.exec(href);
+  if (channelPost) return `/go/telegram-post-channel-${channelPost[1]}/?s=${encodeURIComponent(normalizeSource(source))}`;
   const post = /^https:\/\/t\.me\/robota_smila_ua\/([1-9]\d{0,14})\/?$/.exec(href);
   if (post) return `/go/telegram-post-${post[1]}/?s=${encodeURIComponent(normalizeSource(source))}`;
   throw new Error("External navigation destination is not allowlisted");

@@ -180,7 +180,7 @@ export default async function VacancyPage({
             ) : (
               <div className="callout tip">
                 <b>Свіже оголошення.</b> Опубліковано {dateFmt(v.date)} — {ageInDays(v.date)} дн.
-                тому. Відкрийте пост у Telegram, щоб перевірити спосіб зв’язку з роботодавцем. Заявка автоматично не надсилається.
+                тому. Перевірте умови й спосіб відгуку в оголошенні роботодавця.
               </div>
             )}
             {v.sourceUrl && <p>Джерело: <a href={getVacancySourceHref(v.id)} target="_blank" rel={OUTBOUND_REL}>{v.source || "Оригінальне оголошення"}</a>. Уточнюйте актуальність і спосіб відгуку у джерелі.</p>}

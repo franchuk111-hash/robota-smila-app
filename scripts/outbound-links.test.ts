@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { GET, HEAD } from "../app/go/[id]/route";
-import { ALL_VACANCIES } from "../lib/data";
+import { publicTelegramPosts } from "../lib/public-telegram-posts";
+import { ALL_VACANCIES, vacancyTgLink } from "../lib/data";
 import { getOutboundHref, getVacancySourceHref, OUTBOUND_DESTINATIONS, isTelegramDestination, normalizeSource, telegramTrackedDestination } from "../lib/outbound-links";
 
 async function main() {
@@ -25,6 +26,12 @@ async function main() {
   }
   assert.equal(getOutboundHref("https://t.me/robota_smila_ua/1363"), "/go/telegram-post-1363/?s=home");
   assert.equal(new URL((await responseFor("telegram-post-1363")).headers.get("location")!).pathname, "/robota_smila_ua/1363");
+  const posts = publicTelegramPosts();
+  assert.equal(vacancyTgLink({id:1898377602}, posts), "https://t.me/robota_smila/11");
+  assert.equal(getOutboundHref("https://t.me/robota_smila/11"), "/go/telegram-post-channel-11/?s=home");
+  assert.equal(new URL((await responseFor("telegram-post-channel-11")).headers.get("location")!).pathname, "/robota_smila/11");
+  const pending = publicTelegramPosts({"7:-1002620744576":{vacancyId:7, chatId:-1002620744576, sourceChatId:-1002930665491, status:"pending", messageId:1411}});
+  assert.equal(vacancyTgLink({id:7}, pending), "https://t.me/robota_smila");
   for (const vacancy of ALL_VACANCIES.filter(v => v.sourceUrl)) {
     const response = await responseFor(getVacancySourceHref(vacancy.id).slice(4));
     assert.equal(response.status, 302, `source ${vacancy.id}`);
@@ -45,7 +52,7 @@ async function main() {
   assert.equal(normalizeSource("/vakansii?q=private%40mail.com"), "vakansii");
   assert.equal(normalizeSource("/private-name"), "unknown");
   assert.equal(normalizeSource("person@example.com"), "unknown");
-  assert.equal(getOutboundHref("https://t.me/robota_smila_ua", "/vakansii"), "/go/telegram-channel/?s=vakansii");
+  assert.equal(getOutboundHref("https://t.me/robota_smila", "/vakansii"), "/go/telegram-channel/?s=vakansii");
   const token = "87f92845-c233-4acb-a831-6340d022b399";
   const tracked = await GET(new Request(`https://robota-smila.com.ua/go/telegram-channel/?s=vakansii&rtk=${token}&url=https://evil.example`), { params: Promise.resolve({id:"telegram-channel"}) });
   const location = new URL(tracked.headers.get("location")!);

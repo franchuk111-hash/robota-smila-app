@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { OUTBOUND_DESTINATIONS } from "@/lib/outbound-links";
 
 // Повертає реальну кількість підписників Telegram-каналу.
 // Токен бота лишається на сервері (ніколи не потрапляє в клієнт).
@@ -15,8 +16,8 @@ export async function GET() {
   }
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHANNEL_ID;
-  if (!token || !chatId) {
+  const chatId = "@" + new URL(OUTBOUND_DESTINATIONS["telegram-channel"]).pathname.slice(1);
+  if (!token) {
     return NextResponse.json({ count: null });
   }
 

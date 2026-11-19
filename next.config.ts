@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import path from "path";
+import { publicTelegramPosts } from "./lib/public-telegram-posts";
 import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 
 // УВАГА: security-заголовки, http→https та www→apex НЕ роблю в застосунку.
@@ -11,6 +12,7 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/constants";
 const nextConfig: NextConfig = {
   // Не розкривати технологічний стек (прибирає x-powered-by)
   poweredByHeader: false,
+  env: { PUBLIC_CHANNEL_POST_IDS: JSON.stringify(publicTelegramPosts()) },
   // /go/<id>/ must reach its server redirect without an intermediate 308.
   skipTrailingSlashRedirect: true,
 

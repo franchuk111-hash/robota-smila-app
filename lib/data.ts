@@ -1,3 +1,4 @@
+import { OUTBOUND_DESTINATIONS } from "./outbound-links";
 import { isListedVacancy } from "./vacancy-lifecycle";
 import { duplicateVacancyTargets } from "./vacancy-deduplication";
 import { vacancyCategory } from "./vacancy-category";
@@ -17,7 +18,7 @@ export type Vacancy = {
   salaryNote?: string;
   telegramPublish?: boolean; // Explicitly approved manual publication queue; historical records are not backfilled.
   tgPostFormat?: 'photo';
-  tgMsgId?: number; // id поста в Telegram-каналі (для прямого посилання)
+  tgMsgId?: number; // id поста в первинній Telegram-групі
   source?: string;
   sourceUrl?: string;
   sourceId?: string;
@@ -142,7 +143,7 @@ export const ARTICLES: Article[] = [
       "Перший крок — визначитися з напрямком. У Смілі найбільше вакансій без досвіду у торгівлі, на виробництві, у сфері харчування та охороні. Оберіть одну-дві сфери, які вам близькі, і зосередьтеся на них, а не розпилюйте відгуки на все підряд.",
       "<b>Як читати оголошення.</b> Звертайте увагу на позначки «Без досвіду», тип зайнятості та графік. Позначка «досвід не обов’язковий» означає, що можна звернутися без попереднього стажу. Чи передбачене навчання, хто його проводить і чи оплачується цей час — уточніть у роботодавця.",
       "<b>Резюме для новачка.</b> Досвід роботи — не єдине, що має значення. Впишіть навчання, волонтерство, допомогу в сімейному бізнесі, підробітки. Головне — показати відповідальність і бажання вчитися.",
-      "<b>Відгук онлайн.</b> Відкрийте вакансію та перейдіть до її першоджерела в Telegram. Знайдіть контакти й спосіб відгуку в оголошенні та зверніться до роботодавця самостійно. Сайт не надсилає вашу заявку автоматично.",
+      "<b>Відгук онлайн.</b> Відкрийте вакансію та перейдіть до оголошення роботодавця. Знайдіть контакти й спосіб відгуку в оголошенні та зверніться до роботодавця самостійно. Сайт не надсилає вашу заявку автоматично.",
       "<b>Підготовка до співбесіди.</b> Продумайте відповіді на типові запитання: чому шукаєте роботу, який графік підходить, коли можете почати. Пунктуальність і охайний вигляд важать не менше за відповіді.",
       "<b>Перший місяць.</b> На стартових позиціях оцінюють старанність. Якщо показати себе відповідальним працівником, уже за кілька місяців можна розраховувати на підвищення ставки або перехід на кращу посаду.",
       "<b>Типові помилки новачків.</b> Відгук лише на одну вакансію, відсутність резюме, запізнення на співбесіду, очікування завищеної зарплати без досвіду. Уникайте цих помилок — і роботу знайти буде значно легше.",
@@ -209,13 +210,13 @@ export const ARTICLES: Article[] = [
 },
 ];
 
-// Telegram-канал — сюди веде кнопка «Відгукнутися». Уся деталізація й контакт у ТГ.
-export const TELEGRAM_CHANNEL_URL = "https://t.me/robota_smila_ua";
+export const TELEGRAM_CHANNEL_URL = OUTBOUND_DESTINATIONS["telegram-channel"];
+const channelPostIds: Record<number, number> = JSON.parse(process.env.PUBLIC_CHANNEL_POST_IDS ?? "{}");
 
-// Посилання на вакансію в каналі: якщо є tgMsgId — ведемо на конкретний пост,
-// інакше — на головну сторінку каналу.
-export const vacancyTgLink = (v: Vacancy) =>
-  v.tgMsgId ? `${TELEGRAM_CHANNEL_URL}/${v.tgMsgId}` : TELEGRAM_CHANNEL_URL;
+export function vacancyTgLink(v: Pick<Vacancy, "id">, published = channelPostIds): string {
+  const post = published[v.id];
+  return post ? `${TELEGRAM_CHANNEL_URL}/${post}` : TELEGRAM_CHANNEL_URL;
+}
 
 // Зарплата [0, 0] означає «Договірна» — коли роботодавець не вказав суму.
 export const salaryFmt = (s: [number, number]) =>

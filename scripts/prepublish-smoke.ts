@@ -38,6 +38,7 @@ async function main() {
             const url = new URL(href.replace(/&amp;/g, "&"), base);
             const id = url.pathname.split("/")[2];
             const destination = getOutboundDestination(id);
+            check(!/^telegram-post-\d+$/.test(id), `${path}: vacancy link still points to the old Telegram group`);
             check(!!destination && isTelegramDestination(destination), `${path}: Telegram destination ${id}`);
             check(url.pathname.endsWith("/"), `${path}: Telegram route requires trailing slash`);
             check(url.searchParams.get("s") === normalizeSource(path), `${path}: Telegram source mismatch ${href}`);

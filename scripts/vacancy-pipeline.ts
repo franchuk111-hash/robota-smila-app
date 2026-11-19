@@ -9,12 +9,12 @@ import { vacancyCategory } from "../lib/vacancy-category";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { OUTBOUND_DESTINATIONS } from "../lib/outbound-links";
 import type { Vacancy } from "../lib/data";
 
 const API_URL = "https://dczworknowbot.dcz.gov.ua:334/api/vac/vacancies/sort";
 const CITY_ID = "UA71080390"; // Смілянська міська громада
 const DATA_FILE = path.resolve("data/collected-vacancies.json");
-const CHANNEL = "robota_smila_ua";
 const SOURCES = new Set(["dcz", "work.ua", "rabota.ua"]);
 
 export type SourceVacancy = {
@@ -171,7 +171,7 @@ export function formatTelegramVacancy(vacancy: Vacancy): string {
     "",
     escapeHtml(description),
     "",
-    `📢 <b><a href="https://t.me/${CHANNEL}">Підписатися на нові вакансії Сміли</a></b>`,
+    `📢 <b><a href="${OUTBOUND_DESTINATIONS["telegram-channel"]}">Підписатися на нові вакансії Сміли</a></b>`,
     "",
     `✅ <a href="${escapeHtml(vacancy.sourceUrl ?? "")}">Відгукнутися на вакансію</a>`,
     `Джерело: ${escapeHtml(sourceName ?? "")}`,

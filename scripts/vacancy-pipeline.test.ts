@@ -24,6 +24,7 @@ assert.deepEqual(vacancy.salary, [20_000, 25_000]);
 assert.equal(vacancy.cat, "prodavets");
 assert.equal(vacancy.exp, false);
 assert.match(formatTelegramVacancy(vacancy), /Підписатися[\s\S]+Відгукнутися[\s\S]+Джерело: work\.ua/);
+assert.ok(formatTelegramVacancy(vacancy).includes('href="https://t.me/robota_smila">Підписатися'));
 assert.ok(formatTelegramVacancy(vacancy).length < 4096);
 const repeated = "Робота у магазині з покупцями та товаром.";
 const message = formatTelegramVacancy({ ...vacancy, short: repeated, duties: [repeated] });

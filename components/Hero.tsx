@@ -27,7 +27,7 @@ export default function Hero({ vacancyCount, companyCount }: { vacancyCount: num
             Робота <span>у Смілі</span>
           </motion.h1>
           <motion.p variants={item}>
-            Шукаєте роботу у Смілі? Порівнюйте вакансії, зарплати та графіки. Оберіть пропозицію на сайті — відкрийте контакти у Telegram.
+            Шукаєте роботу у Смілі? Порівнюйте вакансії, зарплати та графіки. Оберіть вакансію та перевірте, як зв’язатися з роботодавцем.
           </motion.p>
           <motion.form className="searchbar" action="/vakansii" method="get" variants={item}>
             <input type="text" name="q" aria-label="Пошук вакансій" placeholder="Наприклад: водій, продавець, без досвіду" />
