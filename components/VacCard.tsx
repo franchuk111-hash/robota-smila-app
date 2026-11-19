@@ -35,15 +35,16 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
     <motion.article
       className={"vac vac-readable" + (v.hot ? " hot" : "")}
       {...reveal}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
     >
-      <FavButton id={v.id} />
-      <ShareButton title={v.title} url={`/vakansiya/${v.id}`} />
-      {v.hot && (
-        <span className="hot-badge">
-          <span className="flame">🔥</span> Гаряча
-        </span>
-      )}
+      <div className="vac-topline">
+        <time className="date" dateTime={v.date}>{dateFmt(v.date)}</time>
+        {v.hot && <span className="hot-badge">Гаряча</span>}
+        <div className="vac-tools">
+          <FavButton id={v.id} />
+          <ShareButton title={v.title} url={`/vakansiya/${v.id}`} />
+        </div>
+      </div>
       <h3>
         <Link href={`/vakansiya/${v.id}`}>{v.title}</Link>
       </h3>
@@ -61,7 +62,6 @@ export default function VacCard({ v, noReveal = false }: { v: Vacancy; noReveal?
       </div>
       {v.short && <p className="vac-excerpt">{v.short}</p>}
       <div className="apply">
-        <span className="date">{dateFmt(v.date)}</span>
         <div className="vac-actions">
         <Link className="btn vac-details" href={`/vakansiya/${v.id}`}>Детальніше</Link>
         <SpringLink className="btn vac-telegram" href={telegramHref} onClick={handleApply} external>

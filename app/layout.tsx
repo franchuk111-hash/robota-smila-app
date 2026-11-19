@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { SITE_NAME, HOME_TITLE, HOME_DESCRIPTION } from "@/lib/site-metadata";
 import "./globals.css";
+import "./job-board.css";
+import "./home-hero.css";
 import Providers from "@/components/Providers";
 import ServiceWorker from "@/components/ServiceWorker";
 import SubscribeMechanics from "@/components/SubscribeMechanics";

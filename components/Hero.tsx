@@ -1,51 +1,32 @@
-"use client";
-import { motion } from "motion/react";
 import StatsMotion from "./StatsMotion";
 import SubscribeCTA from "./SubscribeCTA";
 import HeroPhoneVideo from "./HeroPhoneVideo";
 
-const ease = [0.22, 1, 0.36, 1] as const;
-const item = {
-  hidden: { opacity: 0, y: 22 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
-};
-
 export default function Hero({ vacancyCount, companyCount }: { vacancyCount: number; companyCount: number }) {
   return (
-    <section className="hero">
-      <motion.div
-        className="container hero-grid"
-        variants={{ show: { transition: { staggerChildren: 0.12 } } }}
-        initial="hidden"
-        animate="show"
-      >
-        <div className="hero-copy">
-          <motion.div className="hero-kicker" variants={item}>
-            <span className="live-dot" aria-hidden="true" /> Вакансії Сміли в одному місці
-          </motion.div>
-          <motion.h1 variants={item}>
-            Робота <span>у Смілі</span>
-          </motion.h1>
-          <motion.p variants={item}>
-            Шукаєте роботу у Смілі? Порівнюйте вакансії, зарплати та графіки. Оберіть вакансію та перевірте, як зв’язатися з роботодавцем.
-          </motion.p>
-          <motion.form className="searchbar" action="/vakansii" method="get" variants={item}>
-            <input type="text" name="q" aria-label="Пошук вакансій" placeholder="Наприклад: водій, продавець, без досвіду" />
-            <motion.button className="btn" type="submit" whileTap={{ scale: 0.97 }}>
-              Знайти вакансію
-            </motion.button>
-          </motion.form>
-          <motion.div className="hero-actions" variants={item}>
+    <section className="home-hero" aria-labelledby="home-heading">
+      <div className="home-hero-grid">
+        <div className="home-hero-copy">
+          <h1 id="home-heading" className="home-hero-title">Робота <span>у Смілі</span></h1>
+          <p className="home-hero-intro">Порівнюйте вакансії, зарплати та графіки. Оберіть пропозицію й дізнайтеся, як зв’язатися з роботодавцем.</p>
+          <form className="home-hero-search" action="/vakansii" method="get" role="search">
+            <label className="home-hero-field">
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4.5 4.5" />
+              </svg>
+              <input type="search" name="q" aria-label="Пошук вакансій" placeholder="Посада чи компанія" />
+            </label>
+            <button type="submit" aria-label="Знайти вакансію">Знайти<span className="home-hero-search-object"> вакансію</span></button>
+          </form>
+          <div className="home-hero-subscribe">
             <SubscribeCTA source="homepage_hero" label="Підписатись у Telegram" />
-            <span>Безкоштовно · лише вакансії Сміли</span>
-          </motion.div>
+          </div>
           <StatsMotion vacancyCount={vacancyCount} companyCount={companyCount} />
         </div>
-
-        <div className="hero-visual">
+        <div className="home-hero-stage">
           <HeroPhoneVideo />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

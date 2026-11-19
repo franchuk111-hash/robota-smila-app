@@ -86,7 +86,7 @@ export default function Catalog({
       : "Вакансії у Смілі";
 
   return (
-    <div className="container">
+    <div className="container job-catalog">
       {!query.trim() && !cats.size && !types.size && !exp && !minSalary && !booking && <JsonLd data={itemList} />}
       <nav className="crumbs">
         <a href="/">Головна</a> › Вакансії

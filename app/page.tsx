@@ -65,30 +65,29 @@ export default function Home() {
       <JsonLd data={itemListLd(latest)} />
       <JsonLd data={faqLd(faqs)} />
       <Header />
-      <main>
+      <main className="home-board">
       <BreadcrumbLd items={[{ name: "Головна", path: "/" }]} />
       <Hero vacancyCount={VACANCIES.length} companyCount={new Set(VACANCIES.map((v) => v.company)).size} />
 
       <section className="block">
         <div className="container">
           <Reveal>
-            <h2 className="title center">Нові вакансії у Смілі</h2>
-            <p className="sub center">
-              {latest.length ? `Найновіше оголошення: ${dateFmt(latest[0].date)}.` : "Наразі свіжих оголошень немає."} Перегляньте умови в картці вакансії.
-            </p>
+            <div className="latest-heading">
+              <div>
+                <h2 className="title">Нові вакансії у Смілі</h2>
+                <p className="sub">{latest.length ? `Найновіше оголошення: ${dateFmt(latest[0].date)}.` : "Наразі свіжих оголошень немає."}</p>
+              </div>
+              <Link href="/vakansii" className="all-jobs">Усі вакансії <span aria-hidden="true">→</span></Link>
+            </div>
           </Reveal>
           <div className="grid3" data-nosnippet>
             {latest.map((v) => <VacCard key={v.id} v={v} />)}
           </div>
-          <p style={{ textAlign: "center", marginTop: 36 }}>
-            <Link href="/vakansii" className="btn lg">
-              Усі вакансії
-            </Link>
-          </p>
+
         </div>
       </section>
 
-      <section className="block">
+      <section className="block category-band">
         <div className="container">
           <Reveal>
             <h2 className="title center">Вакансії за категоріями</h2>
@@ -116,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="block" style={{ paddingTop: 0 }}>
+      <section className="block">
         <div className="container">
           <Reveal>
             <h2 className="title center">Корисні сервіси</h2>

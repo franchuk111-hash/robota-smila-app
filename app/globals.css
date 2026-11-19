@@ -509,3 +509,40 @@ footer.site a:hover{color:#fff;opacity:1}
 .cal-summary a:focus-visible{outline:3px solid rgba(59,130,246,.4);outline-offset:3px}
 .cal-month[id],.cal-summary h2[id]{scroll-margin-top:100px}
 @media(max-width:520px){.cal-summary{padding:16px}.cal-summary th,.cal-summary td{padding:10px 4px;font-size:12px}.cal-summary h2{font-size:22px}}
+
+/* The masthead and the home feed share the palette of the vacancy board. */
+header.site { border-color: #dddcd6; box-shadow: none; }
+.site .logo .word { color: #142349; letter-spacing: -.045em; }
+.site .logo .word b { color: #203fb6; }
+.site .toggle { background: #f0f1f5; border-radius: 9px; }
+.site .toggle a.active, .site .hdr-login { background: #203fb6; box-shadow: none; color: white; }
+.site .nav-links a { color: #43506a; }
+.site a:focus-visible, .home-board a:focus-visible { outline: 3px solid #3774d2; outline-offset: 3px; }
+.site .burger { width: 44px; height: 44px; border: 1px solid #d5d8df; border-radius: 12px; font-size: 20px; }
+.home-board { background: #faf9f5; }
+.home-board section.block { padding-block: clamp(40px, 5vw, 72px); }
+.home-board .block .title { text-align: left; color: #142349; font-size: clamp(32px, 3.5vw, 51px); line-height: 1.08; letter-spacing: -.045em; }
+.home-board .block .sub { text-align: left; margin: 10px 0 26px; color: #536077; }
+.latest-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 20px; margin-bottom: 26px; }
+.latest-heading .title, .home-board .latest-heading .sub { margin-bottom: 0; }
+.all-jobs { display: inline-flex; gap: 14px; align-items: center; min-height: 44px; padding: 8px 15px; font-weight: 700; color: #203fb6; border: 1px solid #b5c0df; border-radius: 10px; }
+.all-jobs:hover { color: #fff; background: #203fb6; opacity: 1; }
+.home-board .category-band { background: #142349; }
+.home-board .category-band .title { color: white; }
+.home-board .category-band .sub { color: #c8d1e1; }
+.home-board .cats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 24px; }
+.home-board .cat { border: 0; border-top: 1px solid #495575; border-radius: 0; padding: 18px 0; background: transparent; box-shadow: none; }
+.home-board .cat .ico { background: #263960; width: 40px; height: 40px; flex-shrink: 0; font-size: 22px; border-radius: 10px; }
+.home-board .cat .n { color: #fff; }
+.home-board .cat .c { color: #c8d1e1; }
+.home-board .cat:hover .n { color: #ffdf72; text-decoration: underline; }
+.home-board .service { border-radius: 14px; box-shadow: none; border-color: #d9dce2; }
+.home-board .service .s-ico { border-radius: 50%; background: #f2f2eb; }
+@media (max-width: 900px) { .home-board .cats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) {
+  .home-board .cats { grid-template-columns: 1fr; }
+  .home-board .cat { padding-block: 13px; }
+  .home-board .cat > span:last-child { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .home-board .cat br { display: none; }
+  .home-board .cat .c { flex-shrink: 0; }
+}

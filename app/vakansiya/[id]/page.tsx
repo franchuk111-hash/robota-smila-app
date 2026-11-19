@@ -88,6 +88,12 @@ export default async function VacancyPage({
   const faqs = vacancyFaq(v);
   const stale = !isListedVacancy(v);
 
+  const sourceHost = v.sourceUrl && URL.canParse(v.sourceUrl) ? new URL(v.sourceUrl).hostname : "";
+  const sourceLabel: Record<string, string> = {
+    "www.work.ua": "на Work.ua",
+    "robota.ua": "на robota.ua",
+    "www.dcz.gov.ua": "на сайті ДСЗ",
+  };
   const companyUrl = KNOWN_COMPANY_URLS[v.company];
   const company = COMPANIES.find(c => c.name === v.company);
   const ld = {
@@ -145,7 +151,7 @@ export default async function VacancyPage({
           <Link href={`/vakansii/${v.cat}`}>{v.catName}</Link> › {v.title}
         </nav>
         <div className="detail-grid">
-          <article className="detail">
+          <article className="detail job-detail">
             <h1>{v.title}</h1>
             <div className="company" style={{ fontSize: 18 }}>
               {company ? <Link href={`/kompaniya/${company.slug}`}>{v.company}</Link> : v.company}
@@ -170,6 +176,11 @@ export default async function VacancyPage({
               </span>
               <span className="tag gray">Опубліковано: {dateFmt(v.date)}</span>
             </div>
+            {v.sourceUrl && (
+              <a className="btn job-source-link" href={getVacancySourceHref(v.id)} target="_blank" rel={OUTBOUND_REL}>
+                {stale ? "Переглянути джерело архівного оголошення" : "Відкрити оголошення"} {sourceLabel[sourceHost] ?? "у першоджерелі"} <span aria-hidden="true">↗</span>
+              </a>
+            )}
             <p style={{ fontSize: 18 }}>{v.short}</p>
             {stale ? (
               <div className="callout warn">
@@ -189,7 +200,6 @@ export default async function VacancyPage({
                 тому. Перевірте умови й спосіб відгуку в оголошенні роботодавця.
               </div>
             )}
-            {v.sourceUrl && <p>Джерело: <a href={getVacancySourceHref(v.id)} target="_blank" rel={OUTBOUND_REL}>{v.source || "Оригінальне оголошення"}</a>. Уточнюйте актуальність і спосіб відгуку у джерелі.</p>}
             {v.duties.length > 0 && <><h3>Деталі вакансії</h3><ul>{v.duties.map((d) => <li key={d}>{d}</li>)}</ul></>}
             {v.req.length > 0 && <><h3>Вимоги</h3><ul>{v.req.map((d) => <li key={d}>{d}</li>)}</ul></>}
             {v.offer.length > 0 && <><h3>Ми пропонуємо</h3><ul>{v.offer.map((d) => <li key={d}>{d}</li>)}</ul></>}

@@ -27,7 +27,7 @@ export default function KompaniiPage() {
         </nav>
         <h1 className="page-h1">Каталог роботодавців</h1>
         <p className="sub">Роботодавці з поточної добірки оголошень</p>
-        <div className="grid3">
+        <div className="grid3 employer-directory">
           {getActiveCompanies().map((c) => {
             const list = VACANCIES.filter((v) => v.company === c.name);
             const n = list.length;

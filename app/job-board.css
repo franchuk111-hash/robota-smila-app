@@ -1,0 +1,70 @@
+/* Shared job cards appear in the catalog, on landing pages and in related results. */
+.vac.vac-readable {
+  --board-ink: #142349;
+  --board-link: #203fb6;
+  padding: clamp(18px, 2vw, 27px);
+  border: 1px solid #d9dcd9;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 3px 10px #14234906;
+}
+.vac.vac-readable:hover { border-color: #abb6ce; box-shadow: 0 5px 18px #1423490e; }
+.vac-topline, .vac-tools { display: flex; align-items: center; gap: 8px; }
+.vac-topline { flex-wrap: wrap; margin: -4px 0 13px; }
+.vac-tools { margin-left: auto; gap: 4px; }
+.vac-readable .vac-topline .date { margin: 0; color: #525d70; font-size: .8rem; font-weight: 600; }
+.vac-readable .vac-tools button {
+  position: static; display: inline-grid; place-items: center; padding: 0;
+  width: 36px; height: 36px; border: 1px solid #d8dce2; border-radius: 50%;
+  color: #495575; background: #fff;
+}
+.vac-readable .vac-tools button:hover, .vac-readable .vac-tools .fav.on { color: var(--board-link); background: #eef1ff; }
+.vac-readable .vac-topline .hot-badge {
+  position: static; margin: 0; padding: 3px 9px; background: #ffde77; color: var(--board-ink);
+  border-radius: 6px; box-shadow: none; animation: none;
+}
+.vac.vac-readable h3 { margin: 0 0 10px; font-size: clamp(1.29rem, 1.6vw, 1.52rem); line-height: 1.21; letter-spacing: -.025em; }
+.vac.vac-readable h3 a { color: var(--board-ink); }
+.vac.vac-readable h3 a:hover { color: var(--board-link); text-decoration: underline; }
+.vac.vac-readable .company { color: #4a566b; margin-bottom: 15px; }
+.vac-readable .company .co-ico { background: #f0f1f6; color: #39466c; border-radius: 8px; }
+.vac.vac-readable .salary { color: var(--board-ink); font-size: clamp(1.32rem, 2vw, 1.72rem); letter-spacing: -.028em; margin-bottom: 12px; line-height: 1.2; }
+.vac.vac-readable .salary-negotiable { font-size: 1.02rem; letter-spacing: normal; }
+.vac-readable .vac-conditions { color: #45516a; gap: 6px; margin-bottom: 12px; }
+.vac-readable .vac-conditions > div > span { color: #526482; }
+.vac-readable .vac-excerpt { margin-bottom: 16px; color: #515c6e; }
+.vac.vac-readable .apply { border-top: 1px solid #e4e5e1; padding-top: 14px; }
+.vac-readable .vac-actions { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.vac-readable .vac-actions .btn { white-space: normal; text-align: center; line-height: 1.22; border-radius: 9px; }
+.vac-readable .apply .vac-details, .job-detail .job-source-link {
+  background: #203fb6; color: #fff; box-shadow: none;
+}
+.vac-readable .apply .vac-telegram { background: #fff; color: #203fa6; border: 1px solid #aeb9d4; }
+.vac-readable .apply .vac-details:hover, .job-detail .job-source-link:hover { background: #193294; color: #fff; }
+.vac-readable .apply .vac-telegram:hover { background: #eff2ff; }
+
+.job-catalog .filters, .detail-grid > .job-detail { border-color: #d9dcd9; border-radius: 17px; background: #fff; }
+.job-catalog .filters { box-shadow: none; }
+.job-catalog .layout > section, .job-catalog .grid2 > div, .detail-grid > * { min-width: 0; }
+.job-catalog .grid2 > div { display: grid; }
+.job-catalog .count { color: #34415e; font-weight: 600; overflow-wrap: anywhere; }
+.job-detail { min-width: 0; overflow-wrap: anywhere; }
+.job-detail h1 { font-size: clamp(1.8rem,3vw,2.7rem); line-height: 1.1; letter-spacing: -.035em; }
+.job-detail h1, .job-detail h3, .job-detail .salary { color: #142349; }
+.job-detail .company a, .detail + .title { overflow-wrap: anywhere; }
+.job-detail .job-source-link { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; margin: 6px 0 10px; padding: 12px 18px; border-radius: 9px; white-space: normal; font-weight: 700; }
+.job-detail .tags .tag { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.container > .detail:has(.company h1) { overflow-wrap: anywhere; }
+.container > .detail .company h1 { min-width: 0; overflow-wrap: anywhere; }
+.container > .detail .company .co-ico { flex: none; }
+@media (max-width: 640px) {
+  .detail-grid { grid-template-columns: minmax(0,1fr); }
+  .detail-grid > .job-detail, .container > .detail:has(.company h1) { padding: 20px; }
+  .job-detail .job-source-link { width: 100%; justify-content: center; text-align: center; }
+  .vac-readable .vac-tools button { min-height: 40px; min-width: 40px; }
+}
+
+/* Long legal employer names must wrap inside the grid track on narrow screens. */
+.employer-directory > article { min-width: 0; overflow-wrap: anywhere; }
+.employer-directory .company > a { min-width: 0; }
+.employer-directory .company .co-ico { flex-shrink: 0; }

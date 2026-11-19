@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Emblem from "./Emblem";
 import { SpringLink, SpringButton } from "./SpringButton";
@@ -12,6 +12,7 @@ export default function Header({ employer = false }: { employer?: boolean }) {
   const router = useRouter();
   const [q, setQ] = useState("");
   const [menu, setMenu] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -20,6 +21,18 @@ export default function Header({ employer = false }: { employer?: boolean }) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!menu) return;
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenu(false);
+        menuButton.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [menu]);
 
   const go = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +86,7 @@ export default function Header({ employer = false }: { employer?: boolean }) {
         )}
 
         <button
+          ref={menuButton}
           className="burger"
           aria-label="Меню"
           aria-expanded={menu}
