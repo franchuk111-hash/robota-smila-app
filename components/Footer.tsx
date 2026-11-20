@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { getOutboundHref, OUTBOUND_REL } from "@/lib/outbound-links";
+import { getOutboundHref, OUTBOUND_DESTINATIONS, OUTBOUND_REL } from "@/lib/outbound-links";
 import Link from "next/link";
 import Emblem from "./Emblem";
 import { IconTikTok, IconYouTube, IconTelegram } from "./SocialIcons";
@@ -11,36 +11,37 @@ export default function Footer() {
   return (
     <footer className="site">
       <div className="container">
-        <div className="fcols">
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-              <Emblem size={36} />
-              <span style={{ color: "#fff", fontWeight: 800, fontSize: 20 }}>
-                Робота <span style={{ color: "#5b9dff" }}>Сміла</span>
-              </span>
+        <div className="footer-top">
+          <div className="footer-brand">
+            <div className="footer-wordmark">
+              <Emblem size={40} />
+              <span>Робота <b>Сміла</b></span>
             </div>
-            <p style={{ color: "#8397ab", margin: "0 0 6px" }}>
-              Знайди роботу в Смілі. Розвивай місто разом із нами.
-            </p>
+            <p>Знайди роботу в Смілі. Розвивай місто разом із нами.</p>
+          </div>
+          <div className="footer-connect">
+            <a
+              className="footer-channel"
+              href={getOutboundHref(OUTBOUND_DESTINATIONS["telegram-channel"], pathname)}
+              target="_blank"
+              rel={OUTBOUND_REL}
+              onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE, { source: "footer" })}
+            >
+              <IconTelegram size={32} />
+              <span>Вакансії в Telegram<small>@robota_smila</small></span>
+              <span aria-hidden="true">↗</span>
+            </a>
             <div className="socials">
               <a className="soc" href={getOutboundHref("https://www.tiktok.com/@robota_smila")} target="_blank" rel={OUTBOUND_REL} aria-label="TikTok">
-                <IconTikTok size={32} />
+                <IconTikTok size={28} />
               </a>
               <a className="soc" href={getOutboundHref("https://www.youtube.com/@Robota-smila")} target="_blank" rel={OUTBOUND_REL} aria-label="YouTube">
-                <IconYouTube size={32} />
-              </a>
-              <a
-                className="soc"
-                href={getOutboundHref("https://t.me/Smila_admin", pathname)}
-                target="_blank"
-                rel={OUTBOUND_REL}
-                aria-label="Telegram"
-                onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
-              >
-                <IconTelegram size={32} />
+                <IconYouTube size={28} />
               </a>
             </div>
           </div>
+        </div>
+        <div className="fcols">
           <div>
             <h4>Шукачам</h4>
             <Link href="/vakansii">Всі вакансії</Link>
@@ -68,7 +69,6 @@ export default function Footer() {
               href={getOutboundHref("https://t.me/Smila_admin", pathname)}
               target="_blank"
               rel={OUTBOUND_REL}
-              onClick={() => trackEvent(GA4_EVENTS.TELEGRAM_SUBSCRIBE)}
             >
               Зв&apos;язок: @Smila_admin
             </a>
