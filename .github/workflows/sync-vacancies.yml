@@ -9,6 +9,12 @@ on:
   schedule:
     - cron: "17 5-20/3 * * *"
   workflow_dispatch:
+    inputs:
+      refresh_vacancies:
+        description: Refresh vacancy facts from the source before deployment
+        type: boolean
+        required: true
+        default: true
 
 concurrency:
   group: robota-smila-production
@@ -53,8 +59,10 @@ jobs:
           node scripts/release-guard.mjs
           cp data/collected-vacancies.json "$RUNNER_TEMP/robota-release/vacancies-before.json"
       - name: Refresh existing vacancy facts without Telegram messages
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.refresh_vacancies }}
         run: npm run vacancies:sync -- --facts-only
       - name: Register source pages for new Telegram vacancy links
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.refresh_vacancies }}
         run: node --import tsx scripts/update-telegram-source-pages.ts
       - name: Reject vacancy loss or changed Telegram post references
         run: node scripts/release-guard.mjs --baseline "$RUNNER_TEMP/robota-release/vacancies-before.json"
@@ -62,6 +70,9 @@ jobs:
         run: |
           npm run typecheck
           npm test
+      - name: Require unchanged live vacancy parity for code-only deployment
+        if: ${{ github.event_name == 'workflow_dispatch' && !inputs.refresh_vacancies }}
+        run: node --import tsx scripts/check-live-vacancy-parity.mjs
       - name: Save verified vacancy facts for the website
         run: |
           if git diff --quiet -- data/collected-vacancies.json lib/telegram-source-pages.json; then exit 0; fi
@@ -103,11 +114,13 @@ jobs:
           node --import tsx scripts/prepublish-smoke.ts https://robota-smila.com.ua --live
           node --import tsx scripts/check-live-vacancy-parity.mjs
       - name: Configure durable approved vacancy delivery
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.refresh_vacancies }}
         run: |
           git config user.name "robota-smila-bot"
           git config user.email "actions@users.noreply.github.com"
       - name: Publish newly approved live vacancies to the group and four channels
         id: telegram_queue
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.refresh_vacancies }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
@@ -117,7 +130,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Publish confirmed Telegram links after successful delivery
-        if: steps.telegram_queue.outputs.changed == 'true'
+        if: steps.telegram_queue.outputs.changed == 'true' && (github.event_name != 'workflow_dispatch' || inputs.refresh_vacancies)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
