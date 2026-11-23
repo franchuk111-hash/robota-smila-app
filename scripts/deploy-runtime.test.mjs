@@ -17,7 +17,8 @@ test('CI runtime satisfies the locked deployment CLI minimum', async () => {
 test('CI postdeploy check rejects stale data and missing catalog payloads', async () => {
   const { runInNewContext } = await import('node:vm');
   const workflow = await readFile(new URL('../.github/workflows/sync-vacancies.yml', import.meta.url), 'utf8');
-  assert.equal((workflow.match(/node --import tsx scripts\/check-live-vacancy-parity.mjs/g) || []).length, 2, 'Both site deployments must verify live data parity');
+  assert.ok((workflow.match(/node --import tsx scripts\/check-live-vacancy-parity.mjs/g) || []).length >= 2, 'Both site deployments must verify live data parity');
+  assert.match(workflow, /Require unchanged live vacancy parity for code-only deployment[\s\S]*?if: steps\.release_mode\.outputs\.refresh_vacancies == 'false'[\s\S]*?run: node --import tsx scripts\/check-live-vacancy-parity\.mjs/, 'Code-only releases must verify parity before deployment');
   const moduleSource = await readFile(new URL('./check-live-vacancy-parity.mjs', import.meta.url), 'utf8');
   const source = moduleSource
     .replace("import assert from 'node:assert/strict';", "const assert = require('node:assert/strict');")

@@ -65,7 +65,7 @@ jobs:
             refresh=false
           elif [[ "$EVENT_NAME" == "push" ]] && [[ ! "$PUSH_BEFORE" =~ ^0+$ ]]; then
             changed="$(git diff --name-only "$PUSH_BEFORE" "$GITHUB_SHA")"
-            unexpected="$(grep -Ev '^(app/home-hero\.css|\.github/workflows/sync-vacancies\.yml)$' <<< "$changed" || true)"
+            unexpected="$(grep -Ev '^(app/home-hero\.css|\.github/workflows/sync-vacancies\.yml|scripts/deploy-runtime\.test\.mjs)$' <<< "$changed" || true)"
             if [[ -n "$changed" && -z "$unexpected" ]]; then
               refresh=false
             fi
