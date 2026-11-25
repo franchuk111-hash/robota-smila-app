@@ -4,14 +4,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreadcrumbLd from "@/components/BreadcrumbLd";
 import JsonLd from "@/components/JsonLd";
+import CalendarGrid from "@/components/CalendarGrid";
 import { faqLd } from "@/lib/seo";
 import {
   YEAR,
   MONTH_NAMES,
   MONTH_SLUGS,
-  WEEKDAYS,
   HOLIDAYS,
-  buildMonth,
   monthStats,
   yearStats,
   workDaysLabel,
@@ -92,7 +91,7 @@ export default function CalendarPage() {
         <section className="cal-summary" aria-labelledby={`robochi-dni-po-misyatsyah-${YEAR}`}>
           <h2 id={`robochi-dni-po-misyatsyah-${YEAR}`}>Робочі дні та години по місяцях {YEAR} року</h2>
           <p id="calendar-basis">Базовий графік: Пн–Пт по 8 годин, без автоматичних святкових вихідних і перенесень. Це не індивідуальна норма підприємства — фактичний графік уточнюйте у роботодавця.</p>
-          <p><a href={`#lystopad-${YEAR}`}>Листопад: {workDaysLabel(november.work)}, {november.hours} год</a>{" · "}<a href={`#hruden-${YEAR}`}>Грудень: {workDaysLabel(december.work)}, {december.hours} год</a></p>
+          <p><a href={`#lystopad-${YEAR}`}>Листопад: {workDaysLabel(november.work)}, {november.hours} год</a>{" · "}<a href={`#hruden-${YEAR}`}>Грудень: {workDaysLabel(december.work)}, {december.hours} год</a>{" · "}<Link href="/kalendar/2027">Виробничий календар 2027</Link></p>
           <table aria-describedby="calendar-basis">
             <caption>Кількість робочих днів, вихідних і годин за графіком 5/2</caption>
             <thead><tr><th scope="col">Місяць</th><th scope="col">Робочі дні</th><th scope="col">Вихідні</th><th scope="col">Години</th></tr></thead>
@@ -122,51 +121,7 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        <div className="cal-grid">
-          {MONTH_NAMES.map((name, m) => {
-            const ms = monthStats(m);
-            return (
-              <div className="cal-month" id={`${MONTH_SLUGS[m]}-${YEAR}`} key={m}>
-                <h3>{name}</h3>
-                <div className="cal-week">
-                  {WEEKDAYS.map((w) => (
-                    <span key={w} className="cal-wd">
-                      {w}
-                    </span>
-                  ))}
-                </div>
-                <div className="cal-days">
-                  {buildMonth(m).map((c, i) =>
-                    c ? (
-                      <span
-                        key={i}
-                        className={
-                          "cal-day" +
-                          (c.holiday ? " holiday" : c.weekend ? " weekend" : "")
-                        }
-                        title={c.holiday || undefined}
-                      >
-                        {c.day}
-                      </span>
-                    ) : (
-                      <span key={i} className="cal-day empty" />
-                    )
-                  )}
-                </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    fontSize: 13,
-                    color: "var(--muted)",
-                    marginTop: 10,
-                  }}
-                >
-                  {workDaysLabel(ms.work)} · {ms.hours} год
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <CalendarGrid year={YEAR} />
 
         <div className="seo-text">
           <h2 id={`zhovten-rozrahunok-${YEAR}`}>Жовтень {YEAR}: {workDaysLabel(october.work)}, {october.hours} годин</h2>

@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/rezume`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/zarplatomir`, lastModified: "2026-11-16", changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE}/kalendar`, lastModified: "2026-10-22", changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE}/kalendar/2027`, lastModified: "2026-11-25", changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/start-kariery`, lastModified: UPDATED, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE}/robota-bez-dosvidu`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE}/pidrobitok`, lastModified: UPDATED, changeFrequency: "daily", priority: 0.8 },

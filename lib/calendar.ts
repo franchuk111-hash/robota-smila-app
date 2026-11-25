@@ -16,6 +16,23 @@ export const HOLIDAYS: Record<string, string> = {
   "2026-12-25": "Різдво Христове",
 };
 
+// 2027: ті самі нерухомі дати ст. 73 КЗпП; Великдень 2 травня, Трійця 20 червня.
+export const HOLIDAYS_2027: Record<string, string> = {
+  "2027-01-01": "Новий рік",
+  "2027-03-08": "Міжнародний жіночий день",
+  "2027-05-01": "День праці",
+  "2027-05-02": "Великдень (Пасха)",
+  "2027-05-08": "День пам’яті та перемоги над нацизмом у Другій світовій війні 1939–1945 років",
+  "2027-06-20": "Трійця",
+  "2027-06-28": "День Конституції України",
+  "2027-07-15": "День Української Державності",
+  "2027-08-24": "День Незалежності України",
+  "2027-10-01": "День захисників і захисниць України",
+  "2027-12-25": "Різдво Христове",
+};
+
+export const HOLIDAYS_BY_YEAR: Record<number, Record<string, string>> = { 2026: HOLIDAYS, 2027: HOLIDAYS_2027 };
+
 export const MONTH_NAMES = [
   "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень",
   "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень",
@@ -40,7 +57,9 @@ export const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 
 export type Day = { day: number; iso: string; weekend: boolean; holiday?: string };
 
-export function buildMonth(month: number): (Day | null)[] {
+export function buildMonth(month: number, year: number = YEAR): (Day | null)[] {
+  const YEAR = year;
+  const HOLIDAYS = HOLIDAYS_BY_YEAR[year] ?? {};
   const first = new Date(Date.UTC(YEAR, month, 1));
   const daysInMonth = new Date(Date.UTC(YEAR, month + 1, 0)).getUTCDate();
   const lead = (first.getUTCDay() + 6) % 7; // Пн = 0
@@ -53,25 +72,25 @@ export function buildMonth(month: number): (Day | null)[] {
   return cells;
 }
 
-export function yearStats() {
+export function yearStats(year: number = YEAR) {
   let work = 0;
   let off = 0;
   for (let m = 0; m < 12; m++) {
-    for (const c of buildMonth(m)) {
+    for (const c of buildMonth(m, year)) {
       if (!c) continue;
       if (c.weekend) off++;
       else work++;
     }
   }
-  return { work, off, holidays: Object.keys(HOLIDAYS).length };
+  return { work, off, holidays: Object.keys(HOLIDAYS_BY_YEAR[year] ?? {}).length };
 }
 
 // Базовий графік Пн–Пт по 8 годин, без святкових скорочень і перенесень.
-export function monthStats(month: number) {
+export function monthStats(month: number, year: number = YEAR) {
   let work = 0;
   let off = 0;
   const holidays: { day: number; name: string; onWeekend: boolean }[] = [];
-  for (const c of buildMonth(month)) {
+  for (const c of buildMonth(month, year)) {
     if (!c) continue;
     if (c.weekend) off++;
     else work++;
