@@ -126,6 +126,14 @@
       "status": "published",
       "updatedAt": "2026-11-25T09:33:32.489Z",
       "messageId": 21
+    },
+    "1127911466:-1002620744576": {
+      "vacancyId": 1127911466,
+      "chatId": -1002620744576,
+      "sourceChatId": -1002930665491,
+      "sourceMessageId": 1201,
+      "status": "pending",
+      "updatedAt": "2026-11-25T09:38:44.637Z"
     }
   }
 }
