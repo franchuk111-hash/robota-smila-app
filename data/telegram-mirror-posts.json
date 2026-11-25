@@ -204,8 +204,9 @@
       "chatId": -1002620744576,
       "sourceChatId": -1002930665491,
       "sourceMessageId": 1246,
-      "status": "pending",
-      "updatedAt": "2026-11-25T09:39:07.740Z"
+      "status": "published",
+      "updatedAt": "2026-11-25T09:39:09.083Z",
+      "messageId": 30
     }
   }
 }
