@@ -87,8 +87,9 @@
       "chatId": -1002620744576,
       "sourceChatId": -1002930665491,
       "sourceMessageId": 1387,
-      "status": "pending",
-      "updatedAt": "2026-11-25T09:33:21.238Z"
+      "status": "published",
+      "updatedAt": "2026-11-25T09:33:22.397Z",
+      "messageId": 17
     }
   }
 }
