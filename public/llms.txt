@@ -16,7 +16,8 @@
 - [Термінові вакансії](https://robota-smila.com.ua/terminovi-vakansii)
 - [Приклад резюме](https://robota-smila.com.ua/rezume)
 - [Старт кар'єри](https://robota-smila.com.ua/start-kariery)
-- [Календар](https://robota-smila.com.ua/kalendar)
+- [Виробничий календар 2026](https://robota-smila.com.ua/kalendar): робочі дні та години по місяцях за графіком 5/2.
+- [Виробничий календар 2027](https://robota-smila.com.ua/kalendar/2027): робочі дні, години та святкові дати 2027 року.
 - [Блог](https://robota-smila.com.ua/blog)
 - [Для роботодавців](https://robota-smila.com.ua/rabotodavtsyam): заявка на розміщення вакансії, умови погоджуються з адміністрацією.
 

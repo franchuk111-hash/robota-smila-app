@@ -42,8 +42,11 @@ export default async function ArticlePage({
     datePublished: a.date,
     dateModified: a.dateModified ?? a.date,
     inLanguage: "uk-UA",
-    author: { "@type": "Organization", name: "robota-smila.com.ua" },
-    publisher: { "@type": "Organization", name: "robota-smila.com.ua" },
+    url: `https://robota-smila.com.ua/blog/${a.slug}`,
+    mainEntityOfPage: `https://robota-smila.com.ua/blog/${a.slug}`,
+    isPartOf: { "@id": "https://robota-smila.com.ua/#website" },
+    author: { "@type": "Organization", "@id": "https://robota-smila.com.ua/#organization", name: "Робота Сміла", url: "https://robota-smila.com.ua" },
+    publisher: { "@type": "Organization", "@id": "https://robota-smila.com.ua/#organization", name: "Робота Сміла", url: "https://robota-smila.com.ua", logo: { "@type": "ImageObject", url: "https://robota-smila.com.ua/icon-512x512.png" } },
   };
 
   return (
